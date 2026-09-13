@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "bslib-react"
-version = "0.1.0"
+version = "0.0.1"
 description = "Server helpers for bslib-react, React components that reproduce bslib and Shiny markup"
 readme = "pkg-py/README.md"
 license = "MIT"

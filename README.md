@@ -8,8 +8,9 @@ a React client that owns the page. shinyreact provides that plumbing; this
 package provides the bslib-shaped components and the server helpers that
 plumbing does not.
 
-Status: version 0.1.0 is in progress. See `REPORT.md` for why this package
-exists and what it measured before the first line of code moved here.
+Status: in active development, unreleased, no tags yet. See `REPORT.md`
+for why this package exists and what it measured before the first line
+of code moved here.
 
 ## Install
 

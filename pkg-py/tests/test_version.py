@@ -8,10 +8,10 @@ from pathlib import Path
 
 import pytest
 
-_EXPECTED_VERSION = "0.1.0"
+_EXPECTED_VERSION = "0.0.1"
 
 
-def test_installed_version_is_0_1_0() -> None:
+def test_installed_version_matches_expected() -> None:
     assert importlib.metadata.version("bslib-react") == _EXPECTED_VERSION
 
 

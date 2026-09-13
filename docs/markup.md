@@ -32,14 +32,14 @@ the widget's HTML comes from the server at runtime, not from TSX.
 | `bslib::page_fillable()` | `ui.page_fillable()` | `PageFillable` | `page_fillable` |
 | `bslib::card()` | `ui.card()` | `Card`, `CardHeader`, `CardBody` | `card_full_screen`, `card_footer`, `card_id`, `card_height`, `card_no_fill` |
 | `bslib::tooltip()` | `ui.tooltip()` | `Tooltip` | `tooltip` |
-| `bslib::popover()` | `ui.popover()` | not built in 0.1.0 | `popover` |
+| `bslib::popover()` | `ui.popover()` | not yet built | `popover` |
 | `bslib::page_sidebar()` | `ui.page_sidebar()` | `PageSidebar` | `sidebar_layout` |
 | `bslib::layout_sidebar()` + `sidebar()` | `ui.layout_sidebar()` + `ui.sidebar()` | `LayoutSidebar` | `sidebar_layout`, `sidebar_layout_titled`, `sidebar_layout_right_closed`, `sidebar_custom_class`, `sidebar_layout_gap_padding` |
 | `bslib::page_navbar()` shell | `ui.page_navbar()` | `PageNavbar` | `page_navbar`, `page_navbar_icon`, `page_navbar_sidebar`, `page_navbar_not_fillable` |
 | the tab strip `page_navbar()`/`nav_panel()` build | `ui.nav_panel()` | `NavbarTabStrip`, `NavSpacer`, `NavItem` | `page_navbar`, `page_navbar_icon`, `page_navbar_dropdown` |
 | one `nav_panel()`'s content area | `ui.nav_panel()` | `TabPane` | `page_navbar` |
 | `shiny::navbarMenu()` / `bslib::nav_menu()` | `ui.nav_menu()` | `NavbarTabStrip`'s `NavDropdownDef` | `page_navbar_dropdown` |
-| `bslib::accordion()` | `ui.accordion()` | not built in 0.1.0 | `accordion` |
+| `bslib::accordion()` | `ui.accordion()` | not yet built | `accordion` |
 | `bslib::input_dark_mode()` | `ui.input_dark_mode()` | `DarkModeInput` | `input_dark_mode` |
 
 Not yet built as a reusable kit component: `navset_card_tab`/`navset_pill`

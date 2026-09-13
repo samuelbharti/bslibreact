@@ -113,8 +113,8 @@ def test_every_sample_pkg_is_shiny() -> None:
 
 
 def test_every_sample_kind_is_tag_or_page() -> None:
-    # No "extra" (third-party) samples in Python for 0.1.0 -- see the
-    # `Sample.pkg` note in `_catalog.py`.
+    # No "extra" (third-party) samples in Python -- see the `Sample.pkg`
+    # note in `_catalog.py`.
     assert all(sample.kind in ("tag", "page") for sample in SAMPLES)
 
 

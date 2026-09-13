@@ -1,9 +1,9 @@
 # Changelog
 
-## 0.1.0
+## Unreleased
 
 - Initial extraction from `shinyreact-apps`' `packages/bslib-react` into its
-  own package, published as `bslib-react` on npm.
+  own package, not yet published on npm.
 - Fixed the bind-scope defect in `NavbarTabStrip` and `LayoutSidebar`: both
   used to call Shiny's bind functions directly on a scope that could also
   hold a hosted output mounting in the same commit, which produced

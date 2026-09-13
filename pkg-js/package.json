@@ -1,6 +1,6 @@
 {
   "name": "bslib-react",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "description": "bslib's layout, page shell, and output markup as React components for the shinyreact ui.tsx pattern",
   "license": "MIT",
   "type": "module",
@@ -23,7 +23,8 @@
     "lint": "tsc --noEmit",
     "format": "prettier --write .",
     "format-check": "prettier --check .",
-    "test": "vitest run"
+    "test": "vitest run",
+    "docs": "typedoc"
   },
   "peerDependencies": {
     "react": "19.x",

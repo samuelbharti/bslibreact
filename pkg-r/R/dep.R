@@ -14,7 +14,7 @@
 # test-version.R checks the two agree once pkg-js exists in this checkout.
 # Mirrors shinyreact's .shinyreact_js_version and this package's own
 # Python sibling's _BSLIB_REACT_JS_VERSION.
-.bslib_react_js_version <- "0.1.0"
+.bslib_react_js_version <- "0.0.1"
 
 # TRUE only in a repo checkout (devtools::load_all()), where the repo's
 # pkg-js/package.json sits four levels above inst/lib/bslib-react/. Never

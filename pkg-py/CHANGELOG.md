@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.1.0
+## Unreleased
 
-- First release. Mirrors pkg-r's scope in Python.
+- Not yet published. Mirrors pkg-r's scope in Python.
 - `page_deps()`, `host_input()`, `bslib_react_dep()`.

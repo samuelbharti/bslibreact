@@ -1,6 +1,6 @@
-# bslibreact 0.1.0
+# bslibreact (development version)
 
-Initial release.
+Not yet released.
 
 * `page_deps()` collects the htmlDependency objects a client bundle needs to
   match a page built from bslib and shiny markup, without attaching

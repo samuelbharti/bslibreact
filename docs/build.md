@@ -6,7 +6,7 @@ and this component kit, not a port of an existing app. See
 
 ## Tier
 
-There is one supported client tier in version 0.1.0: a Vite build whose
+There is one supported client tier right now: a Vite build whose
 client bundle externalizes React to `window.shinyreact`, and whose server
 serves shinyreact's own runtime bundle. `examples/01-hello` is set up this
 way, and it is the only tier this kit's components are tested against.
