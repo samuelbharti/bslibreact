@@ -1,0 +1,8 @@
+{
+  "name": "bslib-react-repo",
+  "private": true,
+  "workspaces": [
+    "pkg-js",
+    "examples/*"
+  ]
+}
