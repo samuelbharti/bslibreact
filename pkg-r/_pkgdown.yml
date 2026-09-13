@@ -1,0 +1,36 @@
+url: https://samuelbharti.github.io/bslib-react/
+
+template:
+  bootstrap: 5
+
+reference:
+- title: Page dependencies
+  desc: >
+    Collect the CSS and JavaScript a page needs, and host a server-rendered
+    widget for a client to display.
+  contents:
+  - page_deps
+  - bslib_react_dep
+  - host_input
+
+- title: Markup catalog
+  desc: >
+    A live catalog of bslib and shiny markup, rendered on demand for this
+    package's own tests and for the matching JavaScript package's tests.
+  contents:
+  - markup_catalog
+  - render_markup_catalog
+
+- title: Port checks
+  desc: >
+    Check an app being ported from bslib to the shinyreact ui.tsx pattern
+    against its parent.
+  contents:
+  - port_triage
+  - port_deps_diff
+  - port_peek
+
+- title: Scaffold
+  desc: Start a new app.
+  contents:
+  - create_app
