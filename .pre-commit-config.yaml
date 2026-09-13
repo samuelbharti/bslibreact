@@ -52,6 +52,12 @@ repos:
         entry: '\bprint\('
         language: pygrep
         files: '\.R$'
+        # The three port_* functions each print their own result by
+        # dispatching to their S3 print method, guarded by `if (!quiet)`,
+        # exactly the interactive-by-default UX a port_triage()/
+        # port_peek()/port_deps_diff() call is meant to have. Not a debug
+        # leftover.
+        exclude: '^pkg-r/R/port-(triage|peek|deps-diff)\.R$'
 
       # Block secrets and local editor/project files from ever being staged.
       - id: no-env-files

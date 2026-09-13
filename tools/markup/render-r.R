@@ -36,7 +36,18 @@ if (requireNamespace("bslibreact", quietly = TRUE)) {
   }
   # This script lives at tools/markup/render-r.R, two levels below the
   # repository root; pkg-r sits alongside tools/ at that same root.
-  root <- normalizePath(file.path(dirname(sub("^--file=", "", grep("^--file=", commandArgs(trailingOnly = FALSE), value = TRUE))), "..", ".."), winslash = "/")
+  root <- normalizePath(
+    file.path(
+      dirname(sub(
+        "^--file=",
+        "",
+        grep("^--file=", commandArgs(trailingOnly = FALSE), value = TRUE)
+      )),
+      "..",
+      ".."
+    ),
+    winslash = "/"
+  )
   pkg_dir <- file.path(root, "pkg-r")
   if (!file.exists(file.path(pkg_dir, "DESCRIPTION"))) {
     # Fall back to a path relative to the current working directory, for
@@ -63,7 +74,13 @@ if (length(out_flag) == 1 && out_flag < length(args)) {
       TRUE
     },
     error = function(e) {
-      cat("render_markup_catalog() failed: ", conditionMessage(e), "\n", sep = "", file = stderr())
+      cat(
+        "render_markup_catalog() failed: ",
+        conditionMessage(e),
+        "\n",
+        sep = "",
+        file = stderr()
+      )
       FALSE
     }
   )

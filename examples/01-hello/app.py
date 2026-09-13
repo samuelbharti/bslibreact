@@ -8,10 +8,9 @@ hosts one server-rendered widget for the client to display.
 
 import matplotlib.pyplot as plt
 import numpy as np
+from bslib_react import bslib_react_dep, host_input, page_deps
 from shiny import App, render, req, ui
 from shinyreact import page_react
-
-from bslib_react import bslib_react_dep, host_input, page_deps
 
 # py-shiny's Theme has no Bootstrap version knob (it targets Bootstrap 5
 # only); None here means the stock theme, matching R's bs_theme(version = 5)

@@ -17,7 +17,8 @@ load_server <- function() {
   exprs <- parse(file.path(app_dir, "app.R"))
   for (e in exprs) {
     is_library_call <- is.call(e) && identical(e[[1]], as.name("library"))
-    is_server_def <- is.call(e) && identical(e[[1]], as.name("<-")) &&
+    is_server_def <- is.call(e) &&
+      identical(e[[1]], as.name("<-")) &&
       identical(e[[2]], as.name("server"))
     if (is_library_call || is_server_def) eval(e, envir = env)
   }

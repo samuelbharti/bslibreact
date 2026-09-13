@@ -12,7 +12,6 @@ import urllib.request
 from pathlib import Path
 
 import pytest
-
 from bslib_react.port import start_app
 
 APP_DIR = Path(__file__).parent.parent
