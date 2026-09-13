@@ -1,4 +1,4 @@
-"""``port._app.start_app()``/``attach_app()``: start a Shiny app and wait for it."""
+"""``_app_runner.start_app()``/``attach_app()``: start a Shiny app and wait for it."""
 
 from __future__ import annotations
 
@@ -8,7 +8,7 @@ import urllib.request
 from pathlib import Path
 
 import pytest
-from bslib_react.port import AppHandle, attach_app, start_app
+from bslib_react._app_runner import AppHandle, attach_app, start_app
 from shiny.run import ShinyAppProc
 
 

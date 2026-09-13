@@ -248,7 +248,7 @@ def _render_served_pages(
     """
     # Imported lazily: this path is only exercised when `served` allows it,
     # and it pulls in `shiny.run`, which spawns a subprocess.
-    from .port._app import start_app
+    from ._app_runner import start_app
 
     tmp_dir = Path(tempfile.mkdtemp(prefix="bslib_react_markup_"))
     (tmp_dir / "app.py").write_text(_SERVING_APP_SOURCE, encoding="utf-8")

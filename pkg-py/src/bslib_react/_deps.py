@@ -64,13 +64,14 @@ def page_deps(
 ) -> TagList:
     """The HTML dependencies bslib-react's components need at runtime.
 
-    Call once, near the top of your page function, and splat the result into
-    the page (``page_react(page_deps(app_theme), ...)``). It works by
-    rendering a representative sample of the markup catalog -- the same
-    sample calls the catalog renderer uses for ``bslib-react markup`` -- and
-    reading back whichever :class:`~htmltools.HTMLDependency` objects that
-    markup pulled in, minus the ones every shiny page already attaches on
-    its own (``bootstrap``, ``jquery``).
+    Attach the result to a shinyreact page alongside :func:`bslib_react_dep`,
+    for example
+    ``page_react(page_deps(app_theme), bslib_react_dep(), theme=app_theme)``.
+    It works by rendering a representative sample of the markup catalog --
+    the same sample calls the catalog renderer uses for ``bslib-react
+    markup`` -- and reading back whichever :class:`~htmltools.HTMLDependency`
+    objects that markup pulled in, minus the ones every shiny page already
+    attaches on its own (``bootstrap``, ``jquery``).
 
     Args:
         theme: Accepted so the same call signature exists in R and Python;

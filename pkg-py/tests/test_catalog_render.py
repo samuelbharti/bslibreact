@@ -118,7 +118,7 @@ def test_unknown_component_raises() -> None:
 
 
 def test_served_auto_renders_full_documents_for_page_samples(tmp_path: Path) -> None:
-    """The one test that actually starts a background app (see port._app.start_app)."""
+    """The one test that starts a background app (see _app_runner.start_app)."""
     record = render_markup_catalog(
         tmp_path / "py.json", served="auto", components=["page_navbar"], quiet=True
     )

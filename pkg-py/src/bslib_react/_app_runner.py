@@ -1,9 +1,9 @@
 """Start a Shiny app (Python or R) in the background and wait for it to answer.
 
-Ported from ``tools/port/lib.R``'s ``port_start_app()`` / ``port_attach_app()``
-/ ``port_stop_app()``. Used by the other port tools (``triage`` does not need
-it, but ``deps_diff`` and ``peek`` both start one app per side to compare),
-and by ``_catalog_render.py`` to serve page-kind catalog samples.
+Used by ``_catalog_render.py`` to serve page-kind catalog samples from a
+real running app, which is the only way a page shell's own classes and
+inline styles come out the way a real ``shiny::runApp()`` session renders
+them (see ``docs/markup-catalog.md``).
 
 For a Python app, this is a thin wrapper around
 ``shiny.run.run_shiny_app()`` -- py-shiny's own subprocess runner already

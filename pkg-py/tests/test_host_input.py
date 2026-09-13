@@ -131,7 +131,7 @@ def test_host_input_in_a_real_running_app(tmp_path: Path) -> None:
     the same placeholder Shiny fills in dynamically over the websocket once
     a client connects, which a plain HTTP GET does not drive.
     """
-    from bslib_react.port import start_app
+    from bslib_react._app_runner import start_app
 
     app_dir = tmp_path / "hostapp"
     app_dir.mkdir()
