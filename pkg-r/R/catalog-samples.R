@@ -5,15 +5,12 @@
 # that `test-catalog.R` copies verbatim so a rename here is a deliberate,
 # visible change, not an accident).
 #
-# This list is a straight port of
-# shinyreact-apps/tools/kit/dump-markup.R, which used to write each call's
-# `as.character()` output to a fixture file committed to that repo. That
-# approach is gone (docs/decisions/0001-no-fixtures-live-ground-truth.md):
-# instead of a fixture, every sample here is an unevaluated call, and
-# `render_markup_catalog()` (catalog-render.R) evaluates it live, against
-# whichever bslib and shiny are actually installed, every time the catalog
-# is rendered. Nothing below is HTML; it is R source that produces HTML
-# when run.
+# Every sample here is an unevaluated call, not a fixture
+# (docs/decisions/0001-no-fixtures-live-ground-truth.md): the repository's
+# markup catalog renderer (tools/markup/render-r.R, a dev-only script, not
+# part of this package) evaluates each one live, against whichever bslib
+# and shiny are actually installed, every time the catalog is rendered.
+# Nothing below is HTML; it is R source that produces HTML when run.
 #
 # Every call is written fully qualified (`bslib::`, `shiny::`, `htmltools::`
 # and so on) and wrapped in `quote()`, so `deparse1(call)` gives back
@@ -32,13 +29,15 @@
 # docs/decisions/0001-no-fixtures-live-ground-truth.md, for the bug this
 # once caused.
 #
-# A "kind: extra" sample depends on a package this catalog does not
-# require: DT, reactable, shinycssloaders, htmlwidgets. Each is rendered
-# only when its package is installed; otherwise render_markup_catalog()
-# records a `skipped` reason instead of erroring the whole catalog.
-# Everything else is "kind: tag": a plain `htmltools::renderTags()` call,
-# under the same Bootstrap-5-forcing wrap the page kind needs for a
-# different reason (see catalog-render.R).
+# This package ships only "kind: tag" and "kind: page" samples: the
+# markup bslib-react's own components need to match. A "kind: extra"
+# sample depends on a package this package itself does not need (DT,
+# reactable, shinycssloaders, htmlwidgets); those samples live only in the
+# markup catalog renderer's own dev-time list, so that this package's
+# tests and installed dependencies never need any of the four. Everything
+# below is "kind: tag" or "kind: page": a plain `htmltools::renderTags()`
+# call (or, for a page shell, a served document), under the same
+# Bootstrap-5-forcing wrap the renderer applies to both.
 
 # A thin constructor, mostly so a typo in `kind` or `group` fails loudly
 # here instead of silently reaching the JSON with a value nothing expects.
@@ -321,16 +320,6 @@
     "shiny",
     quote(shiny::plotOutput("x"))
   ),
-  # kind = "extra": shinycssloaders wraps the output in its own spinner
-  # markup, which the plain PlotOutput component does not need to know
-  # about unless an app actually uses it.
-  .sample(
-    "plotOutput_with_spinner",
-    "extra",
-    "output",
-    "shinycssloaders",
-    quote(shinycssloaders::withSpinner(shiny::plotOutput("x")))
-  ),
   .sample(
     "textOutput",
     "tag",
@@ -355,36 +344,6 @@
     "shiny",
     quote(shiny::plotOutput("x", height = "560px", click = "x_click"))
   ),
-  # kind = "extra": DT::DTOutput. fill=TRUE and fill=FALSE are pinned
-  # separately because fill changes the wrapper's own classes, not just an
-  # inner table option.
-  .sample(
-    "DTOutput",
-    "extra",
-    "output",
-    "DT",
-    quote(DT::DTOutput("x", fill = TRUE))
-  ),
-  .sample(
-    "DTOutput_no_fill",
-    "extra",
-    "output",
-    "DT",
-    quote(DT::DTOutput("x", fill = FALSE))
-  ),
-  # Renamed from igvShinyOutput (see docs/markup-catalog.md, "Sample
-  # names"): igvShiny needed a Bioconductor install just to pin a markup
-  # shape every generic htmlwidget output shares. shinyWidgetOutput() is
-  # the same underlying output binding igvShiny itself is built on, with no
-  # extra package beyond htmlwidgets, which this catalog already needs for
-  # other widgets.
-  .sample(
-    "htmlwidget_output",
-    "extra",
-    "output",
-    "htmlwidgets",
-    quote(htmlwidgets::shinyWidgetOutput("x", "foo", "100%", "400px"))
-  ),
   .sample("uiOutput", "tag", "output", "shiny", quote(shiny::uiOutput("x"))),
   .sample(
     "uiOutput_fill",
@@ -403,15 +362,6 @@
     "output",
     "shiny",
     quote(shiny::uiOutput("chip", inline = TRUE))
-  ),
-  # kind = "extra": reactable carries a data-reactable-output attribute and
-  # a default inline style the generic WidgetOutput shape does not have.
-  .sample(
-    "reactableOutput",
-    "extra",
-    "output",
-    "reactable",
-    quote(reactable::reactableOutput("x"))
   ),
 
   # ---- cards --------------------------------------------------------------
@@ -737,9 +687,9 @@
   # ---- page shells --------------------------------------------------------
   #
   # Every sample below is a full bslib page shell (a bslib::page_*() call),
-  # and every one is kind = "page": render_markup_catalog() serves each of
-  # these from one background Shiny app and fetches the browser's own
-  # served document, rather than calling renderTags() on the bare tag.
+  # and every one is kind = "page": the markup catalog renderer serves
+  # each of these from one background Shiny app and fetches the browser's
+  # own served document, rather than calling renderTags() on the bare tag.
   #
   # This is not a stylistic choice. bslib's own nav-building code decides
   # its markup at render time by asking shiny::getCurrentThemeVersion(),

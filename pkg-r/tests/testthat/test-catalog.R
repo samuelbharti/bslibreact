@@ -3,9 +3,12 @@
 # renaming, adding, or dropping a sample in R/catalog-samples.R is caught
 # by this test, on purpose, rather than silently passing because the test
 # recomputed its expectation from the same source it is meant to check.
+#
+# This package's own catalog ships only "tag" and "page" samples; the
+# "extra" samples (DTOutput, reactableOutput, htmlwidget_output,
+# plotOutput_with_spinner) live only in the markup catalog renderer's own
+# dev-time list (tools/markup/render-r.R), not here.
 frozen_names <- c(
-  # Kept from tools/kit/dump-markup.R (igvShinyOutput renamed to
-  # htmlwidget_output; everything else unchanged).
   "selectInput",
   "selectizeInput",
   "radioButtons",
@@ -13,7 +16,6 @@ frozen_names <- c(
   "sliderInput",
   "actionButton",
   "plotOutput",
-  "plotOutput_with_spinner",
   "card_full_screen",
   "sidebar_layout",
   "selectizeInput_server_placeholder",
@@ -27,10 +29,7 @@ frozen_names <- c(
   "helpText_hr",
   "layout_columns_value_box",
   "plotOutput_click",
-  "DTOutput",
-  "DTOutput_no_fill",
   "card_footer",
-  "htmlwidget_output",
   "sidebar_layout_titled",
   "sidebar_layout_right_closed",
   "accordion_checkbox_groups",
@@ -51,7 +50,6 @@ frozen_names <- c(
   "page_navbar_icon",
   "page_navbar_sidebar",
   "sidebar_custom_class",
-  "reactableOutput",
   # Replaces the earlier hand corrected page_navbar_dropdown fixture.
   "page_navbar_dropdown",
   # Added for coverage this kit did not have before.
@@ -107,6 +105,10 @@ test_that("kind and group are always one of the documented values", {
   }
 })
 
+test_that("this package's own catalog ships no extra-kind samples", {
+  expect_length(markup_catalog(kind = "extra"), 0)
+})
+
 test_that("every tag and page sample evaluates without erroring", {
   for (s in markup_catalog(kind = c("tag", "page"))) {
     result <- tryCatch(eval(s$call, envir = baseenv()), error = function(e) e)
@@ -123,49 +125,6 @@ test_that("every tag and page sample evaluates without erroring", {
   }
 })
 
-test_that("extra samples skip cleanly when their package is absent, and evaluate otherwise", {
-  for (s in markup_catalog(kind = "extra")) {
-    result <- catalog_eval(s$name)[[1]]
-    if (requireNamespace(s$pkg, quietly = TRUE)) {
-      expect_false(is.null(result), info = s$name)
-    } else {
-      expect_null(result, info = s$name)
-    }
-  }
-})
-
 test_that("catalog_eval() errors clearly on an unknown name", {
   expect_error(catalog_eval("not_a_real_sample"), "not_a_real_sample")
-})
-
-test_that("catalog_hash() is stable across two calls", {
-  expect_identical(catalog_hash(), catalog_hash())
-})
-
-test_that("catalog_hash() changes when a call's deparse() changes", {
-  base_catalog <- markup_catalog(kind = "tag")
-  h1 <- catalog_hash(base_catalog)
-
-  changed <- base_catalog
-  changed[[1]]$call <- quote(shiny::selectInput(
-    "x",
-    "Changed label",
-    choices = c("1")
-  ))
-  h2 <- catalog_hash(changed)
-
-  expect_false(identical(h1, h2))
-})
-
-test_that("catalog_hash() changes when a sample's name or kind changes", {
-  base_catalog <- markup_catalog(kind = "tag")
-  h1 <- catalog_hash(base_catalog)
-
-  renamed <- base_catalog
-  renamed[[1]]$name <- paste0(renamed[[1]]$name, "_renamed")
-  expect_false(identical(h1, catalog_hash(renamed)))
-
-  rekinded <- base_catalog
-  rekinded[[1]]$kind <- "page"
-  expect_false(identical(h1, catalog_hash(rekinded)))
 })

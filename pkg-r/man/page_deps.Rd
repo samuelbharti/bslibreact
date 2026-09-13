@@ -19,7 +19,7 @@ widget (\code{DT::DTOutput()}, \code{reactable::reactableOutput()}), an icon
 pack, or a page-level element specific to one app.}
 
 \item{components}{Character vector of catalog sample names to render for
-their dependencies (see \code{\link[=markup_catalog]{markup_catalog()}}), or \code{NULL} (the default) to
+their dependencies, or \code{NULL} (the default) to
 use every \code{"tag"} and \code{"page"} sample, which is deliberately generous:
 an unused dependency costs a page nothing since the browser only
 fetches CSS or JS that a component on the page actually references,
@@ -34,12 +34,13 @@ dependency named \code{"bootstrap"}.
 \description{
 Renders a representative sample of bslib and shiny markup under \code{theme}
 and returns the \code{\link[htmltools:htmlDependency]{htmltools::htmlDependency()}} objects that markup
-attaches, minus the \code{"bootstrap"} dependency itself. Attach the result to
-a shinyreact page (for example with \code{shinyreact::page_react(..., bslibreact::page_deps(app_theme))}) so the client gets exactly the CSS
-and JavaScript a matching bslib page would have attached on its own:
-\code{sliderInput()}'s ionRangeSlider skin, \code{selectizeInput()}'s selectize
-assets, \code{bslib::accordion()}'s and \code{bslib::tooltip()}'s Bootstrap
-bundles, and so on.
+attaches, minus the \code{"bootstrap"} dependency itself. Attach the result
+to a shinyreact page alongside \code{\link[=bslib_react_dep]{bslib_react_dep()}}, for example
+\code{shinyreact::page_react(page_deps(app_theme), bslib_react_dep(), theme = app_theme)},
+so the client gets exactly the CSS and JavaScript a matching bslib page
+would have attached on its own: \code{sliderInput()}'s ionRangeSlider skin,
+\code{selectizeInput()}'s selectize assets, \code{bslib::accordion()}'s and
+\code{bslib::tooltip()}'s Bootstrap bundles, and so on.
 }
 \details{
 \code{"bootstrap"} itself is dropped from the result because a shinyreact page
@@ -91,11 +92,16 @@ length(deps)
 length(page_deps(theme = NULL)) > 0
 
 \dontrun{
-# A real app: attach to a shinyreact page, after shinyreact's own
-# dependency (both scripts are `defer`, so relative document order is
-# what determines that shinyreact's globals exist before bslib-react's
-# IIFE reads them).
+# A real app: attach page_deps() to a shinyreact page alongside
+# bslib_react_dep(), after shinyreact's own dependency (both scripts
+# are `defer`, so relative document order is what determines that
+# shinyreact's globals exist before bslib-react's IIFE reads them).
 app_theme <- bslib::bs_theme(version = 5)
-ui <- shinyreact::page_react(title = "Demo", theme = app_theme, page_deps(app_theme))
+ui <- shinyreact::page_react(
+  title = "Demo",
+  theme = app_theme,
+  page_deps(app_theme),
+  bslib_react_dep()
+)
 }
 }

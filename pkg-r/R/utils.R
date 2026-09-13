@@ -1,17 +1,5 @@
 # Internal helpers shared across the package. Nothing here is exported.
 
-# Whether an optional package is installed. A thin wrapper over
-# requireNamespace() rather than calling it directly at every call site,
-# so that catalog_eval() and render_markup_catalog()'s "extra" sample
-# handling can be tested with testthat::local_mocked_bindings(): that
-# function replaces a binding inside THIS package's own namespace, which
-# works reliably for a function bslibreact defines itself, unlike trying
-# to mock a base function (requireNamespace) that was never imported into
-# any package's namespace in the first place.
-.pkg_available <- function(pkg) {
-  requireNamespace(pkg, quietly = TRUE)
-}
-
 # host_input() renders a widget into an output wrapper named
 # "<id><suffix>" (see host-input.R and docs/decisions/0003-hosted-widgets.md
 # for the full reasoning). The wrapper itself becomes a DOM element with
@@ -68,20 +56,4 @@ check_no_id_collision <- function(tag, name) {
   # A character string, a number, an htmltools "html" literal, or anything
   # else that is not a tag or a list: it cannot carry an id.
   FALSE
-}
-
-# cli's print helpers (cli_h1, cli_h2, cli_text, cli_bullets, ...) treat
-# the text they are given as a glue template: any "{...}" inside it is
-# parsed as an expression to evaluate, not printed literally. The port
-# check functions (port_triage() above all) build a lot of their console
-# output from raw, arbitrary text read off disk or off another process: a
-# source line ending in a function's opening brace, an R warning that
-# happens to quote a list. Passed straight to a cli function, a line like
-# "ui <- function(req) {" is not printed, it is a glue parse error (or
-# worse, valid-looking glue that evaluates something unintended). Doubling
-# every brace ("{" -> "{{", "}" -> "}}") is glue's own documented escape
-# for a literal brace, and is applied to every such string before it
-# reaches a cli function.
-.cli_escape <- function(x) {
-  gsub("}", "}}", gsub("{", "{{", x, fixed = TRUE), fixed = TRUE)
 }

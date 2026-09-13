@@ -6,7 +6,7 @@
 \alias{bslibreact-package}
 \title{bslibreact: Bootstrap Layout for 'shinyreact' Apps}
 \description{
-A React component kit and R-side helpers for building Shiny apps in the shinyreact 'ui.tsx' pattern that look like 'bslib' apps. Provides page dependency discovery so a client bundle can request the same CSS and JavaScript a 'bslib' page would attach on its own, a hosted-input helper for widgets rendered server-side and displayed by the client, a live catalog of 'bslib' and 'shiny' markup for the matching JavaScript package's tests, and porting checks (triage, a dependency diff, and a headless-browser peek) for moving an existing 'bslib' app to the ui.tsx pattern.
+R-side helpers for building Shiny apps in the shinyreact 'ui.tsx' pattern that look like 'bslib' apps. Provides page dependency discovery so a client bundle can request the same CSS and JavaScript a 'bslib' page would attach on its own, and a hosted-input helper for widgets rendered server-side and displayed by the client. The matching React components live in the 'bslib-react' npm package.
 }
 \seealso{
 Useful links:

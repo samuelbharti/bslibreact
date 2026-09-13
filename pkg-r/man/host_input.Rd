@@ -34,10 +34,9 @@ Registers \code{widget} as a \code{\link[shiny:renderUI]{shiny::renderUI()}} out
 \code{paste0(id, suffix)}, the way \code{\link[shinyreact:page_react]{shinyreact::page_react()}} apps host a
 bslib or shiny widget the client displays with \verb{<ShinyOutput id="<id><suffix>" />} (or the matching kit component, \code{HostedInput},
 from the \code{bslib-react} npm package) instead of rebuilding the widget's
-markup in React. See \code{vignette("hosted-widgets")} (or
-\code{docs/decisions/0003-hosted-widgets.md} in the repository) for the
-reasoning behind hosting widgets this way instead of driving them from
-React state.
+markup in React. See \code{docs/decisions/0003-hosted-widgets.md} in the
+repository for the reasoning behind hosting widgets this way instead of
+driving them from React state.
 }
 \section{Why the suffix matters}{
 A hosted widget contributes two elements to the page, not one: the
