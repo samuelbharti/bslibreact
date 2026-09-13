@@ -25,7 +25,7 @@ import type { TestProject } from "vitest/node";
  * packages in this repo, built separately (see the root Makefile's r-* and
  * py-* targets). A `pkg-js` checkout can exist, and its own tests are
  * expected to run cleanly, before either sibling's renderer
- * (`tools/markup/render-r.R`, `uv run bslib-react markup`) has been
+ * (`tools/markup/render-r.R`, `tools/markup/render_py.py`) has been
  * written at all. Every state below short of "ready" is therefore treated
  * as "skip the tests that need this language, loudly, but do not fail the
  * suite" - UNLESS BSLIB_REACT_REQUIRE_CATALOG=1 is set, which is what CI
@@ -72,6 +72,7 @@ const CACHE_DIR = join(REPO_ROOT, ".cache", "markup");
 const RSCRIPT = process.env.BSLIB_REACT_RSCRIPT || "Rscript";
 const UV = process.env.BSLIB_REACT_UV || "uv";
 const RENDER_R_SCRIPT = join(REPO_ROOT, "tools", "markup", "render-r.R");
+const RENDER_PY_SCRIPT = join(REPO_ROOT, "tools", "markup", "render_py.py");
 
 function run(command: string, args: string[]): SpawnSyncReturns<string> {
   // shell: true so Windows resolves Rscript.exe / uv.exe (and any .cmd
@@ -195,25 +196,26 @@ function resolvePy(): CatalogLangStatus {
     };
   }
 
-  // pkg-py can expose its CLI subcommands however it likes (see
-  // docs/markup-catalog.md); unlike the R side there is no fixed file path
-  // this setup can check for existence ahead of time. A clean failure to
-  // run the command at all - "No such command", the bslib-react console
-  // script not installed, a plain non-zero exit with no key printed - is
-  // treated as "the renderer is not here yet", the same as R's
-  // renderer-missing, not as something worth failing loudly over.
-  const keyResult = run(UV, ["run", "bslib-react", "markup", "--key"]);
+  if (!existsSync(RENDER_PY_SCRIPT)) {
+    return {
+      state: "renderer-missing",
+      path: cachePath,
+      detail: `tools/markup/render_py.py does not exist yet (looked at ${RENDER_PY_SCRIPT}). It ships from pkg-py, nothing to render against until that package lands.`,
+    };
+  }
+
+  const keyResult = run(UV, ["run", "python", RENDER_PY_SCRIPT, "--key"]);
   if (keyResult.error || keyResult.status !== 0) {
     return {
       state: "renderer-missing",
       path: cachePath,
-      detail: describeFailure(`${UV} run bslib-react markup --key`, keyResult),
+      detail: describeFailure(`${UV} run python tools/markup/render_py.py --key`, keyResult),
     };
   }
 
   const key = keyResult.stdout.trim();
-  return ensureFresh(cachePath, key, `${UV} run bslib-react markup --out`, () =>
-    run(UV, ["run", "bslib-react", "markup", "--out", cachePath]),
+  return ensureFresh(cachePath, key, `${UV} run python tools/markup/render_py.py --out`, () =>
+    run(UV, ["run", "python", RENDER_PY_SCRIPT, "--out", cachePath]),
   );
 }
 
