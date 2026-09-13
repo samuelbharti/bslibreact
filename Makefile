@@ -133,7 +133,7 @@ py-update-dist:  ## [py] Vendor the built JS bundle into pkg-py
 
 .PHONY: py-markup
 py-markup:  ## [py] Render the Python markup catalog
-	uv run bslib-react markup --out .cache/markup/py.json
+	uv run python tools/markup/render_py.py --out .cache/markup/py.json
 
 .PHONY: py-build
 py-build:  ## [py] Build the Python package
@@ -144,33 +144,6 @@ py-build:  ## [py] Build the Python package
 
 .PHONY: update-dist
 update-dist: js-build r-update-dist py-update-dist  ## Build the JS bundle and vendor it into pkg-r and pkg-py
-
-# Skill source ships inside the installed packages, so an app author who
-# only installs bslib-react gets the porting skill too.
-SHIPPED_SKILLS := bslib-react-port
-
-.PHONY: update-skills
-update-skills:  ## Copy .claude/skills/ into pkg-r and pkg-py for shipping
-	rm -rf $(PATH_PKG_R)/inst/skills $(PATH_PKG_PY)/src/bslib_react/.agents/skills
-	mkdir -p $(PATH_PKG_R)/inst/skills $(PATH_PKG_PY)/src/bslib_react/.agents/skills
-	for s in $(SHIPPED_SKILLS); do \
-		cp -R .claude/skills/$$s $(PATH_PKG_R)/inst/skills/; \
-		cp -R .claude/skills/$$s $(PATH_PKG_PY)/src/bslib_react/.agents/skills/; \
-	done
-
-.PHONY: update-examples
-update-examples:  ## Copy examples/volcano-plot's R side into pkg-r for shipping
-	rm -rf $(PATH_PKG_R)/inst/examples-shiny
-	mkdir -p $(PATH_PKG_R)/inst/examples-shiny/volcano-plot
-	cp examples/volcano-plot/app.R $(PATH_PKG_R)/inst/examples-shiny/volcano-plot/
-	cp -R examples/volcano-plot/R $(PATH_PKG_R)/inst/examples-shiny/volcano-plot/
-	cp -R examples/volcano-plot/www $(PATH_PKG_R)/inst/examples-shiny/volcano-plot/
-	@if [ -d examples/volcano-plot/data ]; then cp -R examples/volcano-plot/data $(PATH_PKG_R)/inst/examples-shiny/volcano-plot/; fi
-	@if [ -f examples/volcano-plot/_brand.yml ]; then cp examples/volcano-plot/_brand.yml $(PATH_PKG_R)/inst/examples-shiny/volcano-plot/; fi
-
-.PHONY: update-port-js
-update-port-js:  ## Copy the peek readout JS from pkg-r into pkg-py
-	cp $(PATH_PKG_R)/inst/port/peek-readout.js $(PATH_PKG_PY)/src/bslib_react/port/peek-readout.js
 
 .PHONY: markup
 markup: r-markup py-markup  ## Render both markup catalogs into .cache/markup/

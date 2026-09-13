@@ -1,6 +1,6 @@
 # Tests the pure data layer (R/_shared/volcano-data.R) directly: no shiny
 # session needed, since none of this reads input$ or output$. The server
-# wiring itself (app.R) is exercised by port_peek() in a real browser, not
+# wiring itself (app.R) is exercised by hand in a real browser, not
 # duplicated here as a unit test; see docs/porting.md on why a component's
 # own markup and bind mechanics belong to pkg-js, not to an example app.
 

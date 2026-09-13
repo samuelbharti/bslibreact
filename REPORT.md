@@ -12,6 +12,10 @@ rendered live at test time into a gitignored cache. See
 Section 5.1 names one npm package and one R package; a Python package
 ships as well, and all three release on one shared version number. See
 [docs/decisions/0002-three-packages-one-version.md](docs/decisions/0002-three-packages-one-version.md).
+`pkg-r` and `pkg-py` ship only `page_deps()`, `host_input()`, and
+`bslib_react_dep()` at runtime, with no `shinyreact` dependency, no port
+tools, and no scaffold: see
+[docs/decisions/0004-minimal-r-and-python-packages.md](docs/decisions/0004-minimal-r-and-python-packages.md).
 
 This report explains why this package exists, what measurements support
 it, what is missing, and what gets built. It stands on its own. A reader

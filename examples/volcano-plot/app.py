@@ -7,6 +7,7 @@ else here, kept separate only so it stays independently testable.
 """
 
 from pathlib import Path
+from typing import Callable
 
 import pandas as pd
 from bslib_react import bslib_react_dep, host_input, page_deps
@@ -35,10 +36,10 @@ def volcano_server(
     input: Inputs,
     output: Outputs,
     session: Session,
-    lfc_threshold: reactive.Calc,
-    p_threshold: reactive.Calc,
-    p_col: reactive.Calc,
-    label_top_n: reactive.Calc,
+    lfc_threshold: Callable[[], float],
+    p_threshold: Callable[[], float],
+    p_col: Callable[[], str],
+    label_top_n: Callable[[], int],
 ):
     @reactive.calc
     def vdata():

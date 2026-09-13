@@ -4,15 +4,15 @@ The client's own markup is bslib-react's responsibility (see
 pkg-js/tests/markup.test.tsx), and the bind mechanics are
 pkg-js/tests/bind.test.tsx's job. py-shiny has no direct in-process
 equivalent of R's shiny::testServer() for a plain function-based server, so
-this drives a real subprocess the same way bslib_react.port.start_app()
-does, the same tool a porter uses to check a live app.
+this drives a real subprocess with bslib_react's own internal app-starting
+helper (the same one that serves page-kind markup catalog samples).
 """
 
 import urllib.request
 from pathlib import Path
 
 import pytest
-from bslib_react.port import start_app
+from bslib_react._app_runner import start_app
 
 APP_DIR = Path(__file__).parent.parent
 

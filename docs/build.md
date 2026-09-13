@@ -8,29 +8,28 @@ and this component kit, not a port of an existing app. See
 
 There is one supported client tier in version 0.1.0: a Vite build whose
 client bundle externalizes React to `window.shinyreact`, and whose server
-serves shinyreact's own runtime bundle. This is what `create_app()`
-scaffolds, and it is the only tier this kit's components are tested
-against.
+serves shinyreact's own runtime bundle. `examples/01-hello` is set up this
+way, and it is the only tier this kit's components are tested against.
 
-A no-build tier exists too: `bslib_react_dep()` (R) or `bslib_react_dep()`
-(Python) serves a prebuilt IIFE that registers `window.bslibReact`, so a
-page with no Node step at all can still use
-`React.createElement(window.bslibReact.Card, ...)`. It is suitable for a
-small page; most apps should use the Vite tier.
+A no-build tier exists too: `bslib_react_dep()` (R or Python) serves a
+prebuilt IIFE that registers `window.bslibReact`, so a page with no Node
+step at all can still use `React.createElement(window.bslibReact.Card,
+...)`. It is suitable for a small page; most apps should use the Vite
+tier.
 
-## Scaffold
+## Start from the example
 
-```r
-bslibreact::create_app("myapp", title = "My app")
+There is no scaffolding tool. Copy `examples/01-hello` (both the R and
+Python servers are there; keep whichever one you need) as a starting
+point:
+
+```
+cp -R examples/01-hello myapp
+cd myapp
 ```
 
-```bash
-python -m bslib_react create-app myapp --title "My app"
-```
-
-This creates `app.R` or `app.py`, `src/ui.tsx`, `src/App.tsx`,
-`vite.config.ts`, `tsconfig.json`, `package.json`, and a starter test, all
-wired to run as soon as you build.
+Edit `app.R` or `app.py`'s app title and hosted widgets, and `src/App.tsx`
+for the client. Delete the server file you are not using.
 
 ## Build and run
 
@@ -103,21 +102,44 @@ Two rules that matter here:
    `@render.ui(suspend_when_hidden=False)` in Python, if the widget needs
    to exist before its tab is first opened.
 
-## Page dependencies
+## The page
 
-Every ui.tsx app needs one call collecting the HTML dependencies its
-hosted widgets and this kit's own components require, themed correctly:
+A ui.tsx app's page is shinyreact's own `page_react()`, given two things
+from this package: `page_deps()`, the HTML dependencies this kit's
+components and the app's hosted widgets need, and `bslib_react_dep()`,
+the component bundle itself.
 
 ```r
-ui <- page_react(theme = app_theme, page_deps(app_theme))
+library(shinyreact)
+
+ui <- page_react(
+  page_deps(app_theme),
+  bslib_react_dep(),
+  title = "My app",
+  theme = app_theme
+)
 ```
 
 ```python
-app_ui = page_react(page_deps(app_theme))
+from shinyreact import page_react
+from bslib_react import page_deps, bslib_react_dep
+
+app_ui = page_react(
+    page_deps(app_theme),
+    bslib_react_dep(),
+    title="My app",
+    theme=app_theme,
+)
 ```
 
-Pass extra tags for any third party widget the app hosts and this kit does
-not already sample, so its dependency gets collected too:
+`bslib_react_dep()` must come after `page_deps()` so bslib-react's
+component script, which reads `window.shinyreact` at load time, runs
+after shinyreact's own script has set that global (see `bslib_react_dep()`'s
+own doc comment on `defer` and load order).
+
+Pass extra tags to `page_deps()` for any third party widget the app hosts
+and this kit does not already sample, so its dependency gets collected
+too:
 
 ```r
 page_deps(app_theme, DT::DTOutput("x"), shinychat::chat_ui("x"))

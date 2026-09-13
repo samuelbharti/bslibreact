@@ -1,8 +1,21 @@
 # The markup catalog contract
 
-This is the contract `pkg-r`'s and `pkg-py`'s catalog renderers must
-produce, and that `pkg-js`'s test suite reads. All three packages code
-against this file; changing the contract means updating all three.
+This is the contract the R and Python catalog renderers must produce, and
+that `pkg-js`'s test suite reads. All three packages code against this
+file; changing the contract means updating all three.
+
+Neither renderer ships inside the installed R or Python package: rendering
+the catalog needs things (a background Shiny app, third party widget
+packages for the R side's "extra" samples) that no app using
+`page_deps()`/`host_input()`/`bslib_react_dep()` at runtime ever needs.
+The R renderer lives at `tools/markup/render-r.R`, fully self-contained
+(it reaches into `pkg-r`'s unexported internals for the "tag" and "page"
+samples, and defines the "extra" samples itself); the Python renderer's
+logic stays inside `pkg-py` as an unexported module
+(`bslib_react._catalog_render`), with a thin CLI wrapper at
+`tools/markup/render_py.py`, since Python's packaging has no equivalent
+pressure to relocate it and this catalog has no "extra" kind samples to
+begin with.
 
 See [0001-no-fixtures-live-ground-truth](decisions/0001-no-fixtures-live-ground-truth.md)
 for why this exists instead of committed HTML fixtures.
@@ -15,14 +28,14 @@ Run from the repository root:
 Rscript tools/markup/render-r.R --key
 Rscript tools/markup/render-r.R --out .cache/markup/r.json
 
-uv run bslib-react markup --key
-uv run bslib-react markup --out .cache/markup/py.json
+uv run python tools/markup/render_py.py --key
+uv run python tools/markup/render_py.py --out .cache/markup/py.json
 ```
 
 `--key` prints one line and renders nothing. The key changes when bslib,
 shiny, htmltools, or py-shiny versions change, when the sample file's
 bytes change, or when the renderer's own logic version is bumped. The R
-wrapper loads `pkg-r` with `pkgload::load_all()` when the package is not
+script loads `pkg-r` with `pkgload::load_all()` when the package is not
 installed, so it works from a plain checkout.
 
 pkg-js's `tests/global-setup.ts` calls `--key` on every test run, compares
@@ -95,7 +108,12 @@ back to the tag-level render with `served: false` recorded when `callr`,
 `htmlwidgets::shinyWidgetOutput()`. Skipped with a `skipped` reason when
 the package is absent, rather than failing the whole render. Never
 included by default in `page_deps()`'s sampler; an app passes them
-explicitly as extra tags.
+explicitly as extra tags. R only: `pkg-r`'s own shipped catalog
+(`R/catalog-samples.R`) defines no `"extra"` samples, since none of these
+four packages is a dependency an installed app should ever need; the five
+`"extra"` samples exist only in `tools/markup/render-r.R`'s own list.
+Python has no `"extra"` samples at all (see `_catalog.py`'s module
+docstring for why py-shiny has no equivalent for any of them).
 
 ## Sample names
 

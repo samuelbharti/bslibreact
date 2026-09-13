@@ -28,12 +28,7 @@ after changing `src/` before the change shows up.
 
 ## Checking a port against a parent
 
-`volcano-plot` is also the working example for this package's port check
-tools:
-
-```r
-bslibreact::port_deps_diff("examples/01-hello", "examples/01-hello")
-bslibreact::port_peek("examples/volcano-plot", out = "docs/local/peek")
-```
-
-See `docs/porting.md` for what these functions check and why.
+`volcano-plot` was itself ported from a plain bslib Shiny app; it is a
+working example of the manual side by side comparison described in
+`docs/porting.md`: run the parent and the port, and compare their `<head>`
+dependencies, their rendered pages, and their browser consoles.

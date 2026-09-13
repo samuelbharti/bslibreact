@@ -42,7 +42,7 @@ library(shinyreact)
 library(bslibreact)
 
 app_theme <- bs_theme(version = 5)
-ui <- page_react(theme = app_theme, page_deps(app_theme))
+ui <- page_react(page_deps(app_theme), bslib_react_dep(), title = "Demo", theme = app_theme)
 
 server <- function(input, output, session) {
   host_input(output, "bins", sliderInput("bins", "Bins", 1, 50, 30))
@@ -57,9 +57,9 @@ Server (Python):
 ```python
 from shiny import App, render, ui
 from shinyreact import page_react
-from bslib_react import host_input, page_deps
+from bslib_react import page_deps, bslib_react_dep, host_input
 
-app_ui = page_react(page_deps())
+app_ui = page_react(page_deps(), bslib_react_dep(), title="Demo")
 
 def server(input, output, session):
     host_input(output, "bins", lambda: ui.input_slider("bins", "Bins", 1, 50, 30))
