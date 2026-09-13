@@ -163,8 +163,10 @@ update-examples:  ## Copy examples/volcano-plot's R side into pkg-r for shipping
 	rm -rf $(PATH_PKG_R)/inst/examples-shiny
 	mkdir -p $(PATH_PKG_R)/inst/examples-shiny/volcano-plot
 	cp examples/volcano-plot/app.R $(PATH_PKG_R)/inst/examples-shiny/volcano-plot/
+	cp -R examples/volcano-plot/R $(PATH_PKG_R)/inst/examples-shiny/volcano-plot/
 	cp -R examples/volcano-plot/www $(PATH_PKG_R)/inst/examples-shiny/volcano-plot/
 	@if [ -d examples/volcano-plot/data ]; then cp -R examples/volcano-plot/data $(PATH_PKG_R)/inst/examples-shiny/volcano-plot/; fi
+	@if [ -f examples/volcano-plot/_brand.yml ]; then cp examples/volcano-plot/_brand.yml $(PATH_PKG_R)/inst/examples-shiny/volcano-plot/; fi
 
 .PHONY: update-port-js
 update-port-js:  ## Copy the peek readout JS from pkg-r into pkg-py
