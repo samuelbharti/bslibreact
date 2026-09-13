@@ -27,16 +27,23 @@ class _OutputsLike(Protocol):
     class and a test double both satisfy this without either one needing to
     inherit from the other, and it documents exactly what ``host_input()``
     depends on.
+
+    The real ``Outputs.__call__`` is overloaded: called with a bare renderer
+    it registers immediately, called with only keyword arguments (as
+    ``host_input()`` always does) it returns a decorator instead. Modelling
+    only that second shape here, rather than merging both into one signature
+    with an optional positional ``renderer``, is what lets a real
+    ``Outputs`` instance satisfy this Protocol structurally -- a flattened
+    signature does not match an overloaded one under strict type checking.
     """
 
     def __call__(
         self,
-        renderer: Any = None,
         *,
         id: str | None = None,
         suspend_when_hidden: bool = True,
         priority: int = 0,
-    ) -> Any: ...
+    ) -> Callable[[Any], Any]: ...
 
 
 def _check_no_id_collision(tag: "TagChild", name: str) -> None:

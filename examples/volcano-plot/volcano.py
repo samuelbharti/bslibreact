@@ -22,7 +22,7 @@ STATUS_COLOURS = {"Down": "#3d5a80", "NS": "#B8BCC2", "Up": "#ee6c4d"}
 
 def de_status(
     log_fc: pd.Series, p: pd.Series, lfc_threshold: float = 1, p_threshold: float = 0.05
-) -> pd.Series:
+) -> pd.Categorical:
     """Down/Up/NS classification, shared with the counts below so the plot
     and the value boxes always agree."""
     sig = p.notna() & (p < p_threshold)
@@ -79,8 +79,8 @@ def volcano_data(
 
 def volcano_status_counts(vdata: pd.DataFrame) -> dict[str, int]:
     """Counts per status, as a plain dict (Down, NS, Up)."""
-    counts = vdata["status"].value_counts()
-    return {status: int(counts.get(status, 0)) for status in ("Down", "NS", "Up")}
+    counts = vdata["status"].value_counts().reindex(["Down", "NS", "Up"], fill_value=0)
+    return {status: int(counts.at[status]) for status in ("Down", "NS", "Up")}
 
 
 def plot_volcano(
