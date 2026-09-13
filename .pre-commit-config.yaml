@@ -1,0 +1,106 @@
+# Pre-commit hooks for bslib-react.
+# Setup:  pipx install prek  &&  prek install
+# Run on everything:  prek run --all-files
+# Docs: https://pre-commit.com / https://github.com/j178/prek
+
+# Generated, vendored, or cache paths that hooks should never touch.
+exclude: '^(node_modules/|.*/node_modules/|pkg-js/dist(-npm)?/|pkg-r/inst/lib/|pkg-py/src/bslib_react/www/|examples/.*/www/|docs/local/|\.cache/)'
+
+repos:
+  # R code formatting with air (matches air.toml).
+  - repo: https://github.com/posit-dev/air-pre-commit
+    rev: 0.11.0
+    hooks:
+      - id: air-format
+
+  # Python formatting and linting.
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.15.22
+    hooks:
+      - id: ruff-check
+        files: '\.py$'
+        args: ["--fix"]
+      - id: ruff-format
+        files: '\.py$'
+
+  # TypeScript/TSX formatting. Local hook so it does not depend on
+  # node_modules being installed for pre-commit's own venv.
+  - repo: local
+    hooks:
+      - id: prettier
+        name: prettier (ts/tsx)
+        entry: prettier --write
+        language: node
+        additional_dependencies: ["prettier@3"]
+        files: '\.(ts|tsx)$'
+
+  # Safety checks that need no R or Python install.
+  - repo: local
+    hooks:
+      - id: no-browser-statement
+        name: no browser() statements
+        entry: 'browser\('
+        language: pygrep
+        files: '\.R$'
+      - id: no-debug-statement
+        name: no debug()/debugonce() statements
+        entry: '\bdebug(once)?\('
+        language: pygrep
+        files: '\.R$'
+      - id: no-print-statement
+        name: no print() statements
+        entry: '\bprint\('
+        language: pygrep
+        files: '\.R$'
+
+      # Block secrets and local editor/project files from ever being staged.
+      - id: no-env-files
+        name: no .env / .Renviron / .Rproj.user files
+        entry: "block"
+        language: fail
+        files: '(^|/)(\.env(\..*)?|\.Renviron(\..*)?|.*\.Rproj|.*\.Rproj\.user)$'
+
+      # No absolute machine paths in tracked files (portability, not secrecy).
+      - id: no-drive-letter-path
+        name: no absolute Windows drive path in tracked text
+        entry: '\b[A-Z]:\\'
+        language: pygrep
+        types: [text]
+        exclude: '^\.pre-commit-config\.yaml$'
+
+      # Style rule for this repo: no em dashes anywhere.
+      - id: no-em-dash
+        name: no em dash character in tracked text
+        entry: "—"
+        language: pygrep
+        types: [text]
+        exclude: '^(package-lock\.json|\.pre-commit-config\.yaml)$'
+
+  # Generic hygiene.
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: mixed-line-ending
+        args: ["--fix=lf"]
+      - id: check-added-large-files
+        args: ["--maxkb=500"]
+      - id: check-yaml
+      - id: check-toml
+      - id: check-merge-conflict
+      - id: detect-private-key
+
+  # Secret scanning.
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.30.1
+    hooks:
+      - id: gitleaks
+
+  # Catch common spelling mistakes in code and docs.
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.3.0
+    hooks:
+      - id: codespell
+        args: ["--ignore-words-list=ans,fo,ot"]
+        exclude: '^(package-lock\.json|uv\.lock)$'

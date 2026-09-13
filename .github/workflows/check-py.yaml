@@ -1,0 +1,40 @@
+name: Check Python
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "pkg-py/**"
+      - "pyproject.toml"
+      - ".github/workflows/check-py.yaml"
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths:
+      - "pkg-py/**"
+      - "pyproject.toml"
+      - ".github/workflows/check-py.yaml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - run: uv sync --all-extras --all-groups
+      - run: make py-check-format
+      - run: make py-check-types
+      - run: make py-check-tests
+
+  test-e2e:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - run: uv sync --group tests-e2e
+      - run: uv run playwright install --with-deps chromium
+      - run: uv run pytest pkg-py/tests/playwright --browser chromium -o addopts=

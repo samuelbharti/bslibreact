@@ -1,0 +1,30 @@
+name: Check skills
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".claude/skills/**"
+      - "Makefile"
+  pull_request:
+    paths:
+      - ".claude/skills/**"
+      - "Makefile"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: make update-skills
+      - name: Fail if update-skills changed anything
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "make update-skills produced a diff. Commit the result." >&2
+            git status --porcelain >&2
+            exit 1
+          fi

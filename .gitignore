@@ -1,0 +1,52 @@
+# Secrets. Never committed, under any name.
+.env
+.env.*
+.Renviron
+.Renviron.*
+.npmrc.local
+.pypirc
+
+# Node
+node_modules/
+*.log
+*.tgz
+pkg-js/dist-npm/
+
+# R
+.Rproj.user/
+*.Rproj
+.Rhistory
+.RData
+*.Rcheck/
+pkg-r/*.tar.gz
+pkg-r/docs/
+
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+/dist/
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+
+# Live markup cache, rendered by the catalog renderers. Never committed
+# (see docs/decisions/0001-no-fixtures-live-ground-truth.md).
+.cache/
+
+# Local working area: plans, peek screenshots, notes.
+docs/local/
+
+# Playwright and browser test output
+test-results/
+playwright-report/
+
+# Claude Code. Skill source under .claude/skills/ is committed on purpose
+# (it ships inside pkg-r and pkg-py); everything else under .claude/ stays out.
+!.claude/
+.claude/*
+!.claude/skills/
+
+# OS noise
+.DS_Store
+Thumbs.db

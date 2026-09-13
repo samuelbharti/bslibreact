@@ -1,0 +1,145 @@
+# The markup catalog contract
+
+This is the contract `pkg-r`'s and `pkg-py`'s catalog renderers must
+produce, and that `pkg-js`'s test suite reads. All three packages code
+against this file; changing the contract means updating all three.
+
+See [0001-no-fixtures-live-ground-truth](decisions/0001-no-fixtures-live-ground-truth.md)
+for why this exists instead of committed HTML fixtures.
+
+## Commands
+
+Run from the repository root:
+
+```
+Rscript tools/markup/render-r.R --key
+Rscript tools/markup/render-r.R --out .cache/markup/r.json
+
+uv run bslib-react markup --key
+uv run bslib-react markup --out .cache/markup/py.json
+```
+
+`--key` prints one line and renders nothing. The key changes when bslib,
+shiny, htmltools, or py-shiny versions change, when the sample file's
+bytes change, or when the renderer's own logic version is bumped. The R
+wrapper loads `pkg-r` with `pkgload::load_all()` when the package is not
+installed, so it works from a plain checkout.
+
+pkg-js's `tests/global-setup.ts` calls `--key` on every test run, compares
+it against the cached file, and only re-renders when it differs.
+
+## JSON shape (schema 1)
+
+```jsonc
+{
+  "schema": 1,
+  "language": "r",                       // "r" | "py"
+  "key": "r;bslib=0.12.0;shiny=1.14.0;htmltools=0.5.9;catalog=<hash>;renderer=1",
+  "generated_at": "2026-09-13T12:00:00Z",
+  "generator": { "package": "bslibreact", "version": "0.1.0" },
+  "versions": {
+    "bslib": "0.12.0",
+    "shiny": "1.14.0",
+    "htmltools": "0.5.9",
+    "runtime": "R 4.6.1"
+  },
+  "samples": {
+    "card_full_screen": {
+      "kind": "tag",                     // "tag" | "page" | "extra"
+      "group": "card",                   // page nav layout card tooltip output input misc
+      "served": false,
+      "call": "bslib::card(full_screen = TRUE, bslib::card_header(\"Title\"), bslib::card_body(\"Body\"))",
+      "html": "<div class=\"card bslib-card ...\">...</div>",
+      "html_attrs": null,                // served pages only: attributes of <html>
+      "head_inline_css": [],             // served pages only: <style> blocks found in <head>
+      "deps": ["bslib-component-js@0.12.0", "bootstrap@5.3.3"],
+      "skipped": null                    // extras only: a reason string when the package is missing
+    }
+  }
+}
+```
+
+Python's file differs only in `language` (`"py"`), `generator.package`
+(`"bslib-react"`), `versions` (Python adds `bslib_vendored`, the bslib
+version py-shiny bundles, read from `shiny._versions`), `pkg` always
+`"shiny"`, and `call` in Python syntax.
+
+`html` is raw. Neither renderer normalises anything; the cache stays a
+faithful record of what bslib or py-shiny actually emitted, which is what
+you want to read when a drift test fails. Normalisation happens once, in
+the JS reader (`pkg-js/tests/catalog.ts`), described below.
+
+## Render rules
+
+**`kind: "tag"`.** R: `htmltools::renderTags(tag)` called while
+`shiny::shinyOptions(bootstrapTheme = bslib::bs_theme(version = 5))` is
+set, restored afterward. This is not optional: several bslib render hooks,
+most importantly the nav item and dropdown builders, branch on
+`shiny::getCurrentThemeVersion()`, which reads that Shiny option, not
+`bslib::bs_global_set()`. Rendering outside this wrap silently produces
+Bootstrap 3 markup. Python: `htmltools.TagList(tag).render()`, no
+equivalent wrap needed since py-shiny has no such branch.
+
+**`kind: "page"`.** Served by default. One background app per language
+answers every page-level sample as a function of a query string
+(`?sample=<name>`), started the way `tools/port/lib.R`'s `port_start_app()`
+does (`callr::r_bg()` plus `httpuv::randomPort()` plus polling with
+`curl`). `html` is the full served document, because page-shell components
+(`PageFillable`, `PageSidebar`, `PageNavbar`) reproduce the `<body>`
+element's own classes and inline styles, not just an inner fragment. Falls
+back to the tag-level render with `served: false` recorded when `callr`,
+`httpuv`, or `curl` are not installed.
+
+**`kind: "extra"`.** Third party widgets: `DT::DTOutput()`,
+`reactable::reactableOutput()`, `shinycssloaders::withSpinner()`,
+`htmlwidgets::shinyWidgetOutput()`. Skipped with a `skipped` reason when
+the package is absent, rather than failing the whole render. Never
+included by default in `page_deps()`'s sampler; an app passes them
+explicitly as extra tags.
+
+## Sample names
+
+Every sample name from the earlier `tools/kit/dump-markup.R` is kept,
+except `igvShinyOutput`, which becomes `htmlwidget_output`
+(`htmlwidgets::shinyWidgetOutput("x", "foo", "100%", "400px")`, the same
+generic markup shape, with no Bioconductor package needed to render it).
+`page_navbar_dropdown` is rendered from a served
+`bslib::page_navbar(id = "nav", bslib::nav_menu(...))`, replacing the
+earlier fixture that was hand corrected because a plain `as.character()`
+dump could not represent it faithfully; the live render needs no such
+correction.
+
+Names added for coverage this kit did not have before: `page_navbar_not_fillable`,
+`sidebar_layout_gap_padding`, `layout_columns_single_child`, `card_id`,
+`card_height`, `card_no_fill`, `tooltip`, `popover`, `value_box`,
+`uiOutput_inline`, `input_dark_mode`, `input_switch`, `input_task_button`,
+`accordion`, `navset_card_tab`, `navset_pill`, `checkboxGroupInput`,
+`dateInput`, `dateRangeInput`, `icon`.
+
+A test in each of the three packages holds the same literal list of names.
+Renaming or dropping a sample is a deliberate edit made in three places,
+not something that happens by accident.
+
+## Id normalisation
+
+bslib mints several kinds of id at render time, from Shiny's own private
+random number generator, which cannot be seeded (`set.seed()` has no
+effect on it). py-shiny mints its own, in a different format. Neither
+renderer normalises these; the JS reader does, applying these patterns to
+the `html` string before parsing it:
+
+```
+bslib[-_](card|sidebar|accordion[-_]panel|accordion)[-_][0-9a-f]+   ->  bslib-<kind>-ID
+navbar[-_]collapse[-_][0-9a-f]+                                     ->  navbar-collapse-ID
+data-tabsetid="[0-9a-f]+"                                           ->  data-tabsetid="ID"
+tab-[0-9a-f]+-(\d+)                                                 ->  tab-ID-$1
+```
+
+On top of that, the reader's `shapeOf()` helper drops a fixed set of
+volatile attributes (`id`, `for`, `href`, `data-target`, `data-bs-target`,
+`aria-controls`, `aria-labelledby`, `data-tabsetid`), treats
+`bsOptions="[]"` and `bsOptions="{}"` as equal (R emits the former for "no
+options", the TS default and py-shiny both use the latter), and compares
+inline `style` as a sorted list of declarations rather than a literal
+string, so declaration order and whitespace differences do not fail a
+test.

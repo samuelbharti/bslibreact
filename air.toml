@@ -1,0 +1,19 @@
+# air formatter configuration
+# https://posit-dev.github.io/air/configuration.html
+
+[format]
+line-width = 80
+indent-width = 2
+indent-style = "space"
+line-ending = "lf"
+persistent-line-breaks = true
+
+# Generated, vendored, or cache paths: not hand-authored R source.
+exclude = [
+  "node_modules/",
+  "docs/local/",
+  ".cache/",
+  "**/renv/",
+  "**/www/",
+  "pkg-r/inst/lib/",
+]

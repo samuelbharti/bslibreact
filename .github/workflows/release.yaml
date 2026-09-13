@@ -1,0 +1,81 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Assert the tag matches the package version
+        run: |
+          tag="${GITHUB_REF#refs/tags/v}"
+          r=$(sed -n 's/^Version: //p' pkg-r/DESCRIPTION)
+          p=$(sed -n 's/^version = "\(.*\)"/\1/p' pyproject.toml | head -1)
+          j=$(node -p "require('./pkg-js/package.json').version")
+          if [ "$tag" != "$r" ] || [ "$tag" != "$p" ] || [ "$tag" != "$j" ]; then
+            echo "tag v$tag does not match: R $r, py $p, js $j" >&2
+            exit 1
+          fi
+
+  js-stage:
+    needs: verify
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: pkg-js/.nvmrc
+          registry-url: "https://registry.npmjs.org"
+      - run: cd pkg-js && npm ci && npm run build
+      - run: cd pkg-js && npm stage publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  py-publish:
+    needs: verify
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - run: uv build
+      - uses: pypa/gh-action-pypi-publish@release/v1
+
+  r-build:
+    needs: verify
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: r-lib/actions/setup-r@v2
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          working-directory: pkg-r
+      - run: R CMD build pkg-r
+      - uses: actions/upload-artifact@v4
+        with:
+          name: r-tarball
+          path: "*.tar.gz"
+
+  gh-release:
+    needs: [js-stage, py-publish, r-build]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "${{ github.ref_name }}" --generate-notes dist/**/*

@@ -1,0 +1,29 @@
+name: Check R
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "pkg-r/**"
+      - ".github/workflows/check-r.yaml"
+  pull_request:
+    paths:
+      - "pkg-r/**"
+      - ".github/workflows/check-r.yaml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  routine:
+    uses: rstudio/shiny-workflows/.github/workflows/routine.yaml@v1
+    with:
+      working-directory: pkg-r
+      format-r-code: true
+      check-js: false
+
+  R-CMD-check:
+    uses: rstudio/shiny-workflows/.github/workflows/R-CMD-check.yaml@v1
+    with:
+      working-directory: pkg-r

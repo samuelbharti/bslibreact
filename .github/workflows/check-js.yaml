@@ -1,0 +1,116 @@
+name: Check JS
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "pkg-js/**"
+      - "pkg-r/inst/markup-catalog/**"
+      - "pkg-r/R/catalog*.R"
+      - "pkg-r/DESCRIPTION"
+      - "pkg-py/src/bslib_react/_catalog*.py"
+      - "pyproject.toml"
+      - "tools/markup/**"
+      - "docs/markup-catalog.md"
+      - "Makefile"
+      - ".github/workflows/check-js.yaml"
+  pull_request:
+    paths:
+      - "pkg-js/**"
+      - "pkg-r/inst/markup-catalog/**"
+      - "pkg-r/R/catalog*.R"
+      - "pkg-r/DESCRIPTION"
+      - "pkg-py/src/bslib_react/_catalog*.py"
+      - "pyproject.toml"
+      - "tools/markup/**"
+      - "docs/markup-catalog.md"
+      - "Makefile"
+      - ".github/workflows/check-js.yaml"
+  workflow_call:
+    inputs:
+      latest:
+        description: "Install the newest bslib, shiny, and py-shiny instead of the pinned versions."
+        type: boolean
+        default: false
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    env:
+      BSLIB_REACT_REQUIRE_CATALOG: "1"
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Read node version
+        id: nvm
+        run: echo "version=$(cat pkg-js/.nvmrc)" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "${{ steps.nvm.outputs.version }}"
+          cache: npm
+          cache-dependency-path: pkg-js/package-lock.json
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          working-directory: pkg-r
+
+      - name: Install pinned bslib and shiny
+        if: ${{ !inputs.latest }}
+        run: |
+          Rscript -e '
+            v <- jsonlite::fromJSON("markup-versions.json")
+            pak::pkg_install(sprintf("bslib@%s", v$r$bslib))
+            pak::pkg_install(sprintf("shiny@%s", v$r$shiny))
+          '
+
+      - uses: astral-sh/setup-uv@v6
+
+      - name: Sync Python dependencies
+        run: |
+          if [ "${{ inputs.latest }}" = "true" ]; then
+            uv sync --upgrade-package shiny
+          else
+            uv sync
+          fi
+
+      - run: make js-setup-ci
+      - run: make js-format-check
+      - run: make js-lint
+      - run: make js-test
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: markup-catalog
+          path: .cache/markup/*.json
+          if-no-files-found: ignore
+
+  build:
+    runs-on: ubuntu-latest
+    needs: check
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: pkg-js/.nvmrc
+          cache: npm
+          cache-dependency-path: pkg-js/package-lock.json
+      - run: make js-setup-ci
+      - run: make update-dist
+      - run: git status --porcelain
+      - name: Fail if update-dist changed anything
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "make update-dist produced a diff. Commit the result." >&2
+            git status --porcelain >&2
+            exit 1
+          fi

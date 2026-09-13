@@ -1,0 +1,57 @@
+name: Markup drift
+
+on:
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  render-latest:
+    uses: ./.github/workflows/check-js.yaml
+    with:
+      latest: true
+
+  report:
+    runs-on: ubuntu-latest
+    needs: render-latest
+    if: failure()
+    steps:
+      - uses: actions/checkout@v4
+      - name: Open or update the drift issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          existing=$(gh issue list --label markup-drift --state open --json number --jq '.[0].number')
+          body="A weekly run against the newest bslib, shiny, and py-shiny failed the markup tests.
+
+          See the run for details: $RUN_URL
+
+          This means bslib or shiny changed markup this kit reproduces. Read the
+          failing test's shape diff, update the affected component, and cut a
+          new minor version. See docs/decisions/0001-no-fixtures-live-ground-truth.md."
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" --body "$body"
+          else
+            gh issue create --title "Markup drift detected" --label markup-drift --body "$body"
+          fi
+
+  close-if-green:
+    runs-on: ubuntu-latest
+    needs: render-latest
+    if: success()
+    steps:
+      - uses: actions/checkout@v4
+      - env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          existing=$(gh issue list --label markup-drift --state open --json number --jq '.[0].number')
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" --body "Green again on $(date -u +%Y-%m-%d). See $RUN_URL. Closing."
+            gh issue close "$existing"
+          fi
