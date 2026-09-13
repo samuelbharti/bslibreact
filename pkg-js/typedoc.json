@@ -1,0 +1,8 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": ["src/index.ts"],
+  "tsconfig": "./tsconfig.npm.json",
+  "out": "docs",
+  "name": "bslib-react",
+  "intentionallyNotExported": ["Props", "CardProps", "ModuleProps"]
+}

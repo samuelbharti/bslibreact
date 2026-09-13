@@ -1,0 +1,26 @@
+project:
+  type: website
+  output-dir: docs
+  render:
+    - index.qmd
+    - reference/
+
+website:
+  title: "bslib_react"
+  navbar:
+    left:
+      - text: Reference
+        href: reference/index.qmd
+
+quartodoc:
+  package: bslib_react
+  dir: reference
+  title: API Reference
+  parser: google
+  sections:
+    - title: Public API
+      desc: The complete public interface of `bslib_react`.
+      contents:
+        - page_deps
+        - host_input
+        - bslib_react_dep

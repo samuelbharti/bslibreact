@@ -1,0 +1,9 @@
+---
+title: "bslib_react"
+---
+
+Server helpers for bslib-react: React components that reproduce bslib and
+Shiny markup.
+
+See the [API reference](reference/index.qmd) for the full public interface:
+`page_deps()`, `host_input()`, and `bslib_react_dep()`.

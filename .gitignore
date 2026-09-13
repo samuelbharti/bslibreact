@@ -11,6 +11,7 @@ node_modules/
 *.log
 *.tgz
 pkg-js/dist-npm/
+pkg-js/docs/
 
 # R
 .Rproj.user/
@@ -29,6 +30,10 @@ __pycache__/
 *.egg-info/
 .pytest_cache/
 .ruff_cache/
+pkg-py/docs/
+pkg-py/reference/
+pkg-py/objects.json
+pkg-py/.quarto/
 
 # Live markup cache, rendered by the catalog renderers. Never committed
 # (see docs/decisions/0001-no-fixtures-live-ground-truth.md).
