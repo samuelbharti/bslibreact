@@ -1,0 +1,47 @@
+// No build step and no npm. The components come from the bslibreact R
+// package's own vendored bundle, which publishes them on window.bslibReact,
+// and React itself comes from shinyreact, which page_react() already loads.
+//
+// Waiting for load matters: page_react() emits this file's script tag before
+// bslib_react_dep()'s, so window.bslibReact is not populated yet while this
+// file is first evaluated. Reading the globals inside the listener sidesteps
+// the ordering entirely.
+window.addEventListener("load", function () {
+  const { React, ReactDOM } = window.shinyreact;
+  const {
+    Card,
+    CardHeader,
+    CardBody,
+    PageFillable,
+    PlotOutput,
+    SliderInput,
+    useShinyInitialized,
+  } = window.bslibReact;
+
+  const h = React.createElement;
+
+  function App() {
+    const ready = useShinyInitialized();
+    if (!ready) return null;
+
+    return h(
+      PageFillable,
+      null,
+      h(
+        Card,
+        null,
+        h(CardHeader, null, "Slider"),
+        h(
+          CardBody,
+          null,
+          h(SliderInput, { id: "bins_ui" }),
+          h(PlotOutput, { id: "plot" }),
+        ),
+      ),
+    );
+  }
+
+  const container = document.body.appendChild(document.createElement("div"));
+  container.className = "html-fill-item html-fill-container";
+  ReactDOM.createRoot(container).render(h(App));
+});

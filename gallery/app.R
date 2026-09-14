@@ -18,9 +18,16 @@ BY_SLUG <- stats::setNames(
 
 # ---- background app processes: started on demand, kept warm, capped ----
 
-MAX_LIVE <- 8
+# The three variants each example is shown in, left to right.
+MODES <- c("classic", "react", "rpkg")
+
+# Three apps per example, so this keeps three examples warm.
+MAX_LIVE <- 9
 
 .procs <- new.env(parent = emptyenv())
+
+# Not every example necessarily has all three variants built.
+has_variant <- function(slug, mode) dir.exists(file.path("apps", slug, mode))
 
 proc_alive <- function(key) {
   entry <- .procs[[key]]
@@ -119,11 +126,14 @@ read_code <- function(...) {
   paste(readLines(path, warn = FALSE), collapse = "\n")
 }
 
-# Every file someone needs to reproduce one side of one example, in the
-# order they would read them. Labels double as a directory listing. The
-# react side is one app spanning R and TypeScript, not two alternatives:
-# bslibreact is its server half, the bslib-react npm package its client
-# half, and app.R is the same either way.
+# Every file someone needs to reproduce one variant of one example, in the
+# order they would read them. Labels double as a directory listing.
+#
+# app.R is byte identical across react and rpkg on purpose: bslibreact is
+# the server half of both, and the only thing that changes is where the
+# client comes from. react builds it from TSX with Vite; rpkg hand-writes
+# it against the bundle the R package already vendors, so it needs no npm
+# and no build step at all.
 BUILD_NOTE <- paste(
   "# once, from gallery/",
   "npm install",
@@ -133,9 +143,11 @@ BUILD_NOTE <- paste(
   sep = "\n"
 )
 
-route_files <- function(slug, side) {
+NO_BUILD_NOTE <- "# no npm, no build step, just run it\n"
+
+route_files <- function(slug, variant) {
   spec <- switch(
-    side,
+    variant,
     classic = list(
       list(
         label = "app.R",
@@ -159,6 +171,18 @@ route_files <- function(slug, side) {
         path = c("apps", slug, "react", "src", "ui.tsx"),
         lang = "typescript"
       )
+    ),
+    rpkg = list(
+      list(
+        label = "app.R",
+        path = c("apps", slug, "rpkg", "app.R"),
+        lang = "r"
+      ),
+      list(
+        label = "www/ui.js",
+        path = c("apps", slug, "rpkg", "www", "ui.js"),
+        lang = "javascript"
+      )
     )
   )
   out <- lapply(spec, function(f) {
@@ -170,13 +194,21 @@ route_files <- function(slug, side) {
     }
   })
   out <- Filter(Negate(is.null), out)
-  run <- sprintf("shiny::runApp(\"gallery/apps/%s/%s\")", slug, side)
-  build <- if (identical(side, "react")) {
-    paste0(BUILD_NOTE, "\nRscript -e '", run, "'")
-  } else {
-    paste0("Rscript -e '", run, "'")
+  if (length(out) == 0) {
+    return(list())
   }
-  c(out, list(list(label = "Run it", text = build, lang = "bash")))
+  run <- sprintf(
+    "Rscript -e 'shiny::runApp(\"gallery/apps/%s/%s\")'",
+    slug,
+    variant
+  )
+  run <- switch(
+    variant,
+    react = paste0(BUILD_NOTE, "\n", run),
+    rpkg = paste0(NO_BUILD_NOTE, run),
+    run
+  )
+  c(out, list(list(label = "Run it", text = run, lang = "bash")))
 }
 
 code_panel_ui <- function(files) {
@@ -272,7 +304,7 @@ ui <- page_sidebar(
   ),
   uiOutput("header"),
   layout_columns(
-    col_widths = c(6, 6),
+    col_widths = c(4, 4, 4),
     demo_column(
       "classic",
       "bslib + Shiny",
@@ -281,9 +313,15 @@ ui <- page_sidebar(
     ),
     demo_column(
       "react",
-      "bslib-react + shinyreact",
-      "One app: bslibreact serves it, the bslib-react npm package draws it.",
+      "bslib-react from npm",
+      "UI written in TSX, bundled by Vite. Needs Node.",
       uiOutput("code_react")
+    ),
+    demo_column(
+      "rpkg",
+      "bslib-react from the R package",
+      "Same UI from the vendored bundle. No npm, no build step.",
+      uiOutput("code_rpkg")
     )
   )
 )
@@ -306,22 +344,28 @@ server <- function(input, output, session) {
     )
   })
 
-  # Both columns are always visible, so both are started and tracked on
-  # every selection change. Polls without blocking: invalidateLater()
-  # re-runs this observer instead of freezing the session while an app boots.
+  # All three columns are always visible, so all three are started and
+  # tracked on every selection change. Polls without blocking:
+  # invalidateLater() re-runs this observer instead of freezing the session
+  # while an app boots.
   observe({
     slug <- selected()
-    keys <- c(
-      paste(slug, "classic", sep = "/"),
-      paste(slug, "react", sep = "/")
-    )
-    for (mode in c("classic", "react")) {
+    present <- Filter(function(m) has_variant(slug, m), MODES)
+    keys <- paste(slug, present, sep = "/")
+    for (mode in present) {
       ensure_started(slug, mode)
     }
     evict_stale(keep = keys)
 
     pending <- FALSE
-    for (mode in c("classic", "react")) {
+    for (mode in MODES) {
+      if (!has_variant(slug, mode)) {
+        session$sendCustomMessage(
+          "gallery-set-frame",
+          list(mode = mode, ready = FALSE, missing = TRUE)
+        )
+        next
+      }
       ready <- app_is_ready(slug, mode)
       if (!ready) {
         pending <- TRUE
@@ -331,6 +375,7 @@ server <- function(input, output, session) {
         list(
           mode = mode,
           ready = ready,
+          missing = FALSE,
           url = if (ready) app_url(slug, mode) else NULL
         )
       )
@@ -343,6 +388,7 @@ server <- function(input, output, session) {
     "classic"
   )))
   output$code_react <- renderUI(code_panel_ui(route_files(selected(), "react")))
+  output$code_rpkg <- renderUI(code_panel_ui(route_files(selected(), "rpkg")))
 }
 
 ui <- tagList(
@@ -362,6 +408,17 @@ ui <- tagList(
       var frame = document.getElementById(msg.mode + '_frame');
       var spinner = document.getElementById(msg.mode + '_spinner');
       if (!frame || !spinner) return;
+      var label = spinner.querySelector('.gallery-spinner-text');
+      var busy = spinner.querySelector('.spinner-border');
+      if (msg.missing) {
+        spinner.style.display = 'flex';
+        frame.style.visibility = 'hidden';
+        if (busy) busy.style.display = 'none';
+        if (label) label.textContent = 'Not available for this component.';
+        return;
+      }
+      if (busy) busy.style.display = '';
+      if (label) label.textContent = 'Starting the app...';
       if (msg.ready) {
         if (frame.src !== msg.url) frame.src = msg.url;
         spinner.style.display = 'none';
