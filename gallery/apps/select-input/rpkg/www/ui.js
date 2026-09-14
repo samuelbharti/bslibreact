@@ -8,8 +8,7 @@
 // the ordering entirely.
 window.addEventListener("load", function () {
   const { React, ReactDOM } = window.shinyreact;
-  const { SelectInput, Card, CardHeader, CardBody, PageFillable, TextOutput } =
-    window.bslibReact;
+  const { SelectInput, Card, CardHeader, CardBody, PageFillable, TextOutput } = window.bslibReact;
 
   const h = React.createElement;
 
@@ -21,12 +20,7 @@ window.addEventListener("load", function () {
         Card,
         null,
         h(CardHeader, null, "Select"),
-        h(
-          CardBody,
-          null,
-          h(SelectInput, { id: "x_ui" }),
-          h(TextOutput, { id: "selected" }),
-        ),
+        h(CardBody, null, h(SelectInput, { id: "x_ui" }), h(TextOutput, { id: "selected" })),
       ),
     );
   }

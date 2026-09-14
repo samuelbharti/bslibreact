@@ -50,7 +50,9 @@ for (const p of missing) console.error(`missing from the tarball: ${p}`);
 for (const p of leaked) console.error(`should not be published: ${p}`);
 
 if (missing.length || leaked.length) {
-  console.error(`\n${files.length} files checked, ${missing.length} missing, ${leaked.length} leaked`);
+  console.error(
+    `\n${files.length} files checked, ${missing.length} missing, ${leaked.length} leaked`,
+  );
   process.exit(1);
 }
 

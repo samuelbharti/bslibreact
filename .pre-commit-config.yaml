@@ -28,11 +28,15 @@ repos:
   - repo: local
     hooks:
       - id: prettier
-        name: prettier (ts/tsx)
+        name: prettier (js/ts/tsx/mjs)
         entry: prettier --write
         language: node
         additional_dependencies: ["prettier@3"]
-        files: '\.(ts|tsx)$'
+        # CI runs `prettier --check .`, which covers every extension prettier
+        # knows. Anything narrower here means a file can pass the hook and
+        # fail the same tool in CI, which is how scripts/check-pack.mjs got
+        # through. Built bundles are excluded by pkg-js/.prettierignore.
+        files: '\.(js|mjs|cjs|ts|tsx)$'
 
   # Safety checks that need no R or Python install.
   - repo: local

@@ -8,8 +8,7 @@
 // the ordering entirely.
 window.addEventListener("load", function () {
   const { React, ReactDOM } = window.shinyreact;
-  const { ActionButton, Card, CardHeader, CardBody, PageFillable } =
-    window.bslibReact;
+  const { ActionButton, Card, CardHeader, CardBody, PageFillable } = window.bslibReact;
 
   const h = React.createElement;
 

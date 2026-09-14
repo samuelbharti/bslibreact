@@ -58,4 +58,6 @@ for (const slug of slugs) {
   });
 }
 
-console.log(`[gallery] built ${slugs.length} app${slugs.length === 1 ? "" : "s"}: ${slugs.join(", ")}`);
+console.log(
+  `[gallery] built ${slugs.length} app${slugs.length === 1 ? "" : "s"}: ${slugs.join(", ")}`,
+);

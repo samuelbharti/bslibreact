@@ -8,8 +8,7 @@
 // the ordering entirely.
 window.addEventListener("load", function () {
   const { React, ReactDOM } = window.shinyreact;
-  const { Card, CardHeader, CardBody, HostedInput, PageFillable, TextOutput } =
-    window.bslibReact;
+  const { Card, CardHeader, CardBody, HostedInput, PageFillable, TextOutput } = window.bslibReact;
 
   const h = React.createElement;
 
@@ -23,12 +22,7 @@ window.addEventListener("load", function () {
         Card,
         null,
         h(CardHeader, null, "Checkbox group"),
-        h(
-          CardBody,
-          null,
-          h(HostedInput, { id: "opts_ui" }),
-          h(TextOutput, { id: "selected" }),
-        ),
+        h(CardBody, null, h(HostedInput, { id: "opts_ui" }), h(TextOutput, { id: "selected" })),
       ),
     );
   }
