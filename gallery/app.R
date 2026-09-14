@@ -256,7 +256,19 @@ gallery_footer <- function() {
     ),
     tags$span(
       class = "gallery-footer-spacer",
-      tags$a(href = REPO_URL, target = "_blank", rel = "noopener", "GitHub")
+      "Built by ",
+      tags$a(
+        href = "https://github.com/samuelbharti",
+        target = "_blank",
+        rel = "noopener",
+        "Samuel Bharti"
+      )
+    ),
+    tags$a(
+      href = REPO_URL,
+      target = "_blank",
+      rel = "noopener",
+      "Source"
     ),
     tags$a(
       href = paste0(REPO_URL, "/issues"),
@@ -316,6 +328,9 @@ GALLERY_CSS <- "
 .gallery-col pre code { display: block; padding: 10px 12px; font-size: .76rem; line-height: 1.45; white-space: pre-wrap; overflow-wrap: anywhere; background: transparent; }
 .gallery-col .nav-pills { margin-bottom: 10px; gap: 6px; }
 .gallery-col .nav-pills .nav-link { padding: 4px 12px; font-size: .85rem; }
+.gallery-brand { display: flex; align-items: center; justify-content: space-between; width: 100%; gap: 12px; }
+.gallery-brand-link { font-size: .85rem; font-weight: 500; text-decoration: none; padding: 3px 10px; border: 1px solid var(--bs-border-color); border-radius: 6px; }
+.gallery-brand-link:hover { background: var(--bs-tertiary-bg); }
 .gallery-footer { margin-top: 8px; padding: 14px 0 4px; border-top: 1px solid var(--bs-border-color); display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; font-size: .8rem; color: var(--bs-secondary-color); }
 .gallery-footer a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
 .gallery-footer a:hover { color: var(--bs-link-color); }
@@ -323,7 +338,17 @@ GALLERY_CSS <- "
 "
 
 ui <- page_sidebar(
-  title = "bslib-react component gallery",
+  title = tags$div(
+    class = "gallery-brand",
+    tags$span("bslib-react component gallery"),
+    tags$a(
+      class = "gallery-brand-link",
+      href = REPO_URL,
+      target = "_blank",
+      rel = "noopener",
+      "GitHub"
+    )
+  ),
   theme = bs_theme(version = 5),
   # Not fillable: the code panels below each demo are as tall as the files
   # they show, so the main column flows and the page scrolls once, rather
