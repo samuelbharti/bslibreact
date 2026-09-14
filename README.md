@@ -164,13 +164,3 @@ R only for now. See `gallery/README.md`; not deployed publicly yet.
 ## License
 
 MIT. See `LICENSE`.
-
-This package exists to reproduce the markup of
-[bslib](https://rstudio.github.io/bslib/) and
-[Shiny](https://shiny.posit.co/), both MIT licensed and copyright Posit
-Software, PBC. The class names and DOM structure the components emit are
-theirs; the React implementations of them are not. `shinyreact`, which
-supplies the client runtime these components are built against, is also
-Posit's. None of that code is vendored here: the published bundles carry
-no third party code, and React is a peer dependency rather than a bundled
-one.
