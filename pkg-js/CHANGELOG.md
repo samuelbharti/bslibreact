@@ -1,9 +1,11 @@
 # Changelog
 
-## Unreleased
+## 0.1.0
+
+First release. Experimental: component props may still change.
 
 - Initial extraction from `shinyreact-apps`' `packages/bslib-react` into its
-  own package, not yet published on npm.
+  own package.
 - Fixed the bind-scope defect in `NavbarTabStrip` and `LayoutSidebar`: both
   used to call Shiny's bind functions directly on a scope that could also
   hold a hosted output mounting in the same commit, which produced
@@ -16,3 +18,6 @@
   `docs/markup-catalog.md` at the repo root.
 - Dropped `NativeInput`, `escape.ts`, and `inputs/types.ts` (`toChoices`):
   unused across every app that depended on this kit.
+- `useBoundScope` unbinds the element it bound rather than whatever the
+  ref points at during cleanup, so a node React swaps out does not leave
+  its Shiny bindings behind.

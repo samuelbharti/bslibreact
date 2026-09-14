@@ -1,5 +1,7 @@
 # bslib-react
 
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+
 React components that reproduce [bslib](https://rstudio.github.io/bslib/)'s
 layout, page shell, and output markup, for apps built with
 [shinyreact](https://posit-dev.github.io/shinyreact/)'s ui.tsx pattern. If

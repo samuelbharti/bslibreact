@@ -1,6 +1,9 @@
 # Changelog
 
-## Unreleased
+## 0.1.0
 
-- Not yet published. Mirrors pkg-r's scope in Python.
-- `page_deps()`, `host_input()`, `bslib_react_dep()`.
+First release. Experimental: signatures may still change.
+
+- Mirrors pkg-r's scope in Python: `page_deps()`, `host_input()`, and
+  `bslib_react_dep()`, matching the R functions argument for argument.
+- Ships the vendored `bslib-react.js` bundle inside the wheel.

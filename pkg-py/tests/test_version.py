@@ -8,7 +8,7 @@ from pathlib import Path
 
 import pytest
 
-_EXPECTED_VERSION = "0.0.1"
+_EXPECTED_VERSION = "0.1.0"
 
 
 def test_installed_version_matches_expected() -> None:

@@ -14,7 +14,7 @@
 # test-version.R checks the two agree once pkg-js exists in this checkout.
 # Mirrors shinyreact's .shinyreact_js_version and this package's own
 # Python sibling's _BSLIB_REACT_JS_VERSION.
-.bslib_react_js_version <- "0.0.1"
+.bslib_react_js_version <- "0.1.0"
 
 # TRUE only in a repo checkout (devtools::load_all()), where the repo's
 # pkg-js/package.json sits four levels above inst/lib/bslib-react/. Never
@@ -33,9 +33,9 @@
 }
 
 # .bslib_react_js_version, suffixed with the bundle file's own mtime in a
-# dev checkout. Installed, a page loads version "0.0.1"; in the repo, where
+# dev checkout. Installed, a page loads version "0.1.0"; in the repo, where
 # the same file on disk can change between one `make update-dist` and the
-# next without this constant being bumped, it loads "0.0.1.<mtime>"
+# next without this constant being bumped, it loads "0.1.0.<mtime>"
 # instead, so the browser's own dependency cache still gets busted on a
 # rebuild while the version string still names the release. Mirrors
 # shinyreact's .bundle_version().

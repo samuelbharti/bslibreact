@@ -19,7 +19,7 @@ _WWW_DIR = Path(__file__).parent / "www"
 # bslib-react's own release version, i.e. the release of the bundle `www/`
 # should contain. Bump alongside `pkg-js/package.json`; `test_dep.py` and
 # `test_version.py` guard the three packages staying in step.
-_BSLIB_REACT_JS_VERSION = "0.0.1"
+_BSLIB_REACT_JS_VERSION = "0.1.0"
 
 # Only reachable from a repo checkout (this package installed editable from
 # source), never from an installed wheel -- a wheel has no `pkg-js/` sibling

@@ -1,5 +1,7 @@
 # bslib-react (Python)
 
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+
 Server helpers for [bslib-react](https://github.com/samuelbharti/bslib-react):
 a React component kit that reproduces the exact markup `bslib` and Shiny
 render, for apps built with [shinyreact](https://github.com/posit-dev/shinyreact)'s

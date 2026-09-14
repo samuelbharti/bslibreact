@@ -1,12 +1,20 @@
-# bslibreact 0.0.1
+# bslibreact 0.1.0
 
-Unreleased development version. No user facing changes to report yet.
+First release. The package is experimental: the three functions below are
+what it exports, and their signatures may still change.
 
-* `page_deps()` collects the htmlDependency objects a client bundle needs to
-  match a page built from bslib and shiny markup, without attaching
-  bootstrap itself.
-* `host_input()` registers a server-rendered widget as a `renderUI()` output
-  under a `_ui`-suffixed name, and aborts at render time if the widget's own
-  id collides with the output wrapper's id.
-* `bslib_react_dep()` returns the htmlDependency for the vendored
-  `bslib-react.js` bundle.
+* `page_deps()` renders a sample of bslib and shiny markup under a theme
+  and returns the `htmlDependency()` objects that markup attaches, so a
+  shinyreact client can be served the same CSS and JavaScript a matching
+  bslib page would have attached on its own. `"bootstrap"` and
+  `"jquery"` are left out, since a shiny page already carries both, and
+  each remaining dependency is returned once.
+
+* `host_input()` renders a shiny input server-side into an output the
+  React client displays, for the widgets that have no dedicated
+  component. The output is named with a `_ui` suffix, which the client's
+  own `id` has to match.
+
+* `bslib_react_dep()` returns the `htmlDependency()` for the vendored
+  `bslib-react.js` bundle. Attach it after shinyreact's own dependency:
+  the bundle reads `window.shinyreact` as it evaluates.

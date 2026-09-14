@@ -1,6 +1,6 @@
 {
   "name": "bslib-react",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "bslib's layout, page shell, and output markup as React components for the shinyreact ui.tsx pattern",
   "license": "MIT",
   "author": "Samuel Bharti",
