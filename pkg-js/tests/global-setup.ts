@@ -229,6 +229,8 @@ function warnBanner(lang: Lang, status: CatalogLangStatus): void {
   const pkg = lang === "r" ? "pkg-r" : "pkg-py";
   const state = status.state;
   if (state === "ready") return;
+  // Printing is the whole job of this function.
+  // eslint-disable-next-line no-console
   console.warn(
     [
       "",

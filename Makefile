@@ -26,7 +26,7 @@ js-setup-ci:  ## [js] Install JS dependencies as CI
 	npm ci
 
 .PHONY: js-lint
-js-lint:  ## [js] Type check JS code
+js-lint:  ## [js] Type check and lint JS code
 	cd $(PATH_PKG_JS) && npm run lint
 
 .PHONY: js-format
