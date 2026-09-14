@@ -155,3 +155,34 @@ test_that("regression: bs_global_set(), not bs_global_theme(), decides the resol
   expect_true(grepl("Fira Sans", content_correct, fixed = TRUE))
   expect_false(grepl("Fira Sans", content_buggy, fixed = TRUE))
 })
+
+test_that("the shiny baseline is excluded and each dependency appears once", {
+  deps <- page_deps(bslib::bs_theme(version = 5))
+  nms <- vapply(deps, function(d) d$name, character(1))
+
+  # jquery used to come back 14 times here while the Python sibling
+  # dropped it, which is the divergence this guards against.
+  expect_false("jquery" %in% nms)
+  expect_false("bootstrap" %in% nms)
+  expect_identical(anyDuplicated(nms), 0L)
+})
+
+test_that("dedupe_by_name keeps the highest version of a repeated name", {
+  a <- htmltools::htmlDependency("x", "1.0.0", src = c(href = "."))
+  b <- htmltools::htmlDependency("x", "2.0.0", src = c(href = "."))
+  other <- htmltools::htmlDependency("y", "1.0.0", src = c(href = "."))
+
+  kept <- dedupe_by_name(list(a, b, other))
+  expect_length(kept, 2L)
+  expect_identical(kept[[1]]$version, "2.0.0")
+  expect_identical(kept[[2]]$name, "y")
+})
+
+test_that("dedupe_by_name falls back to first seen when a version is unparsable", {
+  a <- htmltools::htmlDependency("x", "not-a-version", src = c(href = "."))
+  b <- htmltools::htmlDependency("x", "2.0.0", src = c(href = "."))
+
+  kept <- dedupe_by_name(list(a, b))
+  expect_length(kept, 1L)
+  expect_identical(kept[[1]]$version, "not-a-version")
+})

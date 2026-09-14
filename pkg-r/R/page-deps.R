@@ -1,8 +1,39 @@
+# One entry per dependency name, keeping the highest version, in the order
+# the names were first seen. numeric_version() is strict about what it will
+# parse and these versions come from whatever upstream set them, so an
+# unparsable one falls back to first-seen rather than erroring.
+dedupe_by_name <- function(deps) {
+  if (length(deps) < 2) {
+    return(deps)
+  }
+  nms <- vapply(deps, function(d) d$name, character(1))
+  keep <- vapply(
+    split(seq_along(deps), factor(nms, levels = unique(nms))),
+    function(idx) {
+      v <- suppressWarnings(
+        numeric_version(
+          vapply(deps[idx], function(d) as.character(d$version), character(1)),
+          strict = FALSE
+        )
+      )
+      if (anyNA(v)) idx[[1]] else idx[[which.max(v)]]
+    },
+    integer(1)
+  )
+  deps[unname(keep)]
+}
+
+# The baseline every shiny page attaches on its own. Kept in step by hand
+# with _ALWAYS_EXCLUDED in the Python sibling's _deps.py; the two lists
+# diverged once already, with R returning jquery that Python dropped.
+ALWAYS_EXCLUDED <- c("bootstrap", "jquery")
+
 #' Collect the page dependencies a client bundle needs
 #'
 #' Renders a representative sample of bslib and shiny markup under `theme`
 #' and returns the [htmltools::htmlDependency()] objects that markup
-#' attaches, minus the `"bootstrap"` dependency itself. Attach the result
+#' attaches, deduplicated, minus the `"bootstrap"` and `"jquery"`
+#' dependencies every shiny page already carries. Attach the result
 #' to a shinyreact page alongside [bslib_react_dep()], for example
 #' `shinyreact::page_react(page_deps(app_theme), bslib_react_dep(), theme = app_theme)`,
 #' so the client gets exactly the CSS and JavaScript a matching bslib page
@@ -68,8 +99,9 @@
 #'   `character()` to include no catalog samples at all, relying only on
 #'   `...`.
 #'
-#' @return A list of [htmltools::htmlDependency()] objects, with no
-#'   dependency named `"bootstrap"`.
+#' @return A list of [htmltools::htmlDependency()] objects, one per
+#'   dependency name, keeping the highest version of each, and with no
+#'   dependency named `"bootstrap"` or `"jquery"`.
 #'
 #' @export
 #' @examples
@@ -94,6 +126,7 @@
 #'   bslib_react_dep()
 #' )
 #' }
+
 page_deps <- function(theme = NULL, ..., components = NULL) {
   rlang::check_dots_unnamed()
 
@@ -123,5 +156,17 @@ page_deps <- function(theme = NULL, ..., components = NULL) {
   components <- components %||% catalog_names(kind = c("tag", "page"))
   sampler <- htmltools::tagList(catalog_eval(components), ...)
   deps <- htmltools::findDependencies(sampler)
-  deps[vapply(deps, function(d) !identical(d$name, "bootstrap"), logical(1))]
+
+  # Every sample carries its own copy of the shared dependencies, so the
+  # raw walk returns the same handful of names hundreds of times over.
+  # Deliberately not htmltools::resolveDependencies(), which also rewrites
+  # each dependency's `src` to an absolute path on this machine and drops
+  # its `package` field: that would bake local paths into the result and
+  # change the shape of the objects a caller gets back.
+  deps <- dedupe_by_name(deps)
+
+  # bootstrap and jquery are the baseline any shiny page already attaches,
+  # so a caller reading this output should see only the extra things
+  # bslib-react needs on top. Matches the Python sibling's _ALWAYS_EXCLUDED.
+  deps[vapply(deps, function(d) !d$name %in% ALWAYS_EXCLUDED, logical(1))]
 }

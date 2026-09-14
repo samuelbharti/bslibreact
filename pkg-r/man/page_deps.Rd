@@ -28,13 +28,15 @@ while a missing one is a widget that renders unstyled. Pass
 \code{...}.}
 }
 \value{
-A list of \code{\link[htmltools:htmlDependency]{htmltools::htmlDependency()}} objects, with no
-dependency named \code{"bootstrap"}.
+A list of \code{\link[htmltools:htmlDependency]{htmltools::htmlDependency()}} objects, one per
+dependency name, keeping the highest version of each, and with no
+dependency named \code{"bootstrap"} or \code{"jquery"}.
 }
 \description{
 Renders a representative sample of bslib and shiny markup under \code{theme}
 and returns the \code{\link[htmltools:htmlDependency]{htmltools::htmlDependency()}} objects that markup
-attaches, minus the \code{"bootstrap"} dependency itself. Attach the result
+attaches, deduplicated, minus the \code{"bootstrap"} and \code{"jquery"}
+dependencies every shiny page already carries. Attach the result
 to a shinyreact page alongside \code{\link[=bslib_react_dep]{bslib_react_dep()}}, for example
 \code{shinyreact::page_react(page_deps(app_theme), bslib_react_dep(), theme = app_theme)},
 so the client gets exactly the CSS and JavaScript a matching bslib page
