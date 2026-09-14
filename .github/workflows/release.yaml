@@ -34,7 +34,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version-file: pkg-js/.nvmrc
+          node-version-file: .nvmrc
           registry-url: "https://registry.npmjs.org"
       - run: cd pkg-js && npm ci && npm run build
       - run: cd pkg-js && npm stage publish --access public
