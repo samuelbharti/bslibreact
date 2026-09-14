@@ -1,5 +1,11 @@
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import { catalogLangs, loadCatalog, normaliseIds, shapeOf, type Shape } from "./catalog";
+
+// Sample:index pairs that already differ between the two catalogs.
+const BASELINE_PATH = join(dirname(fileURLToPath(import.meta.url)), "parity-baseline.json");
 
 /**
  * Compares the R and Python catalogs against EACH OTHER, not against this
@@ -113,7 +119,7 @@ describe.skipIf(!bothReady)("parity: R vs Python catalog", () => {
     expect({ onlyR, onlyPy }).toEqual({ onlyR: [], onlyPy: [] });
   });
 
-  it("prints (does not fail on) shape differences for shared samples", () => {
+  it("grows no new R vs Python shape differences", () => {
     const r = loadCatalog("r");
     const py = loadCatalog("py");
     const sharedNames = Object.keys(r.samples)
@@ -147,16 +153,46 @@ describe.skipIf(!bothReady)("parity: R vs Python catalog", () => {
       }
     }
 
-    if (rows.length > 0) {
-      // eslint-disable-next-line no-console
-      console.table(rows);
+    const current = rows.map((row) => `${row.sample}:${row.index}`).sort();
+
+    // R shiny and py-shiny genuinely word some markup differently, so
+    // demanding zero divergence would mean either chasing every one of
+    // them or parking a hundred entries in KNOWN_PY_DIFFS. The baseline
+    // records what already differs; this test only fails when the set
+    // GROWS. Regenerate it with PARITY_UPDATE_BASELINE=1 after a
+    // deliberate change, and read the printed table before you do.
+    if (process.env.PARITY_UPDATE_BASELINE === "1") {
+      writeFileSync(
+        BASELINE_PATH,
+        `${JSON.stringify(current, null, 2)}
+`,
+      );
+      return;
     }
 
-    // Informational only - this assertion always passes. The table above
-    // (visible in `npx vitest run` output) is the actual signal for a
-    // human to read; a real, permanent divergence gets an entry in
-    // KNOWN_PY_DIFFS once someone has looked at it, not a failing test
-    // here.
-    expect(rows).toEqual(rows);
+    const baseline: string[] = existsSync(BASELINE_PATH)
+      ? JSON.parse(readFileSync(BASELINE_PATH, "utf8"))
+      : [];
+    const baselineSet = new Set(baseline);
+    const appeared = current.filter((key) => !baselineSet.has(key));
+
+    if (appeared.length > 0) {
+      // eslint-disable-next-line no-console
+      console.table(rows.filter((row) => appeared.includes(`${row.sample}:${row.index}`)));
+    }
+
+    expect(appeared).toEqual([]);
+
+    const currentSet = new Set(current);
+    const resolved = baseline.filter((key) => !currentSet.has(key));
+    if (resolved.length > 0) {
+      // Not a failure: upstream moves, and a divergence going away is
+      // good news. Shrink the baseline so it keeps meaning something.
+      // eslint-disable-next-line no-console
+      console.warn(
+        `parity baseline has ${resolved.length} stale entr${resolved.length === 1 ? "y" : "ies"}; ` +
+          `rerun with PARITY_UPDATE_BASELINE=1 to shrink it: ${resolved.join(", ")}`,
+      );
+    }
   });
 });
