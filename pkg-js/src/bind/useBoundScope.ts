@@ -85,11 +85,16 @@ import { useShinyInitialized } from "../shinyreact";
  *   already mounted is handled the same way, since the effect re-runs the
  *   moment `useShinyInitialized()` flips, the same dependency the two
  *   effects this replaces already keyed off (as `ready`).
- * - Cleanup calls `Shiny.unbindAll(target.current, true)`: `target` itself,
- *   `includeSelf` true, unbinding only the one element this hook bound,
- *   never the whole scope (which may hold plenty of other bindings this
- *   hook did not create and has no business tearing down). This matches
- *   what both components already did before this hook existed.
+ * - Cleanup calls `Shiny.unbindAll(el, true)`, where `el` is the element
+ *   captured when the effect ran, `includeSelf` true, unbinding only the
+ *   one element this hook bound, never the whole scope (which may hold
+ *   plenty of other bindings this hook did not create and has no business
+ *   tearing down). Reading `target.current` again at cleanup time, which
+ *   is what this did originally and what both components did before this
+ *   hook existed, is wrong: the deps below deliberately exclude `target`,
+ *   so React can swap the node out from under the ref without re-running
+ *   the effect, and cleanup would then unbind whatever is there now while
+ *   the element actually bound keeps its bindings forever.
  *
  * @param target The element this hook is responsible for binding and
  * unbinding. Passed to `scope()` to compute the actual scan scope, and
@@ -137,7 +142,11 @@ export function useBoundScope(
 
     return () => {
       cancelled = true;
-      if (target.current) Shiny.unbindAll(target.current, true);
+      // Unbind `el`, captured when this effect ran, not target.current as
+      // read at cleanup time. React can swap the node out from under the
+      // ref between the two, and unbinding a different element than the
+      // one bound above leaves Shiny holding the original's bindings.
+      Shiny.unbindAll(el, true);
     };
     // `scope` is passed as a fresh inline arrow function at every call site
     // (see NavbarTabStrip and LayoutSidebar) with no identity of its own
