@@ -3,9 +3,29 @@
   "version": "0.0.1",
   "description": "bslib's layout, page shell, and output markup as React components for the shinyreact ui.tsx pattern",
   "license": "MIT",
+  "author": "Samuel Bharti",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/samuelbharti/bslib-react.git",
+    "directory": "pkg-js"
+  },
+  "homepage": "https://github.com/samuelbharti/bslib-react#readme",
+  "bugs": {
+    "url": "https://github.com/samuelbharti/bslib-react/issues"
+  },
+  "keywords": [
+    "shiny",
+    "shinyreact",
+    "bslib",
+    "react",
+    "bootstrap",
+    "r",
+    "components"
+  ],
   "type": "module",
   "sideEffects": false,
   "files": [
+    "LICENSE",
     "dist",
     "dist-npm",
     "src"
