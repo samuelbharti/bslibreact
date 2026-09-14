@@ -1,9 +1,10 @@
 # The gallery shell: a sidebar listing every example, grouped by category.
-# Selecting one shows two columns side by side, classic bslib + Shiny and
-# bslib-react + shinyreact, each with its live demo and the complete source
-# below it. Every example is a real, separate Shiny app under
-# apps/<slug>/{classic,react}, started on demand and kept warm afterwards.
-# Only a handful stay alive at once (see MAX_LIVE): booting all 84 at
+# Selecting one shows three columns side by side, classic bslib + Shiny,
+# bslib-react built from npm, and bslib-react from the R package's own
+# vendored bundle, each with its live demo and complete source below it.
+# Every one is a real, separate Shiny app under
+# apps/<slug>/{classic,react,rpkg}, started on demand and kept warm after.
+# Only a handful stay alive at once (see MAX_LIVE): booting all 126 at
 # startup pins the CPU loading heavy packages and nothing ever gets ready.
 # Real R throughout, no shinylive/webR: see gallery/README.md for why.
 library(shiny)
@@ -35,7 +36,7 @@ proc_alive <- function(key) {
 }
 
 # Keeps the most recently used apps running and stops the rest. Without a
-# cap, browsing the whole gallery would leave 84 R processes resident.
+# cap, browsing the whole gallery would leave 126 R processes resident.
 evict_stale <- function(keep) {
   live <- Filter(proc_alive, ls(.procs))
   if (length(live) <= MAX_LIVE) {
@@ -244,6 +245,34 @@ nav_list <- function() {
   }))
 }
 
+REPO_URL <- "https://github.com/samuelbharti/bslib-react"
+
+gallery_footer <- function() {
+  tags$footer(
+    class = "gallery-footer",
+    tags$span(
+      "Every component built three ways, running live. Source read straight",
+      "from the files each demo runs."
+    ),
+    tags$span(
+      class = "gallery-footer-spacer",
+      tags$a(href = REPO_URL, target = "_blank", rel = "noopener", "GitHub")
+    ),
+    tags$a(
+      href = paste0(REPO_URL, "/issues"),
+      target = "_blank",
+      rel = "noopener",
+      "Report an issue"
+    ),
+    tags$a(
+      href = paste0(REPO_URL, "/blob/main/LICENSE"),
+      target = "_blank",
+      rel = "noopener",
+      "MIT licensed"
+    )
+  )
+}
+
 # One demo column: a heading, a frame that shows a spinner until its
 # backend answers, and the source below it. Deliberately not a card, the
 # demo inside the frame already draws its own.
@@ -267,31 +296,40 @@ demo_column <- function(id, title, subtitle, code_body) {
 }
 
 GALLERY_CSS <- "
-.gallery-nav-heading { font-weight: 600; margin-top: 16px; font-size: .75rem; letter-spacing: .04em; text-transform: uppercase; color: var(--bs-secondary-color); }
+.bslib-sidebar-layout > aside > .sidebar-content { padding: 10px 12px 14px !important; gap: 2px !important; }
+.gallery-nav-heading { font-weight: 600; margin-top: 7px; font-size: .68rem; letter-spacing: .04em; text-transform: uppercase; color: var(--bs-secondary-color); }
 .gallery-nav-heading:first-child { margin-top: 0; }
-.gallery-nav-list { list-style: none; padding-left: 0; margin: 6px 0 0; }
-.gallery-nav-list li { margin: 1px 0; }
-.gallery-nav-link { display: block; padding: 5px 8px; border-radius: 6px; text-decoration: none; font-size: .9rem; }
+.gallery-nav-list { list-style: none; padding-left: 0; margin: 3px 0 0; }
+.gallery-nav-list li { margin: 0; }
+.gallery-nav-link { display: block; padding: 3px 7px; border-radius: 5px; text-decoration: none; font-size: .82rem; line-height: 1.4; min-height: 24px; }
 .gallery-nav-link:hover { background: var(--bs-tertiary-bg); }
-.gallery-title { margin: 0 0 2px; font-size: 1.45rem; font-weight: 650; }
-.gallery-note { color: var(--bs-secondary-color); margin-bottom: 20px; }
-.gallery-col-head { font-size: 1rem; font-weight: 650; }
-.gallery-col-sub { font-size: .85rem; color: var(--bs-secondary-color); margin-bottom: 8px; }
-.gallery-frame-wrap { position: relative; height: 52vh; min-height: 400px; margin-bottom: 18px; }
+.gallery-title { margin: 0 0 1px; font-size: 1.25rem; font-weight: 650; }
+.gallery-note { color: var(--bs-secondary-color); font-size: .85rem; margin-bottom: 10px; }
+.gallery-col-head { font-size: .92rem; font-weight: 650; }
+.gallery-col-sub { font-size: .78rem; color: var(--bs-secondary-color); margin-bottom: 6px; }
+.gallery-frame-wrap { position: relative; height: 46vh; min-height: 330px; margin-bottom: 12px; }
 .gallery-demo-frame { width: 100%; height: 100%; border: 1px solid var(--bs-border-color); border-radius: 10px; background: var(--bs-body-bg); }
 .gallery-spinner { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; background: var(--bs-body-bg); border: 1px solid var(--bs-border-color); border-radius: 10px; }
 .gallery-spinner-text { color: var(--bs-secondary-color); font-size: .9rem; }
-.gallery-file { font-family: var(--bs-font-monospace); font-size: .8rem; font-weight: 600; color: var(--bs-secondary-color); padding: 6px 10px; border: 1px solid var(--bs-border-color); border-bottom: 0; border-radius: 8px 8px 0 0; background: var(--bs-tertiary-bg); }
-.gallery-col pre { margin: 0 0 16px; border: 1px solid var(--bs-border-color); border-radius: 0 0 8px 8px; background: var(--bs-body-bg); }
-.gallery-col pre code { display: block; padding: 12px 14px; font-size: .82rem; line-height: 1.5; white-space: pre-wrap; overflow-wrap: anywhere; background: transparent; }
+.gallery-file { font-family: var(--bs-font-monospace); font-size: .8rem; font-weight: 600; color: var(--bs-secondary-color); padding: 4px 9px; border: 1px solid var(--bs-border-color); border-bottom: 0; border-radius: 8px 8px 0 0; background: var(--bs-tertiary-bg); }
+.gallery-col pre { margin: 0 0 12px; border: 1px solid var(--bs-border-color); border-radius: 0 0 8px 8px; background: var(--bs-body-bg); }
+.gallery-col pre code { display: block; padding: 10px 12px; font-size: .76rem; line-height: 1.45; white-space: pre-wrap; overflow-wrap: anywhere; background: transparent; }
 .gallery-col .nav-pills { margin-bottom: 10px; gap: 6px; }
 .gallery-col .nav-pills .nav-link { padding: 4px 12px; font-size: .85rem; }
+.gallery-footer { margin-top: 8px; padding: 14px 0 4px; border-top: 1px solid var(--bs-border-color); display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; font-size: .8rem; color: var(--bs-secondary-color); }
+.gallery-footer a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+.gallery-footer a:hover { color: var(--bs-link-color); }
+.gallery-footer-spacer { margin-left: auto; }
 "
 
 ui <- page_sidebar(
   title = "bslib-react component gallery",
   theme = bs_theme(version = 5),
-  sidebar = sidebar(width = 270, nav_list()),
+  # Not fillable: the code panels below each demo are as tall as the files
+  # they show, so the main column flows and the page scrolls once, rather
+  # than every panel getting its own nested scrollbar.
+  fillable = FALSE,
+  sidebar = sidebar(width = 210, nav_list()),
   tags$head(
     tags$link(
       rel = "stylesheet",
@@ -323,7 +361,8 @@ ui <- page_sidebar(
       "Same UI from the vendored bundle. No npm, no build step.",
       uiOutput("code_rpkg")
     )
-  )
+  ),
+  gallery_footer()
 )
 
 server <- function(input, output, session) {
