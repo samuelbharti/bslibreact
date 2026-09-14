@@ -135,6 +135,14 @@ This package mirrors bslib and Shiny's own UI. A component bslib does not
 have is out of scope here; ask for it in bslib first, and it gets a row in
 this kit once bslib ships it.
 
+## Component gallery
+
+`gallery/` is a side by side gallery matching
+[shiny.posit.co/r/components](https://shiny.posit.co/r/components/):
+every example runs both as classic bslib + Shiny and as bslib-react +
+shinyreact, with a switch between them and a button to compare the code.
+R only for now. See `gallery/README.md`; not deployed publicly yet.
+
 ## Learn more
 
 - `docs/build.md`: build a new app with this kit, in R or Python.

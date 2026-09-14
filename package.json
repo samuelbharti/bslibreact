@@ -3,6 +3,7 @@
   "private": true,
   "workspaces": [
     "pkg-js",
-    "examples/*"
+    "examples/*",
+    "gallery"
   ]
 }

@@ -158,6 +158,18 @@ examples:  ## Build every example app's client bundle
 	cd examples/01-hello && npm install && npm run build
 	cd examples/volcano-plot && npm install && npm run build
 
+.PHONY: gallery-apps
+gallery-apps:  ## [gallery] Build every example's react/ client bundle (dev only, for screenshots)
+	cd gallery && npm install && npm run build:apps
+
+.PHONY: gallery
+gallery:  ## [gallery] Build the full gallery site (shell plus shinylive exports) into gallery/dist
+	cd gallery && npm install && npm run build
+
+.PHONY: gallery-dev
+gallery-dev:  ## [gallery] Run the gallery shell's dev server
+	cd gallery && npm install && npm run dev
+
 .PHONY: version-check
 version-check:  ## Assert DESCRIPTION, pyproject.toml, and package.json agree on version
 	@r=$$(sed -n 's/^Version: //p' pkg-r/DESCRIPTION); \
