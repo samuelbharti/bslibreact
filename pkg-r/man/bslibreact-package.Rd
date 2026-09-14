@@ -12,6 +12,7 @@ R-side helpers for building Shiny apps in the shinyreact 'ui.tsx' pattern that l
 Useful links:
 \itemize{
   \item \url{https://github.com/samuelbharti/bslib-react}
+  \item \url{https://samuelbharti.github.io/bslib-react}
   \item Report bugs at \url{https://github.com/samuelbharti/bslib-react/issues}
 }
 

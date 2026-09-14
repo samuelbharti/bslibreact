@@ -34,8 +34,8 @@ This function never errors for a missing bundle file: an
 \code{\link[htmltools:htmlDependency]{htmltools::htmlDependency()}} does not check that its files exist when
 it is constructed, only once something actually tries to serve them, so
 this returns a structurally valid dependency even when
-\code{inst/lib/bslib-react/bslib-react.js} has not been vendored in yet (see
-that directory's own \code{NOTE.md}). This matters during this repository's
+\code{inst/lib/bslib-react/bslib-react.js} has not been vendored in yet. This
+matters during this repository's
 own development, where \code{pkg-js}'s build and \code{pkg-r}'s own checks can run
 before \verb{make update-dist} has ever populated \verb{inst/lib/bslib-react/}.
 }

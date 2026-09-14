@@ -33,9 +33,9 @@
 }
 
 # .bslib_react_js_version, suffixed with the bundle file's own mtime in a
-# dev checkout. Installed, a page loads version "0.1.0"; in the repo, where
+# dev checkout. Installed, a page loads version "0.0.1"; in the repo, where
 # the same file on disk can change between one `make update-dist` and the
-# next without this constant being bumped, it loads "0.1.0.<mtime>"
+# next without this constant being bumped, it loads "0.0.1.<mtime>"
 # instead, so the browser's own dependency cache still gets busted on a
 # rebuild while the version string still names the release. Mirrors
 # shinyreact's .bundle_version().
@@ -79,8 +79,8 @@
 #' [htmltools::htmlDependency()] does not check that its files exist when
 #' it is constructed, only once something actually tries to serve them, so
 #' this returns a structurally valid dependency even when
-#' `inst/lib/bslib-react/bslib-react.js` has not been vendored in yet (see
-#' that directory's own `NOTE.md`). This matters during this repository's
+#' `inst/lib/bslib-react/bslib-react.js` has not been vendored in yet. This
+#' matters during this repository's
 #' own development, where `pkg-js`'s build and `pkg-r`'s own checks can run
 #' before `make update-dist` has ever populated `inst/lib/bslib-react/`.
 #'

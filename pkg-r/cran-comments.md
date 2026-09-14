@@ -12,4 +12,7 @@ itself.
 
 ## R CMD check results
 
-0 errors | 0 warnings | 0 notes
+0 errors | 0 warnings | 1 note
+
+* "Found the following files/directories: ''NULL''" appears on Windows
+  only and comes from the check tooling rather than this package.

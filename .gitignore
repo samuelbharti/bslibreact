@@ -61,3 +61,6 @@ REPORT.md
 
 # Local rsconnect deployment state.
 rsconnect/
+
+# pytest coverage artifact.
+.coverage

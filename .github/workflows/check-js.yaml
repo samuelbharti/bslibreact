@@ -5,7 +5,6 @@ on:
     branches: [main]
     paths:
       - "pkg-js/**"
-      - "pkg-r/inst/markup-catalog/**"
       - "pkg-r/R/catalog*.R"
       - "pkg-r/DESCRIPTION"
       - "pkg-py/src/bslib_react/_catalog*.py"
@@ -17,7 +16,6 @@ on:
   pull_request:
     paths:
       - "pkg-js/**"
-      - "pkg-r/inst/markup-catalog/**"
       - "pkg-r/R/catalog*.R"
       - "pkg-r/DESCRIPTION"
       - "pkg-py/src/bslib_react/_catalog*.py"
