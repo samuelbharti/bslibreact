@@ -14,9 +14,11 @@ type InputChangedEvent = { name?: string; value?: unknown };
  * event, not a native DOM CustomEvent, so this has to go through
  * window.$(document), not addEventListener.
  *
- * NOTE: not yet checked against a running app. Shiny may put {name, value}
- * on the event object itself, or pass it as a second handler argument;
- * this reads both shapes defensively until a real app confirms which one.
+ * Checked against a running app (the gallery's slider-input example, whose
+ * hosted sliderInput was driven through ionRangeSlider): Shiny puts
+ * {name, value} on the event object itself and passes no second argument.
+ * The second-argument read below is kept as a cheap guard, since Shiny has
+ * carried the payload that way in the past and it costs nothing here.
  */
 export function useHostedInputValue<T>(id: string): T | undefined {
   const fullId = useNs(id);
