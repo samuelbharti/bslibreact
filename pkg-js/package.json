@@ -44,7 +44,8 @@
     "format": "prettier --write .",
     "format-check": "prettier --check .",
     "test": "vitest run",
-    "docs": "typedoc"
+    "docs": "typedoc",
+    "check:pack": "node scripts/check-pack.mjs"
   },
   "peerDependencies": {
     "@posit-dev/shinyreact": "^0.1.1",

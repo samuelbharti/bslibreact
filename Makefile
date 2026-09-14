@@ -167,14 +167,8 @@ gallery: gallery-apps  ## [gallery] Build the react client bundles, then run the
 	$(RSCRIPT) -e "shiny::runApp('gallery')"
 
 .PHONY: version-check
-version-check:  ## Assert DESCRIPTION, pyproject.toml, and package.json agree on version
-	@r=$$(sed -n 's/^Version: //p' pkg-r/DESCRIPTION); \
-	p=$$(sed -n 's/^version = "\(.*\)"/\1/p' pyproject.toml | head -1); \
-	j=$$(cd pkg-js && npm pkg get version | tr -d '"'); \
-	if [ "$$r" != "$$p" ] || [ "$$r" != "$$j" ]; then \
-		echo "versions differ: R $$r, py $$p, js $$j"; exit 1; \
-	fi; \
-	echo "version ok: $$r"
+version-check:  ## Assert every declared version agrees
+	uv run python tools/check_versions.py
 
 .PHONY: help
 help:  ## Show this help

@@ -1,0 +1,86 @@
+name: release-js
+
+# Publish the JavaScript package to npm when a release is published.
+#
+# Authentication is npm Trusted Publishing (OIDC), so there is no token in
+# repository secrets, and the build is published with provenance. The trusted
+# publisher on npm must name this repository and this workflow file, so neither
+# can be renamed without updating it to match.
+#
+# BOOTSTRAP EXCEPTION: Trusted Publishing cannot authenticate the very first
+# publish of a package that does not exist on npm yet, since there is nothing
+# for the trusted-publisher relationship to attach to. The "Publish to npm"
+# step below carries a temporary NODE_AUTH_TOKEN, read from the short-lived
+# NPM_TOKEN repository secret, only to get bslib-react's first version onto the
+# registry. Once that publish succeeds, configure the npm Trusted Publisher on
+# the now-existing package, remove the NODE_AUTH_TOKEN line below in a
+# follow-up commit, and delete the NPM_TOKEN secret.
+#
+# workflow_dispatch is here because a release can only be published once. If the
+# build or upload fails, a manual run against the tag retries it.
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    name: publish
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write # npm provenance / trusted publishing
+      contents: read
+    defaults:
+      run:
+        working-directory: pkg-js
+    steps:
+      - uses: actions/checkout@v4
+
+      # The current Node LTS, not a fixed version: npm's own minimum supported
+      # Node keeps moving forward, and Trusted Publishing needs npm 11.5.1 or
+      # newer. Node 20's bundled npm 10 has no OIDC exchange and fails with
+      # ENEEDAUTH at publish time.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "lts/*"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Update npm for trusted publishing
+        run: npm install -g npm@latest && npm --version
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # The R, Python, and JS packages share one version. Check it before
+      # building, while a mismatch is still free to fix: npm refuses to replace
+      # a version once published.
+      - name: Check the versions agree with the tag
+        run: python tools/check_versions.py ${{ github.event.release.tag_name }}
+        working-directory: ${{ github.workspace }}
+
+      # pkg-js is an npm workspace, so the lockfile is at the repository root
+      # and `npm ci` has to run there.
+      - name: Install dependencies
+        run: npm ci
+        working-directory: ${{ github.workspace }}
+
+      - name: Build
+        run: npm run build
+
+      # The package entry points into dist-npm/, which is gitignored and only
+      # exists after the build above. A tarball without it installs fine and
+      # then fails to resolve for every user, and npm will not replace a
+      # published version, so this is a check of its own.
+      - name: Check the tarball carries the built entry points
+        run: node scripts/check-pack.mjs
+
+      - name: Publish to npm
+        # See the BOOTSTRAP EXCEPTION note at the top of this file.
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish --provenance --access public
