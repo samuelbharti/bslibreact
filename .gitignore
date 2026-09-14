@@ -12,8 +12,6 @@ node_modules/
 *.tgz
 pkg-js/dist-npm/
 pkg-js/docs/
-gallery/dist/
-gallery/apps/*/react/www/
 
 # R
 .Rproj.user/

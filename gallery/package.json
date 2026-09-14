@@ -3,11 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build:apps": "node scripts/build-apps.mjs",
-    "build:site": "vite build",
-    "export:shinylive": "Rscript scripts/export-shinylive.R",
-    "build": "npm run build:site && npm run export:shinylive",
-    "dev": "vite",
+    "build": "node scripts/build-apps.mjs",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

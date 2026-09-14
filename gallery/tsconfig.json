@@ -16,8 +16,7 @@
     "skipLibCheck": true,
     "noEmit": true,
     "types": ["vite/client", "node"],
-    "baseUrl": ".",
-    "paths": { "@/*": ["src/*"] }
+    "baseUrl": "."
   },
-  "include": ["src", "apps/*/react/src", "vite.config.ts", "scripts"]
+  "include": ["apps/*/react/src", "scripts"]
 }

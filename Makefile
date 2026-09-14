@@ -159,16 +159,12 @@ examples:  ## Build every example app's client bundle
 	cd examples/volcano-plot && npm install && npm run build
 
 .PHONY: gallery-apps
-gallery-apps:  ## [gallery] Build every example's react/ client bundle (dev only, for screenshots)
-	cd gallery && npm install && npm run build:apps
-
-.PHONY: gallery
-gallery:  ## [gallery] Build the full gallery site (shell plus shinylive exports) into gallery/dist
+gallery-apps:  ## [gallery] Build every example's react/www/ui.js client bundle
 	cd gallery && npm install && npm run build
 
-.PHONY: gallery-dev
-gallery-dev:  ## [gallery] Run the gallery shell's dev server
-	cd gallery && npm install && npm run dev
+.PHONY: gallery
+gallery: gallery-apps  ## [gallery] Build the react client bundles, then run the gallery Shiny app
+	$(RSCRIPT) -e "shiny::runApp('gallery')"
 
 .PHONY: version-check
 version-check:  ## Assert DESCRIPTION, pyproject.toml, and package.json agree on version

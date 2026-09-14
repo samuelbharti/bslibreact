@@ -128,3 +128,18 @@ stale dump.
 **A full screen card made the page taller than the viewport.**
 `usePageBody()` injects `html { height: 100% }` into the page, matching
 what `bslib::page_fillable()` itself does server side.
+
+**A hosted `reactable` table never rendered, with `Cannot read
+properties of undefined (reading 'useLayoutEffect')` in the console.**
+`reactable` ships its own copy of React through `reactR`, as an
+htmlDependency also named `"react"`. `page_react()` attaches a dependency
+of the same name for the app's own client bundle. htmltools keeps
+whichever same-named dependency reports the higher version, and
+`page_react()`'s cache-busting build number always wins that comparison
+against reactR's real semver, so the genuine React script silently never
+reached the page. Found while building this repository's own gallery
+(`gallery/apps/table-reactable`); the fix is to pull
+`reactR::html_dependency_react()` in the app's own `page_deps()`/`...`
+call, rename it (so it cannot collide), and list it ahead of the app's
+own dependencies. Any app hosting a `reactR`-based widget (`reactable`
+and others built the same way) needs this, not just this one.

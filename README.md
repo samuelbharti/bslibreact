@@ -138,9 +138,11 @@ this kit once bslib ships it.
 ## Component gallery
 
 `gallery/` is a side by side gallery matching
-[shiny.posit.co/r/components](https://shiny.posit.co/r/components/):
-every example runs both as classic bslib + Shiny and as bslib-react +
-shinyreact, with a switch between them and a button to compare the code.
+[shiny.posit.co/r/components](https://shiny.posit.co/r/components/): a
+sidebar lists every example, and picking one shows it large, switchable
+between classic bslib + Shiny and bslib-react + shinyreact, with a button
+to compare the code. It's a real Shiny app (`Rscript -e
+"shiny::runApp('gallery')"`), meant for Posit Connect Cloud eventually.
 R only for now. See `gallery/README.md`; not deployed publicly yet.
 
 ## Learn more
