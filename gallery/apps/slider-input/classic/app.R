@@ -12,7 +12,15 @@ ui <- page_fillable(
 
 server <- function(input, output, session) {
   output$plot <- renderPlot({
-    hist(rnorm(input$bins), main = NULL, col = "#447099", border = "white")
+    par(cex.main = 1.4, cex.lab = 1.3, cex.axis = 1.15, mar = c(5, 5, 2, 1))
+    hist(
+      rnorm(input$bins),
+      main = NULL,
+      xlab = "Value",
+      ylab = "Frequency",
+      col = "#447099",
+      border = "white"
+    )
   })
 }
 
