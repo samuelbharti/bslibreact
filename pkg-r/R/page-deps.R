@@ -16,7 +16,10 @@ dedupe_by_name <- function(deps) {
           strict = FALSE
         )
       )
-      if (anyNA(v)) idx[[1]] else idx[[which.max(v)]]
+      # max()/== rather than which.max(), which cannot coerce a
+      # numeric_version on R older than 4.6. Same for any(is.na())
+      # instead of anyNA(), which does not dispatch on one.
+      if (any(is.na(v))) idx[[1]] else idx[[which(v == max(v))[[1]]]]
     },
     integer(1)
   )
