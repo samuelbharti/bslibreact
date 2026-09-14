@@ -55,3 +55,9 @@ playwright-report/
 # OS noise
 .DS_Store
 Thumbs.db
+
+# Working notes, kept local.
+REPORT.md
+
+# Local rsconnect deployment state.
+rsconnect/
