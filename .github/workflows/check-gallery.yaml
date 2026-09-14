@@ -62,6 +62,12 @@ jobs:
       - name: Install
         run: npm ci
 
+      # The gallery imports bslib-react, whose package entry points into
+      # pkg-js/dist-npm, a build artifact that is gitignored. A fresh
+      # checkout has to build it before anything can resolve the import.
+      - name: Build the bslib-react package
+        run: npm run build --workspace pkg-js
+
       # Each example's react/www/ui.js is a build artifact that ships
       # committed, so it can silently fall behind its own src/. Rebuilding
       # and diffing is the only thing that catches that drift.
