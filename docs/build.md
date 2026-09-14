@@ -4,7 +4,7 @@ This is the workflow for a brand new Shiny app using the ui.tsx pattern
 and this component kit, not a port of an existing app. See
 `docs/porting.md` for porting.
 
-## Tier
+## Two ways to ship the client
 
 There is one supported client tier right now: a Vite build whose
 client bundle externalizes React to `window.shinyreact`, and whose server
@@ -145,7 +145,7 @@ too:
 page_deps(app_theme, DT::DTOutput("x"), shinychat::chat_ui("x"))
 ```
 
-## Level R
+## When to use React state instead
 
 Not every piece needs to be hosted. Plain text, value boxes, and small
 formatting blocks read cleanly as real React state instead:

@@ -1,5 +1,7 @@
 # bslib-react
 
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+
 React components that reproduce [bslib](https://rstudio.github.io/bslib/)
 and [Shiny](https://shiny.posit.co/)'s own markup, class for class, for
 [shinyreact](https://github.com/posit-dev/shinyreact)'s ui.tsx pattern: an
@@ -8,7 +10,8 @@ a React client that owns the page. shinyreact provides that plumbing; this
 package provides the bslib-shaped components and the server helpers that
 plumbing does not.
 
-Status: in active development, unreleased, no tags yet.
+Status: experimental. The API may change without a deprecation cycle
+while the shape of the three packages settles.
 
 ## Install
 
@@ -88,15 +91,21 @@ export function App() {
 See `examples/01-hello` for the full runnable version of this app, in both
 languages, and `docs/build.md` for scaffolding a new app from scratch.
 
-## Level H and Level R
+## Hosted widgets versus React state
 
 Every input widget in this kit (`SliderInput`, `SelectInput`, and so on)
-hosts the server's own widget markup through `renderUI()` or `host_input()`
-rather than rebuilding it in React. This kit calls that Level H, for
-hosted. Plain text, value boxes, and small formatting blocks are the cases
-worth making real React state instead, called Level R. See
-`docs/decisions/0003-hosted-widgets.md` for why, and `docs/build.md` for
-the exact recipe.
+hosts the server's own widget markup through `renderUI()` or
+`host_input()` rather than rebuilding it in React, so each one keeps the
+behaviour Shiny already gives it: ionRangeSlider's skin, selectize's
+dropdown, the datepicker. Plain text, value boxes, and small formatting
+blocks are the cases worth making real React state instead, since
+round-tripping to the server to format a number buys nothing.
+
+This repository calls those two styles Level H, for hosted, and Level R,
+for React. The shorthand runs through the source and the guides, so it is
+worth knowing before reading either. See
+`docs/decisions/0003-hosted-widgets.md` for where the line is drawn and
+why, and `docs/build.md` for the recipe.
 
 No Tailwind, no shadcn, no react-bootstrap. This package's whole reason to
 exist is that those give a good looking app that does not look like the
@@ -155,3 +164,13 @@ R only for now. See `gallery/README.md`; not deployed publicly yet.
 ## License
 
 MIT. See `LICENSE`.
+
+This package exists to reproduce the markup of
+[bslib](https://rstudio.github.io/bslib/) and
+[Shiny](https://shiny.posit.co/), both MIT licensed and copyright Posit
+Software, PBC. The class names and DOM structure the components emit are
+theirs; the React implementations of them are not. `shinyreact`, which
+supplies the client runtime these components are built against, is also
+Posit's. None of that code is vendored here: the published bundles carry
+no third party code, and React is a peer dependency rather than a bundled
+one.
