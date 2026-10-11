@@ -130,7 +130,12 @@ SAMPLES: tuple[Sample, ...] = (
         'ui.input_text_area("x", None, rows=3, placeholder="GENE1, GENE2, GENE3...")',
     ),
     _s("textOutput", "tag", "output", 'ui.output_text("x")'),
-    _s("verbatimTextOutput", "tag", "output", 'ui.output_text_verbatim("x")'),
+    _s(
+        "verbatimTextOutput",
+        "tag",
+        "output",
+        'ui.output_code("x", placeholder=False)',
+    ),
     _s(
         "details_summary",
         "tag",
@@ -143,7 +148,7 @@ SAMPLES: tuple[Sample, ...] = (
         "tag",
         "card",
         'ui.card(ui.card_header("Current selection"), ui.output_text("count"), '
-        'ui.output_text_verbatim("selected"))',
+        'ui.output_code("selected", placeholder=False))',
     ),
     _s(
         "actionButton_class_override",

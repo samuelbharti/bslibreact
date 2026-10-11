@@ -22,7 +22,7 @@ the widget's HTML comes from the server at runtime, not from TSX.
 | `shiny::plotOutput()` | `ui.output_plot()` | `PlotOutput` | `plotOutput` |
 | `shiny::plotOutput(click = )` | `ui.output_plot(click = True)` | `PlotOutput` with `click` | `plotOutput_click` |
 | `shiny::textOutput()` | `ui.output_text()` | `TextOutput` | `textOutput` |
-| `shiny::verbatimTextOutput()` | `ui.output_text_verbatim()` | `VerbatimTextOutput` | `verbatimTextOutput` |
+| `shiny::verbatimTextOutput()` | `ui.output_code(placeholder = False)` | `VerbatimTextOutput` | `verbatimTextOutput` |
 | `bslib::layout_columns()` | `ui.layout_columns()` | `LayoutColumns` | `layout_columns_value_box`, `layout_columns_fill`, `layout_columns_single_child` |
 | `bslib::value_box()` | `ui.value_box()` | `ValueBox` | `value_box` |
 | `DT::DTOutput()` | (no equivalent) | `TableOutput` | `DTOutput`, `DTOutput_no_fill` |
