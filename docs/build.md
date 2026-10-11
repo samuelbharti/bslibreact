@@ -100,8 +100,8 @@ Two rules that matter here:
    suspends outputs that are not visible. `host_input()` turns that off
    for you. With a plain `renderUI()`, set
    `outputOptions(output, "bins_ui", suspendWhenHidden = FALSE)` in R, or
-   `@render.ui(suspend_when_hidden=False)` in Python, if the widget needs
-   to exist before its tab is first opened.
+   put `@output(suspend_when_hidden=False)` above `@render.ui` in Python,
+   if the widget needs to exist before its tab is first opened.
 
 ## The page
 

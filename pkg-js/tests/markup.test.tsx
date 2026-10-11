@@ -612,8 +612,8 @@ describe("HostedInput", () => {
   });
 });
 
-describe("NavbarTabStrip and TabPane inside a Module", () => {
-  it("point each tab's href at its pane's id", () => {
+describe("NavbarTabStrip and TabPane with a Module", () => {
+  it("point each tab's href at its pane's id when both sit inside one", () => {
     const { container } = render(
       <Module namespace="mod">
         <NavbarTabStrip id="nav" panels={[{ value: "One", label: "One" }]} />
@@ -625,7 +625,22 @@ describe("NavbarTabStrip and TabPane inside a Module", () => {
     const href = container.querySelector("a.nav-link")!.getAttribute("href");
     const paneId = container.querySelector(".tab-pane")!.id;
     expect(href).toBe(`#${paneId}`);
-    expect(paneId).toBe("tab-mod-nav-One");
+    expect(container.querySelector("ul.shiny-tab-input")!.id).toBe("mod-nav");
+  });
+
+  it("still match when only the pane sits inside a Module", () => {
+    const { container } = render(
+      <>
+        <NavbarTabStrip id="nav" panels={[{ value: "One", label: "One" }]} />
+        <Module namespace="explorer">
+          <TabPane navId="nav" value="One" active>
+            x
+          </TabPane>
+        </Module>
+      </>,
+    );
+    const href = container.querySelector("a.nav-link")!.getAttribute("href");
+    expect(href).toBe(`#${container.querySelector(".tab-pane")!.id}`);
   });
 });
 

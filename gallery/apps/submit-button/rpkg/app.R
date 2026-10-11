@@ -14,7 +14,12 @@ ui <- page_react(
 server <- function(input, output, session) {
   host_input(output, "n", sliderInput("n", "N", 1, 100, 42))
   host_input(output, "apply", submitButton("Apply"))
-  output$value <- renderText(paste("Applied N =", input$n))
+  # The hosted slider has no value until it binds, so wait for it instead
+  # of showing "Applied N =" with no number.
+  output$value <- renderText({
+    req(!is.null(input$n))
+    paste("Applied N =", input$n)
+  })
 }
 
 shinyApp(ui, server)

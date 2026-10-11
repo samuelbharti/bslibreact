@@ -40,23 +40,20 @@ if (!requireNamespace("pkgload", quietly = TRUE)) {
 }
 # This script lives at tools/markup/render-r.R, two levels below the
 # repository root; pkg-r sits alongside tools/ at that same root.
-root <- normalizePath(
-  file.path(
-    dirname(sub(
-      "^--file=",
-      "",
-      grep("^--file=", commandArgs(trailingOnly = FALSE), value = TRUE)
-    )),
-    "..",
-    ".."
-  ),
-  winslash = "/"
+script_file <- sub(
+  "^--file=",
+  "",
+  grep("^--file=", commandArgs(trailingOnly = FALSE), value = TRUE)
 )
-pkg_dir <- file.path(root, "pkg-r")
-if (!file.exists(file.path(pkg_dir, "DESCRIPTION"))) {
-  # commandArgs() cannot always recover --file= (a sourced script, say), so
-  # fall back to a path relative to the working directory.
-  pkg_dir <- "pkg-r"
+# commandArgs() has no --file= when the script is sourced, so fall back to
+# a path relative to the working directory, the repository root.
+pkg_dir <- if (length(script_file) == 1) {
+  normalizePath(
+    file.path(dirname(script_file), "..", "..", "pkg-r"),
+    winslash = "/"
+  )
+} else {
+  "pkg-r"
 }
 pkgload::load_all(pkg_dir, quiet = TRUE)
 
@@ -321,6 +318,7 @@ for (pkg in c("cli", "jsonlite")) {
 
 .render_markup_catalog <- function(
   path,
+  pkg_dir,
   components = NULL,
   served = c("auto", "never", "always"),
   theme = bslib::bs_theme(version = 5),
@@ -454,7 +452,7 @@ if (length(out_flag) == 1 && out_flag < length(args)) {
   out_path <- args[out_flag + 1]
   result <- tryCatch(
     {
-      .render_markup_catalog(path = out_path)
+      .render_markup_catalog(path = out_path, pkg_dir = pkg_dir)
       TRUE
     },
     error = function(e) {

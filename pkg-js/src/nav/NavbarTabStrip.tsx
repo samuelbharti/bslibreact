@@ -51,6 +51,10 @@ function slug(value: string) {
   return value.replace(/\s+/g, "-");
 }
 
+// Built from the raw navId on both sides (tab href and TabPane id), never
+// the namespaced one: a strip and its panes then match wherever a <Module>
+// sits, around both, around a pane, or nowhere. Only the <ul>'s own id,
+// the Shiny input id, is namespaced.
 export function tabPaneId(navId: string, value: string) {
   return `tab-${navId}-${slug(value)}`;
 }
@@ -147,7 +151,7 @@ export function NavbarTabStrip({ id, panels, children }: Props) {
             return (
               <li key={p.value}>
                 <a
-                  href={`#${tabPaneId(fullId, p.value)}`}
+                  href={`#${tabPaneId(id, p.value)}`}
                   data-toggle="tab"
                   data-bs-toggle="tab"
                   data-value={p.value}
@@ -179,7 +183,7 @@ export function NavbarTabStrip({ id, panels, children }: Props) {
         return (
           <li key={entry.value} className="nav-item">
             <a
-              href={`#${tabPaneId(fullId, entry.value)}`}
+              href={`#${tabPaneId(id, entry.value)}`}
               data-toggle="tab"
               data-bs-toggle="tab"
               data-value={entry.value}
