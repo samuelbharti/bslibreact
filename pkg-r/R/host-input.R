@@ -29,6 +29,10 @@
 #' leaving it to surface later as an input or output that mysteriously
 #' never updates.
 #'
+#' The output keeps rendering while it is hidden (`suspendWhenHidden =
+#' FALSE`), so a widget inside a closed panel or an inactive tab exists
+#' before it is first shown, as it would in the server-rendered app.
+#'
 #' @param output The `output` object from a Shiny server function.
 #' @param id A short, stable identifier for this hosted widget. This is
 #'   not itself a DOM id: it is combined with `suffix` to make the output
@@ -65,5 +69,9 @@ host_input <- function(output, id, widget, suffix = "_ui") {
     check_no_id_collision(tag, name)
     tag
   })
+  # The output's container is a React element, so Shiny's own visibility
+  # tracking cannot see it; a hidden-by-default output could then never
+  # render. Matches the Python host_input().
+  shiny::outputOptions(output, name, suspendWhenHidden = FALSE)
   invisible(name)
 }

@@ -13,7 +13,8 @@ what it exports, and their signatures may still change.
 * `host_input()` renders a shiny input server-side into an output the
   React client displays, for the widgets that have no dedicated
   component. The output is named with a `_ui` suffix, which the client's
-  own `id` has to match.
+  own `id` has to match, and keeps rendering while hidden, as the Python
+  `host_input()` does.
 
 * `bslib_react_dep()` returns the `htmlDependency()` for the vendored
   `bslib-react.js` bundle. Attach it after shinyreact's own dependency:

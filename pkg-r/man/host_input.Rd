@@ -57,6 +57,9 @@ return first. \code{check_no_id_collision()} (an internal helper) catches
 this at render time with a message naming the id involved, rather than
 leaving it to surface later as an input or output that mysteriously
 never updates.
+
+The output keeps rendering while it is hidden (\code{suspendWhenHidden = FALSE}), so a widget inside a closed panel or an inactive tab exists
+before it is first shown, as it would in the server-rendered app.
 }
 
 \examples{

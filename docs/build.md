@@ -97,7 +97,8 @@ Two rules that matter here:
    one DOM id, and the browser logs a duplicate output id warning.
 2. A holder that starts hidden, inside a closed accordion panel or a
    non-default tab, never renders at all by default, because Shiny
-   suspends outputs that are not visible. Set
+   suspends outputs that are not visible. `host_input()` turns that off
+   for you. With a plain `renderUI()`, set
    `outputOptions(output, "bins_ui", suspendWhenHidden = FALSE)` in R, or
    `@render.ui(suspend_when_hidden=False)` in Python, if the widget needs
    to exist before its tab is first opened.
