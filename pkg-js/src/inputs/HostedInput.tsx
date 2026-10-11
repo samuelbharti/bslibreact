@@ -36,7 +36,8 @@ export const ActionLink = HostedInput;
 /** Hosts `shiny::checkboxInput()`. */
 export const CheckboxInput = HostedInput;
 /** Hosts `bslib::input_dark_mode()`, a `<bslib-input-dark-mode>` web
- *  component. Not yet checked in a browser since moving to HostedInput. */
+ *  component (checked in the gallery: it toggles the theme and sets its
+ *  input). */
 export const DarkModeInput = HostedInput;
 /** Hosts `shiny::downloadButton()`. */
 export const DownloadButton = HostedInput;
