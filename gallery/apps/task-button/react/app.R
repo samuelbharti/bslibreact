@@ -13,7 +13,12 @@ ui <- page_react(
 
 server <- function(input, output, session) {
   host_input(output, "run", input_task_button("run", "Run analysis"))
-  output$status <- renderText(paste("Ran", input$run, "times"))
+  # The hosted button has no value until it binds, so wait for it instead of
+  # showing "Ran times" with no number.
+  output$status <- renderText({
+    req(!is.null(input$run))
+    paste("Ran", input$run, "times")
+  })
 }
 
 shinyApp(ui, server)
