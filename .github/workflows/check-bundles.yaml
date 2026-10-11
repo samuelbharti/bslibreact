@@ -1,15 +1,29 @@
-name: Check gallery
+name: Check bundles
 
+# The example apps and the gallery's react apps each commit a built
+# www/ui.js, and each of those bundles a copy of bslib-react. So a change in
+# pkg-js can make them stale as surely as a change in their own src/ can,
+# which is why pkg-js is in the paths below too.
 on:
   push:
     branches: [main]
     paths:
       - "gallery/**"
-      - ".github/workflows/check-gallery.yaml"
+      - "examples/**"
+      - "pkg-js/src/**"
+      - "pkg-js/package.json"
+      - "pkg-js/vite.config.npm.ts"
+      - "package-lock.json"
+      - ".github/workflows/check-bundles.yaml"
   pull_request:
     paths:
       - "gallery/**"
-      - ".github/workflows/check-gallery.yaml"
+      - "examples/**"
+      - "pkg-js/src/**"
+      - "pkg-js/package.json"
+      - "pkg-js/vite.config.npm.ts"
+      - "package-lock.json"
+      - ".github/workflows/check-bundles.yaml"
   workflow_dispatch:
 
 permissions:
@@ -32,7 +46,7 @@ jobs:
       # Every example app and the shell itself must at least parse. This
       # catches a broken app.R without installing shiny or booting 126
       # processes, which a runtime check of this gallery would need.
-      - name: Parse every R file
+      - name: Parse every gallery R file
         run: |
           Rscript -e '
             files <- list.files("gallery", pattern = "[.]R$", recursive = TRUE, full.names = TRUE)
@@ -57,32 +71,35 @@ jobs:
           done
           echo "$count rpkg clients checked"
 
-      # gallery is an npm workspace, so the lockfile lives at the root and
-      # `npm ci` has to run there.
+      # The examples and the gallery are npm workspaces, so the lockfile
+      # lives at the root and `npm ci` has to run there.
       - name: Install
         run: npm ci
 
-      # The gallery imports bslib-react, whose package entry points into
+      # Both import bslib-react, whose package entry points into
       # pkg-js/dist-npm, a build artifact that is gitignored. A fresh
       # checkout has to build it before anything can resolve the import.
       - name: Build the bslib-react package
         run: npm run build --workspace pkg-js
 
-      # Each example's react/www/ui.js is a build artifact that ships
-      # committed, so it can silently fall behind its own src/. Rebuilding
-      # and diffing is the only thing that catches that drift.
-      - name: Rebuild the react clients
+      - name: Rebuild the example clients
+        run: npm run build --workspace examples/01-hello --workspace examples/volcano-plot
+
+      - name: Rebuild the gallery react clients
         run: npm run build --workspace gallery
 
+      # Rebuilding and diffing is the only thing that catches a committed
+      # bundle that has fallen behind its source.
       - name: Fail if a committed bundle is stale
         run: |
-          if ! git diff --quiet -- 'gallery/apps/*/react/www/'; then
-            echo "A committed react/www/ui.js differs from a fresh build."
-            echo "Run 'npm run build' in gallery/ and commit the result."
-            git diff --stat -- 'gallery/apps/*/react/www/'
+          bundles=('examples/*/www/' 'gallery/apps/*/react/www/')
+          if ! git diff --quiet -- "${bundles[@]}"; then
+            echo "A committed www/ui.js differs from a fresh build."
+            echo "Run 'make examples' and 'make gallery-apps', then commit the result."
+            git diff --stat -- "${bundles[@]}"
             exit 1
           fi
           echo "every committed bundle matches its source"
 
-      - name: Typecheck
+      - name: Typecheck the gallery
         run: npm run typecheck --workspace gallery

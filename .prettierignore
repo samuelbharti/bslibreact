@@ -1,5 +1,5 @@
 # Vite output. These are built by gallery/scripts/build-apps.mjs and committed
-# so a clone runs with no Node step, and check-gallery.yaml rebuilds them and
+# so a clone runs with no Node step, and check-bundles.yaml rebuilds them and
 # fails if what is committed differs. Reformatting them here would make that
 # check fail on every run.
 gallery/apps/*/react/www/
