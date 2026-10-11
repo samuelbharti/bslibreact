@@ -23,5 +23,3 @@ First release. Experimental: component props may still change.
   its Shiny bindings behind.
 - `TabPane` namespaces its id inside a `<Module>` the same way
   `NavbarTabStrip` namespaces its tab links, so tabs switch there too.
-- Dropped the JSX types for `bslib-switch`, `bslib-switch-inline` and
-  `bslib-offcanvas`, elements bslib does not have.
