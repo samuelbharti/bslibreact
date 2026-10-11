@@ -612,6 +612,23 @@ describe("HostedInput", () => {
   });
 });
 
+describe("NavbarTabStrip and TabPane inside a Module", () => {
+  it("point each tab's href at its pane's id", () => {
+    const { container } = render(
+      <Module namespace="mod">
+        <NavbarTabStrip id="nav" panels={[{ value: "One", label: "One" }]} />
+        <TabPane navId="nav" value="One" active>
+          x
+        </TabPane>
+      </Module>,
+    );
+    const href = container.querySelector("a.nav-link")!.getAttribute("href");
+    const paneId = container.querySelector(".tab-pane")!.id;
+    expect(href).toBe(`#${paneId}`);
+    expect(paneId).toBe("tab-mod-nav-One");
+  });
+});
+
 /** The head_inline_css entry every page_*() sample carries: bslib's own
  *  `tags$head(tags$style("html { height: 100%; }"))`, injected by
  *  usePageBody() the same way. Reads it off any "page" kind sample rather

@@ -1,4 +1,5 @@
 import type { CSSProperties, ReactNode } from "react";
+import { useNs } from "../module/Module";
 import { tabPaneId } from "./NavbarTabStrip";
 
 type Props = {
@@ -31,6 +32,9 @@ const fillableStyle = { "--bslib-navbar-margin": "0" } as CSSProperties;
  * sample alone would have been wrong.
  */
 export function TabPane({ navId, value, active = false, fillable = false, children }: Props) {
+  // Namespaced the same way NavbarTabStrip namespaces its id, so the tab's
+  // href and this pane's id still match inside a <Module>.
+  const fullNavId = useNs(navId);
   const classes = fillable
     ? ["tab-pane html-fill-item html-fill-container bslib-gap-spacing", active && "active"]
         .filter(Boolean)
@@ -40,7 +44,7 @@ export function TabPane({ navId, value, active = false, fillable = false, childr
     <div
       className={classes}
       data-value={value}
-      id={tabPaneId(navId, value)}
+      id={tabPaneId(fullNavId, value)}
       style={fillable ? fillableStyle : undefined}
     >
       {children}

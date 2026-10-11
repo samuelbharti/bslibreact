@@ -21,3 +21,7 @@ First release. Experimental: component props may still change.
 - `useBoundScope` unbinds the element it bound rather than whatever the
   ref points at during cleanup, so a node React swaps out does not leave
   its Shiny bindings behind.
+- `TabPane` namespaces its id inside a `<Module>` the same way
+  `NavbarTabStrip` namespaces its tab links, so tabs switch there too.
+- Dropped the JSX types for `bslib-switch`, `bslib-switch-inline` and
+  `bslib-offcanvas`, elements bslib does not have.
