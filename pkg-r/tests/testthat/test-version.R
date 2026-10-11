@@ -5,12 +5,8 @@ test_that("this package's version matches pkg-js and the root pyproject.toml", {
   pkg_js_path <- testthat::test_path("..", "..", "..", "pkg-js", "package.json")
   pyproject_path <- testthat::test_path("..", "..", "..", "pyproject.toml")
   skip_if_not(
-    file.exists(pkg_js_path),
-    "not in a repository checkout"
-  )
-  skip_if_not(
-    file.exists(pyproject_path),
-    "not in a repository checkout"
+    file.exists(pkg_js_path) && file.exists(pyproject_path),
+    "pkg-js/package.json or pyproject.toml is missing (not a repository checkout)"
   )
 
   r_version <- as.character(utils::packageVersion("bslibreact"))

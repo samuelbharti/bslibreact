@@ -35,15 +35,16 @@ def _file_mtime_int(path: Path) -> int | None:
 def _bundle_version() -> str:
     """The package version, suffixed with the bundle's mtime in a dev checkout.
 
-    An installed package serves ``/lib/bslib-react-0.1.0/``. In a repo
-    checkout it is ``/lib/bslib-react-0.1.0.<mtime>/`` instead, so
-    ``make update-dist`` still cache-busts the browser while the URL still
-    names the release.
+    An installed package serves ``/lib/bslib-react-<version>/``. In a repo
+    checkout it is ``/lib/bslib-react-<version>+<mtime>/`` instead, so
+    ``make update-dist`` still cache-busts the browser. The mtime goes in a
+    PEP 440 local segment (``+``), which stays valid after any version,
+    pre-releases included.
     """
     if _JS_PACKAGE_JSON.is_file():
         mtime = _file_mtime_int(_WWW_DIR / "bslib-react.js")
         if mtime is not None:
-            return f"{__version__}.{mtime}"
+            return f"{__version__}+{mtime}"
     return __version__
 
 

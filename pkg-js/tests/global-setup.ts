@@ -71,11 +71,13 @@ const RENDER_PY_SCRIPT = join(REPO_ROOT, "tools", "markup", "render_py.py");
 
 function run(command: string, args: string[]): SpawnSyncReturns<string> {
   const options = { cwd: REPO_ROOT, encoding: "utf8" } as const;
-  if (process.platform !== "win32") return spawnSync(command, args, options);
-  // On Windows, go through cmd.exe so a .cmd or .bat shim a version manager
-  // installs (rig, say) resolves off PATH too. One quoted command string,
-  // not an args array: that keeps paths with spaces whole, and avoids the
-  // DEP0190 warning Node prints for an args array with shell: true.
+  const direct = spawnSync(command, args, options);
+  const notFound = (direct.error as NodeJS.ErrnoException | undefined)?.code === "ENOENT";
+  if (process.platform !== "win32" || !notFound) return direct;
+  // Windows finds only .exe and .com files on its own. A version manager's
+  // .bat or .cmd shim (rig installs Rscript.bat) needs cmd.exe: one quoted
+  // command string, so paths with spaces stay whole and Node does not warn
+  // about an args array with shell: true (DEP0190).
   const line = [command, ...args].map((part) => `"${part}"`).join(" ");
   return spawnSync(line, { ...options, shell: true });
 }
@@ -216,8 +218,7 @@ function warnBanner(lang: Lang, status: CatalogLangStatus): void {
       `[bslib-react] markup catalog for "${lang}" is not ready: ${state}.`,
       `  ${STATE_EXPLAIN[state]}.`,
       status.detail ? `  ${status.detail}` : undefined,
-      `  Every test that reads the "${lang}" catalog is SKIPPED until a render`,
-      `  produces ${status.path}.`,
+      `  Every test that reads the "${lang}" catalog is SKIPPED this run.`,
       "  Set BSLIB_REACT_REQUIRE_CATALOG=1 to make this a failure instead; CI does.",
       "",
     ]

@@ -36,7 +36,7 @@ def test_version_gets_an_mtime_suffix_in_a_dev_checkout(
     monkeypatch.setattr(_dep, "_WWW_DIR", fake_www)
 
     version = _dep._bundle_version()
-    assert version == f"{__version__}.{known_mtime}"
+    assert version == f"{__version__}+{known_mtime}"
 
 
 def test_script_tag_is_deferred_with_no_type_attribute() -> None:

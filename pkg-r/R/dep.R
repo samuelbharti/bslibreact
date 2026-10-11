@@ -32,10 +32,10 @@
 }
 
 # The package version, suffixed with the bundle file's own mtime in a dev
-# checkout. Installed, a page loads version "0.1.0"; in the repo, where the
-# same file can change between one `make update-dist` and the next without
-# a version bump, it loads "0.1.0.<mtime>", so the browser's cache is still
-# busted on a rebuild. Mirrors shinyreact's .bundle_version().
+# checkout. Installed, a page loads "<version>"; in the repo, where the same
+# file can change between one `make update-dist` and the next without a
+# version bump, it loads "<version>.<mtime>", so the browser's cache is
+# still busted on a rebuild. Mirrors shinyreact's .bundle_version().
 .bundle_version <- function() {
   if (.dev_checkout()) {
     mtime <- suppressWarnings(file.mtime(file.path(
@@ -43,7 +43,11 @@
       "bslib-react.js"
     )))
     if (length(mtime) == 1L && !is.na(mtime)) {
-      return(paste0(.package_version(), ".", as.integer(mtime)))
+      return(paste0(
+        .package_version(),
+        ".",
+        sprintf("%.0f", as.numeric(mtime))
+      ))
     }
   }
   .package_version()
