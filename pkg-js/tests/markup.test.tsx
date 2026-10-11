@@ -630,7 +630,7 @@ describeCatalog("r", "HelpText", () => {
 });
 
 // HostedInput has no markup of its own to pin against the catalog (see
-// MARKUP.md): the widget's HTML comes from the parent app's own R call at
+// docs/markup.md): the widget's HTML comes from the parent app's own R call at
 // runtime, not from this component. What IS worth a fixed assertion is the
 // wrapper contract every hosted widget depends on: a shiny-html-output div
 // (or span/etc via ShinyOutput's own tagName) carrying the id the parent's

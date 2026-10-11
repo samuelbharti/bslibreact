@@ -13,7 +13,7 @@ window.addEventListener("load", function () {
   const h = React.createElement;
 
   // plotly has no dedicated component: WidgetOutput is the generic
-  // htmlwidget host (MARKUP.md names plotly as the example for this).
+  // htmlwidget host (docs/markup.md names plotly as the example for this).
   function App() {
     return h(
       PageFillable,

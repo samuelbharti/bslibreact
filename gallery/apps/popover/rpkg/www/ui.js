@@ -12,7 +12,7 @@ window.addEventListener("load", function () {
 
   const h = React.createElement;
 
-  // bslib::popover() has no dedicated component: MARKUP.md recommends
+  // bslib::popover() has no dedicated component: docs/markup.md recommends
   // hosting the whole call through UiOutput, the generic escape hatch.
   function App() {
     return h(

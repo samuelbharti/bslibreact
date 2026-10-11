@@ -74,5 +74,7 @@ This kit mirrors bslib: it only has components for the pieces of bslib an
 app has actually needed so far. A bslib component with no dedicated
 component here yet is usually still reachable through `UiOutput`, the
 escape hatch that hosts an entire dynamic R UI fragment as Shiny's own
-`uiOutput()` binding renders it. See `MARKUP.md` for the full map of what
-exists, what is hosted instead of reproduced, and what is not built yet.
+`uiOutput()` binding renders it. See
+[docs/markup.md](https://github.com/samuelbharti/bslib-react/blob/main/docs/markup.md)
+for the full map of what exists, what is hosted instead of reproduced,
+and what is not built yet.

@@ -1,7 +1,7 @@
 import { Card, CardHeader, CardBody, PageFillable, WidgetOutput } from "bslib-react";
 
 // plotly has no dedicated component: WidgetOutput is the generic
-// htmlwidget host (MARKUP.md names plotly as the example for this).
+// htmlwidget host (docs/markup.md names plotly as the example for this).
 export default function App() {
   return (
     <PageFillable>
