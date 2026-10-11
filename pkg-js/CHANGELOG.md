@@ -33,7 +33,8 @@ First release. Experimental: component props may still change.
 - `useHostedInputValue` starts from the value Shiny already has and
   resets when its id changes.
 - A `Card` with an `id` takes the `<Module>` prefix, like a sidebar id.
-- `NavbarTabStrip` shows a dropdown item's `icon`.
+- `NavbarTabStrip` shows a dropdown toggle's and a dropdown item's `icon`,
+  and an icon keeps a style it is given ("far fa-compass").
 - `PageNavbar` clears its background when `bg` goes away.
 - If Shiny's bind step fails, `NavbarTabStrip` and `LayoutSidebar` show
   their content anyway and log the error.

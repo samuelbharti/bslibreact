@@ -703,14 +703,26 @@ describe("Card, NavbarTabStrip and PageNavbar details", () => {
     expect(container.querySelector(".card")!.id).toBe("m-c");
   });
 
-  it("NavbarTabStrip shows a dropdown item's icon", () => {
+  it("NavbarTabStrip shows a dropdown toggle's and item's icons, as nav_menu() does", () => {
+    // bslib renders <i class="fas fa-book fa-fw"> before "Docs" on the toggle,
+    // and shiny::icon("compass") picks the regular style: "far fa-compass".
     const { container } = render(
       <NavbarTabStrip
         id="nav"
-        panels={[{ label: "Docs", dropdown: [{ value: "a", label: "A", icon: "fa-book" }] }]}
+        panels={[
+          {
+            label: "Docs",
+            icon: "fa-book",
+            dropdown: [{ value: "g", label: "Guide", icon: "far fa-compass" }],
+          },
+        ]}
       />,
     );
-    expect(container.querySelector(".dropdown-item i.fa-book")).not.toBeNull();
+    const toggleIcon = container.querySelector(".dropdown-toggle > i")!;
+    expect(Array.from(toggleIcon.classList).sort()).toEqual(["fa-book", "fa-fw", "fas"]);
+    const itemIcon = container.querySelector(".dropdown-item > i")!;
+    expect(Array.from(itemIcon.classList).sort()).toEqual(["fa-compass", "fa-fw", "far"]);
+    expect(itemIcon.getAttribute("aria-label")).toBe("compass icon");
   });
 
   it("PageNavbar clears its background when bg goes away", () => {

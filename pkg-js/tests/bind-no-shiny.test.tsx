@@ -4,25 +4,10 @@ import { NavbarTabStrip, NavItem } from "../src/nav/NavbarTabStrip";
 import { LayoutSidebar } from "../src/layout/Sidebar";
 
 /**
- * useBoundScope's "there is no Shiny on this page at all" behavior, kept in
- * its own file rather than folded into bind.test.tsx.
- *
- * Every markup test in this package (tests/markup.test.tsx and friends)
- * renders NavbarTabStrip and LayoutSidebar with no window.Shiny present, and
- * relies on useBoundScope returning `true` immediately so the withheld
- * `children`/`sidebar` content still shows up in a plain render() with no
- * waitFor. These two tests are the guarantee that reliance is not
- * accidental: they render both components with window.Shiny absent and
- * check the withheld content is there on the very first synchronous read,
- * no `await` needed.
- *
- * This is safe to run in any order, alongside anything else that might also
- * touch window.Shiny in the same file: unlike useShinyInitialized() (backed
- * by a page-wide singleton store with no per-test reset - see bind.test.tsx's
- * own file comment for why THAT forces an ordering constraint there),
- * useBoundScope's own `hasShiny` check reads `window.Shiny` directly, fresh,
- * every render, so it is unaffected by whatever the shared lifecycle store
- * remembers from an earlier test.
+ * useBoundScope with no window.Shiny on the page at all: the markup tests
+ * render NavbarTabStrip and LayoutSidebar that way and rely on the withheld
+ * content showing on the first synchronous read. bind-late-init.test.tsx
+ * covers Shiny arriving after mount; bind.test.tsx the rest.
  */
 
 afterEach(() => {

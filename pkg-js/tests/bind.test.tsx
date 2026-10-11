@@ -10,12 +10,13 @@ import { createFakeShiny } from "./fake-shiny";
  * bindAll() has settled, so the hosted output's own bind pass and the
  * manual one never scan the same element at once, which Shiny reports as
  * "Duplicate output IDs". The fake Shiny in fake-shiny.ts reproduces that
- * race. The "Shiny initializes after mount" case is in
- * bind-init-order.test.tsx.
+ * race. bind-late-init.test.tsx covers Shiny initializing after mount, and
+ * bind-no-shiny.test.tsx a page with no Shiny.
  */
 
 afterEach(() => {
   delete (window as { Shiny?: unknown }).Shiny;
+  vi.restoreAllMocks();
 });
 
 const panels = [{ value: "one", label: "One" }];
@@ -156,7 +157,28 @@ describe("useBoundScope: failure and re-binding", () => {
       expect(container.querySelector('[data-testid="side"]')).not.toBeNull();
     });
     expect(error).toHaveBeenCalled();
-    error.mockRestore();
+  });
+
+  it("shows the content and reports the error when initializeInputs() throws", async () => {
+    const { Shiny } = createFakeShiny();
+    (window as unknown as { Shiny: unknown }).Shiny = {
+      ...Shiny,
+      initializeInputs: vi.fn(() => {
+        throw new Error("boom");
+      }),
+    };
+    const error = vi.spyOn(console, "error").mockImplementation(() => {});
+
+    const { container } = render(
+      <LayoutSidebar id="s" sidebar={<div data-testid="side" />}>
+        <div />
+      </LayoutSidebar>,
+    );
+
+    await waitFor(() => {
+      expect(container.querySelector('[data-testid="side"]')).not.toBeNull();
+    });
+    expect(error).toHaveBeenCalled();
   });
 
   it("withholds the content again while it re-binds", async () => {
@@ -173,11 +195,23 @@ describe("useBoundScope: failure and re-binding", () => {
       expect(container.querySelector('[data-testid="side"]')).not.toBeNull();
     });
 
+    // Record whether the withheld content is in the page when the manual
+    // bind starts: it must not be, from the first commit of the re-bind.
+    const seen: boolean[] = [];
+    const bindAll = Shiny.bindAll;
+    (window as unknown as { Shiny: typeof Shiny }).Shiny = {
+      ...Shiny,
+      bindAll: vi.fn((scope: Element) => {
+        seen.push(scope.querySelector('[data-testid="side"]') !== null);
+        return bindAll(scope);
+      }),
+    };
+
     rerender(ui(undefined));
     rerender(ui("s"));
-    expect(container.querySelector('[data-testid="side"]')).toBeNull();
     await waitFor(() => {
       expect(container.querySelector('[data-testid="side"]')).not.toBeNull();
     });
+    expect(seen).toEqual([false]);
   });
 });

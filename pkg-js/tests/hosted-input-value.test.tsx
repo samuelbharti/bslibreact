@@ -49,11 +49,22 @@ describe("useHostedInputValue", () => {
     expect(getByTestId("v").textContent).toBe("12");
   });
 
-  it("does not keep the previous input's value when its id changes", () => {
-    const { getByTestId, rerender } = render(<Show id="a" />);
-    fire("a", "from a");
-    expect(getByTestId("v").textContent).toBe("from a");
-    rerender(<Show id="b" />);
+  it("never shows the previous input's value when its id changes", () => {
+    setInputValues({ a: "A", b: "B" });
+    const renders: string[] = [];
+    function Log({ id }: { id: string }) {
+      renders.push(`${id}=${String(useHostedInputValue<unknown>(id))}`);
+      return null;
+    }
+    const { rerender } = render(<Log id="a" />);
+    rerender(<Log id="b" />);
+    expect(renders.filter((r) => r.startsWith("b="))).not.toContain("b=A");
+    expect(renders[renders.length - 1]).toBe("b=B");
+  });
+
+  it("ignores names inherited from Object.prototype", () => {
+    setInputValues({});
+    const { getByTestId } = render(<Show id="toString" />);
     expect(getByTestId("v").textContent).toBe("none");
   });
 });
