@@ -3,7 +3,7 @@ name: Check JS
 on:
   push:
     branches: [main]
-    paths:
+    paths: &check-js-inputs
       - "pkg-js/**"
       - "pkg-r/R/catalog*.R"
       - "pkg-r/DESCRIPTION"
@@ -19,21 +19,7 @@ on:
       - "Makefile"
       - ".github/workflows/check-js.yaml"
   pull_request:
-    paths:
-      - "pkg-js/**"
-      - "pkg-r/R/catalog*.R"
-      - "pkg-r/DESCRIPTION"
-      - "pkg-py/src/bslib_react/_catalog*.py"
-      - "pyproject.toml"
-      - "uv.lock"
-      - "package.json"
-      - "package-lock.json"
-      - ".nvmrc"
-      - "markup-versions.json"
-      - "tools/markup/**"
-      - "docs/markup-catalog.md"
-      - "Makefile"
-      - ".github/workflows/check-js.yaml"
+    paths: *check-js-inputs
   workflow_call:
     inputs:
       latest:

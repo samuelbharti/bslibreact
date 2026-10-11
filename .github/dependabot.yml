@@ -1,0 +1,11 @@
+# Keeps the commit-SHA pins in .github/workflows current. Monthly and in one
+# grouped pull request, to keep CI runs few.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    groups:
+      actions:
+        patterns: ["*"]

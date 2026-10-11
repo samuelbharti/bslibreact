@@ -49,8 +49,10 @@ jobs:
           node-version: "lts/*"
           registry-url: "https://registry.npmjs.org"
 
+      # A fixed version, since this job holds the publish credentials: a new
+      # npm release changes nothing here until someone bumps this on purpose.
       - name: Update npm for trusted publishing
-        run: npm install -g npm@latest && npm --version
+        run: npm install -g npm@11.21.0 && npm --version
 
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
