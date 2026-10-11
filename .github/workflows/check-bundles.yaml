@@ -7,23 +7,19 @@ name: Check bundles
 on:
   push:
     branches: [main]
-    paths:
+    paths: &bundle-inputs
       - "gallery/**"
       - "examples/**"
       - "pkg-js/src/**"
       - "pkg-js/package.json"
+      - "pkg-js/tsconfig*.json"
       - "pkg-js/vite.config.npm.ts"
+      - "package.json"
       - "package-lock.json"
+      - "Makefile"
       - ".github/workflows/check-bundles.yaml"
   pull_request:
-    paths:
-      - "gallery/**"
-      - "examples/**"
-      - "pkg-js/src/**"
-      - "pkg-js/package.json"
-      - "pkg-js/vite.config.npm.ts"
-      - "package-lock.json"
-      - ".github/workflows/check-bundles.yaml"
+    paths: *bundle-inputs
   workflow_dispatch:
 
 permissions:
@@ -42,8 +38,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: package-lock.json
 
-      # Every example app and the shell itself must at least parse. This
+      # Every gallery app and the shell itself must at least parse. This
       # catches a broken app.R without installing shiny or booting 126
       # processes, which a runtime check of this gallery would need.
       - name: Parse every gallery R file
@@ -76,27 +74,20 @@ jobs:
       - name: Install
         run: npm ci
 
-      # Both import bslib-react, whose package entry points into
-      # pkg-js/dist-npm, a build artifact that is gitignored. A fresh
-      # checkout has to build it before anything can resolve the import.
-      - name: Build the bslib-react package
-        run: npm run build --workspace pkg-js
+      - name: Rebuild every committed bundle
+        run: make bundles
 
-      - name: Rebuild the example clients
-        run: npm run build --workspace examples/01-hello --workspace examples/volcano-plot
-
-      - name: Rebuild the gallery react clients
-        run: npm run build --workspace gallery
-
-      # Rebuilding and diffing is the only thing that catches a committed
-      # bundle that has fallen behind its source.
+      # `git status`, not `git diff`, so a new build output nobody committed
+      # (a ui.css, say) fails too. The pathspecs end in `*` on purpose: a
+      # wildcard pathspec has to match the whole file path, so one ending in
+      # `www/` matches nothing and the check would always pass.
       - name: Fail if a committed bundle is stale
         run: |
-          bundles=('examples/*/www/' 'gallery/apps/*/react/www/')
-          if ! git diff --quiet -- "${bundles[@]}"; then
-            echo "A committed www/ui.js differs from a fresh build."
-            echo "Run 'make examples' and 'make gallery-apps', then commit the result."
-            git diff --stat -- "${bundles[@]}"
+          changed=$(git status --porcelain -- 'examples/*/www/*' 'gallery/apps/*/react/www/*')
+          if [ -n "$changed" ]; then
+            echo "These bundles differ from a fresh build:"
+            echo "$changed"
+            echo "Run 'make bundles' and commit the result."
             exit 1
           fi
           echo "every committed bundle matches its source"
