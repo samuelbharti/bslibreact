@@ -16,6 +16,8 @@ export default defineConfig({
   resolve: { alias: { "@": path.resolve(dir, "src") } },
   build: {
     outDir: "www",
+    // false: www/ can also hold the app's own files (images, say), which a
+    // build must not delete.
     emptyOutDir: false,
     cssCodeSplit: false,
     target: "es2020",

@@ -59,7 +59,7 @@ Server (Python):
 ```python
 import matplotlib.pyplot as plt
 import numpy as np
-from shiny import App, render, req, ui
+from shiny import App, render, ui
 from shinyreact import page_react
 from bslib_react import page_deps, host_input
 
@@ -72,7 +72,7 @@ def server(input, output, session):
     @render.plot
     def plot():
         fig, ax = plt.subplots()
-        ax.hist(np.random.normal(size=500), bins=req(input.bins()))
+        ax.hist(np.random.normal(size=500), bins=input.bins())
         return fig
 
 app = App(app_ui, server)
