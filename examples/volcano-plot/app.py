@@ -89,17 +89,15 @@ def server(input: Inputs, output: Outputs, session: Session):
         output, "topn", lambda: ui.input_slider("topn", "Max labels", 0, 30, 10, step=1)
     )
 
-    # Hosted inputs have no value on the very first reactive flush, before
-    # their own client round-trip completes (see examples/01-hello/app.py
-    # for the same point made about a single input). The `or` fallbacks
-    # below use each widget's own initial value, the same choice app.R
-    # makes with %||%, so the plot renders immediately instead of waiting.
+    # Hosted inputs have no value until the client has bound them. Reading
+    # one before then raises py-shiny's silent exception, so the plot waits
+    # with no req() needed (req() would also stop on a threshold of 0).
     vdata = volcano_server(
         "volcano",
-        lfc_threshold=lambda: input.lfc() or 1,
-        p_threshold=lambda: input.p() or 0.05,
-        p_col=lambda: input.pcol() or "padj",
-        label_top_n=lambda: (input.topn() or 10) if (input.dolabel() or True) else 0,
+        lfc_threshold=lambda: input.lfc(),
+        p_threshold=lambda: input.p(),
+        p_col=lambda: input.pcol(),
+        label_top_n=lambda: input.topn() if input.dolabel() else 0,
     )
 
     @reactive.calc
