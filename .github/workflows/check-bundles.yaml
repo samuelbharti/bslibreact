@@ -1,6 +1,6 @@
 name: Check bundles
 
-# The example apps and the gallery's react apps each commit a built
+# The example apps and the gallery's vite apps each commit a built
 # www/ui.js, and each of those bundles a copy of bslib-react. So a change in
 # pkg-js can make them stale as surely as a change in their own src/ can,
 # which is why pkg-js is in the paths below too.

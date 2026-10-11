@@ -132,10 +132,12 @@ what `bslib::page_fillable()` itself does server side.
 **A hosted `reactable` table never rendered, with `Cannot read
 properties of undefined (reading 'useLayoutEffect')` in the console.**
 `page_react()` names the app's own client dependency after the app's
-folder, and `reactR`, which `reactable` and widgets like it are built on,
-ships React as a dependency named `"react"`. htmltools keeps only the
-higher version of two same-named dependencies, so in an app whose folder
-is literally called `react`, reactR's React never reached the page. Found
-while building this repository's gallery, whose client folders were named
-`react/` at the time (they are `vite/` now). Do not name an app folder
-`react`.
+folder, and Shiny loads only one dependency per name: one already on the
+page wins, and a later one with the same name is skipped. `reactR`, which
+`reactable` and similar widgets are built on, ships React as a dependency
+named `"react"`, so in an app whose folder was called `react`, reactable's
+React never loaded. Found while building this repository's gallery, whose
+client folders were named `react/` then (they are `vite/` now). The same
+goes for any dependency name: do not name an app folder after something
+the page loads, such as `react`, `shinyreact`, `bslib-react`, or a widget
+package like `leaflet`.
