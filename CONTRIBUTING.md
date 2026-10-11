@@ -28,10 +28,11 @@ prek run --all-files
 make check
 ```
 
-If the change touches the component kit, `page_deps()`, or a JS
-dependency, also run:
+If the change touches the component kit, `page_deps()`, a JS dependency,
+or the client of an example or a gallery app, also run:
 
 ```
+npm ci
 make update-dist
 make bundles
 git status --porcelain
