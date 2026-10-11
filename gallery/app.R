@@ -3,7 +3,7 @@
 # bslib-react built from npm, and bslib-react from the R package's own
 # vendored bundle, each with its live demo and complete source below it.
 # Every one is a real, separate Shiny app under
-# apps/<slug>/{classic,react,rpkg}, started on demand and kept warm after.
+# apps/<slug>/{classic,vite,rpkg}, started on demand and kept warm after.
 # Only a handful stay alive at once (see MAX_LIVE): booting all 126 at
 # startup pins the CPU loading heavy packages and nothing ever gets ready.
 # Real R throughout, no shinylive/webR: see gallery/README.md for why.
@@ -20,7 +20,7 @@ BY_SLUG <- stats::setNames(
 # ---- background app processes: started on demand, kept warm, capped ----
 
 # The three variants each example is shown in, left to right.
-MODES <- c("classic", "react", "rpkg")
+MODES <- c("classic", "vite", "rpkg")
 
 # Three apps per example, so this keeps three examples warm.
 MAX_LIVE <- 9
@@ -130,9 +130,9 @@ read_code <- function(...) {
 # Every file someone needs to reproduce one variant of one example, in the
 # order they would read them. Labels double as a directory listing.
 #
-# app.R is byte identical across react and rpkg on purpose: bslibreact is
+# app.R is byte identical across vite and rpkg on purpose: bslibreact is
 # the server half of both, and the only thing that changes is where the
-# client comes from. react builds it from TSX with Vite; rpkg hand-writes
+# client comes from. vite builds it from TSX with Vite; rpkg hand-writes
 # it against the bundle the R package already vendors, so it needs no npm
 # and no build step at all.
 BUILD_NOTE <- paste(
@@ -156,20 +156,20 @@ route_files <- function(slug, variant) {
         lang = "r"
       )
     ),
-    react = list(
+    vite = list(
       list(
         label = "app.R",
-        path = c("apps", slug, "react", "app.R"),
+        path = c("apps", slug, "vite", "app.R"),
         lang = "r"
       ),
       list(
         label = "src/App.tsx",
-        path = c("apps", slug, "react", "src", "App.tsx"),
+        path = c("apps", slug, "vite", "src", "App.tsx"),
         lang = "typescript"
       ),
       list(
         label = "src/ui.tsx",
-        path = c("apps", slug, "react", "src", "ui.tsx"),
+        path = c("apps", slug, "vite", "src", "ui.tsx"),
         lang = "typescript"
       )
     ),
@@ -205,7 +205,7 @@ route_files <- function(slug, variant) {
   )
   run <- switch(
     variant,
-    react = paste0(BUILD_NOTE, "\n", run),
+    vite = paste0(BUILD_NOTE, "\n", run),
     rpkg = paste0(NO_BUILD_NOTE, run),
     run
   )
@@ -375,10 +375,10 @@ ui <- page_sidebar(
       uiOutput("code_classic")
     ),
     demo_column(
-      "react",
+      "vite",
       "bslib-react from npm",
       "UI written in TSX, bundled by Vite. Needs Node.",
-      uiOutput("code_react")
+      uiOutput("code_vite")
     ),
     demo_column(
       "rpkg",
@@ -451,7 +451,7 @@ server <- function(input, output, session) {
     selected(),
     "classic"
   )))
-  output$code_react <- renderUI(code_panel_ui(route_files(selected(), "react")))
+  output$code_vite <- renderUI(code_panel_ui(route_files(selected(), "vite")))
   output$code_rpkg <- renderUI(code_panel_ui(route_files(selected(), "rpkg")))
 }
 

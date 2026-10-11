@@ -11,13 +11,13 @@ The three columns are the point of the thing:
 | Column | What it is | Needs Node? |
 | --- | --- | --- |
 | `classic` | plain bslib + Shiny, the usual R stack | no |
-| `react` | bslib-react installed from npm, UI written in TSX, bundled by Vite | yes |
+| `vite` | bslib-react installed from npm, UI written in TSX, bundled by Vite | yes |
 | `rpkg` | bslib-react from the R package's own vendored bundle, UI hand written in plain JS | no |
 
-`react` and `rpkg` are the two tiers described in [docs/build.md](../docs/build.md).
+`vite` and `rpkg` are the two tiers described in [docs/build.md](../docs/build.md).
 Their `app.R` is byte identical, deliberately: `bslibreact` is the server
 half of both, and the only thing that differs is where the client comes
-from. The `react` column builds it from TSX; the `rpkg` column writes it
+from. The `vite` column builds it from TSX; the `rpkg` column writes it
 by hand against `window.bslibReact`, the global that
 `bslib_react_dep()`'s vendored bundle publishes, so it needs no npm and
 no build step at all.
@@ -39,10 +39,10 @@ gallery/
   examples.R     the registry: slug, category, title, and note per example
   apps/<slug>/
     classic/app.R      plain bslib + Shiny
-    react/             app.R, src/App.tsx, src/ui.tsx, www/ui.js (built, committed)
+    vite/              app.R, src/App.tsx, src/ui.tsx, www/ui.js (built, committed)
     rpkg/              app.R, www/ui.js (hand written, no build)
   scripts/
-    build-apps.mjs      builds every react/src/ui.tsx into react/www/ui.js
+    build-apps.mjs      builds every vite/src/ui.tsx into vite/www/ui.js
 ```
 
 ## Running it
@@ -51,14 +51,14 @@ gallery/
 Rscript -e "shiny::runApp('gallery')"
 ```
 
-Every `react/www/ui.js` is committed. After changing a react client's
+Every `vite/www/ui.js` is committed. After changing a vite client's
 `src/`, or `pkg-js`, rebuild them from the repository root with `npm ci`
 and `make bundles`. The rpkg column reads the R package's vendored bundle,
 so a `pkg-js` change also needs `make update-dist` and a reinstall of
 `bslibreact` before that column shows it.
 
 Every example is a genuine, independent Shiny app under
-`apps/<slug>/{classic,react,rpkg}/`. `app.R` starts the three belonging
+`apps/<slug>/{classic,vite,rpkg}/`. `app.R` starts the three belonging
 to whichever example you select, in the background, and keeps the nine
 most recently used alive after that, so going back to an example you have
 already opened is instant and a new one takes a second or two while its
@@ -74,7 +74,7 @@ all the way down, once per example per variant, proxied through an
 ## Adding an example
 
 1. Write `apps/<slug>/classic/app.R` and
-   `apps/<slug>/react/{app.R,src/App.tsx}`. Give the react client's
+   `apps/<slug>/vite/{app.R,src/App.tsx}`. Give the vite client's
    `src/ui.tsx` the same file every other example has (it mounts
    `<App />` via `window.shinyreact.ReactDOM`); all 42 copies are
    identical.
@@ -83,10 +83,10 @@ all the way down, once per example per variant, proxied through an
    `id="bins_ui"` on the client). This is the one mistake every example
    in this gallery hit at least once while it was being built.
 3. Run `make bundles` (from the repository root) to produce that example's
-   `react/www/ui.js`, and commit it: unlike a typical build artifact,
+   `vite/www/ui.js`, and commit it: unlike a typical build artifact,
    this one ships, the same way `examples/*/www/ui.js` does elsewhere in
    this repo, since there is no build step at deploy time.
-4. Copy `react/app.R` to `rpkg/app.R` unchanged, and hand write
+4. Copy `vite/app.R` to `rpkg/app.R` unchanged, and hand write
    `rpkg/www/ui.js` as the `React.createElement` form of `App.tsx`. Wrap
    it in a `window.addEventListener("load", ...)` and read the globals
    inside that listener: `page_react()` emits the app's own `ui.js`

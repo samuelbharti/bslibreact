@@ -18,5 +18,5 @@
     "types": ["vite/client", "node"],
     "baseUrl": "."
   },
-  "include": ["apps/*/react/src", "scripts"]
+  "include": ["apps/*/vite/src", "scripts"]
 }

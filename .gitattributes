@@ -6,8 +6,8 @@ pkg-r/inst/lib/** linguist-generated -diff
 pkg-py/src/bslib_react/www/** linguist-generated -diff
 examples/*/www/ui.js linguist-generated -diff
 examples/*/www/ui.css linguist-generated -diff
-gallery/apps/*/react/www/ui.js linguist-generated -diff
-gallery/apps/*/react/www/ui.css linguist-generated -diff
+gallery/apps/*/vite/www/ui.js linguist-generated -diff
+gallery/apps/*/vite/www/ui.css linguist-generated -diff
 
 # Binary. Listed last: gitattributes takes the last matching line.
 *.rds binary -diff

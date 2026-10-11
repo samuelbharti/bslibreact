@@ -91,7 +91,7 @@ jobs:
       - name: Fail if a committed bundle is stale
         if: ${{ !cancelled() && steps.bundles.outcome == 'success' }}
         run: |
-          changed=$(git status --porcelain -- 'examples/*/www/*' 'gallery/apps/*/react/www/*')
+          changed=$(git status --porcelain -- 'examples/*/www/*' 'gallery/apps/*/vite/www/*')
           if [ -n "$changed" ]; then
             echo "These bundles differ from a fresh build:"
             echo "$changed"
