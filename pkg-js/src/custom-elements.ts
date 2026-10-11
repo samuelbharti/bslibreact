@@ -51,8 +51,7 @@ export interface BslibLayoutColumnsProps {
 }
 
 /** Props for a bslib custom element with no shape of its own beyond plain
- *  HTML attributes (bslib-input-dark-mode, and the not-yet-built
- *  bslib-switch / bslib-switch-inline / bslib-offcanvas below).
+ *  HTML attributes (bslib-input-dark-mode).
  *
  *  This has to be a named, exported alias rather than
  *  `DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement>` written
@@ -75,19 +74,6 @@ declare module "react" {
       "bslib-popover": BslibTooltipProps;
       "bslib-input-dark-mode": BslibElementProps;
       "bslib-layout-columns": BslibLayoutColumnsProps;
-      // Not yet used by any component in this kit (no InputSwitch /
-      // LayoutOffcanvas component exists in 0.1.0), but declared now so a
-      // caller reaching for the escape hatch (uiOutput, or a raw
-      // dangerouslySetInnerHTML block) can still write these tags in TSX
-      // without a "property does not exist on type IntrinsicElements"
-      // error. bslib::input_switch() and its inline variant render these
-      // as their own bare custom elements the same way input_dark_mode()
-      // does; add a real named prop type here (the way BslibTooltipProps
-      // exists for <bslib-tooltip>) the day a component needs props
-      // beyond plain HTML attributes.
-      "bslib-switch": BslibElementProps;
-      "bslib-switch-inline": BslibElementProps;
-      "bslib-offcanvas": BslibElementProps;
     }
   }
 }
