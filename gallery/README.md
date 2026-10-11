@@ -23,14 +23,11 @@ by hand against `window.bslibReact`, the global that
 `bslib_react_dep()`'s vendored bundle publishes, so it needs no npm and
 no build step at all.
 
-This is a real, single Shiny app (`app.R`), meant to be run with plain R
-and eventually deployed to Posit Connect Cloud. It replaced an earlier
-version built on `shinylive` (R compiled to WebAssembly, running fully in
-the browser, deployed as a static site to GitHub Pages): that version was
-slow to cold start, and could not run the react half live at all, since
-neither `shinyreact` nor `bslibreact` has a WebAssembly build. See git
-history for that version if it's ever worth revisiting once those
-packages are more widely distributed.
+This is a real, single Shiny app (`app.R`), run with plain R. It replaced
+an earlier version built on `shinylive` (R compiled to WebAssembly, running
+in the browser, deployed as a static site), which was slow to start;
+`docs/decisions/0005-gallery-deployment.md` explains why a deployed gallery
+would not use shinylive either.
 
 ## Layout
 
@@ -101,13 +98,8 @@ all the way down, once per example per variant, proxied through an
 
 ## Deploying
 
-Not yet automated. The plan is Posit Connect Cloud, which expects one
-self-contained Shiny app; `app.R`'s launcher approach (each example
-variant as a separate background R process, proxied through an iframe)
-works locally but needs a decision before it can ship there: whether
-Connect Cloud can host the sidebar shell and all 126 backing apps as one
-deployment, or whether the backing apps need their own separate Connect
-deployments with the shell iframing their public URLs instead of
-`127.0.0.1`. Worth resolving with a small end to end test (two or three
-examples deployed for real) before committing either way for the full
-gallery.
+Not deployed yet. `docs/decisions/0005-gallery-deployment.md` proposes
+three Shiny apps on Posit Connect Cloud, one per variant, each showing the
+component named in `?component=`, behind a static shell; it has not been
+built, and one assumption in it (public GitHub packages on Connect Cloud's
+free plan) still needs a test deployment.

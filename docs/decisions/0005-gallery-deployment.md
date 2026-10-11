@@ -1,7 +1,8 @@
 # 0005: the gallery deploys as three server apps, not a WebAssembly bundle
 
 Date: 2026-09-13
-Status: accepted
+Status: proposed (not built yet: `gallery/app.R` still runs every variant
+as its own local process)
 
 ## Context
 
