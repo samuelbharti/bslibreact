@@ -90,12 +90,11 @@ test_that("theme must be a bs_theme object or NULL", {
 })
 
 test_that("regression: bs_global_set(), not bs_global_theme(), decides the resolved CSS", {
-  # This is the exact bug documented in
-  # shinyreact-apps/templates/app/R/shinyreact-deps.R: bs_global_theme()'s
-  # first argument is `version` (a Bootstrap version NUMBER), not a theme
-  # object, so bs_global_theme(theme) silently builds and sets a brand new
-  # stock theme instead of the one passed in. A custom heading font
-  # survives the correct call and is dropped by the buggy one.
+  # bs_global_theme()'s first argument is `version` (a Bootstrap version
+  # NUMBER), not a theme object, so bs_global_theme(theme) silently builds
+  # and sets a brand new stock theme instead of the one passed in. A
+  # custom heading font survives the correct call and is dropped by the
+  # buggy one.
   skip_on_cran()
 
   old <- bslib::bs_global_get()

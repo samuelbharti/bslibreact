@@ -1,7 +1,6 @@
 """Tests the pure data layer (volcano.py) directly: no Shiny session
-needed. The server wiring (app.py) is exercised by bslib_react.port.peek()
-in a real browser, not duplicated here; see test_server.py in
-examples/01-hello for that kind of check, and docs/porting.md for why a
+needed. The server wiring (app.py) is not tested here; see test_server.py
+in examples/01-hello for that kind of check, and docs/porting.md for why a
 component's own markup and bind mechanics belong to pkg-js, not to an
 example app.
 """

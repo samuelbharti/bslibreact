@@ -89,7 +89,7 @@ export function tabPaneId(navId: string, value: string) {
  *   yet, so this has stayed invisible, but it is a real latent gap, not
  *   just missing polish.
  *
- * Written by hand rather than through ShinyInput's dangerouslySetInnerHTML,
+ * Written by hand, not hosted through renderUI() like the input widgets,
  * because this <ul> holds a mix of hosted tab links and real React siblings
  * (nav_spacer, a Level R study chip, hosted buttons) that all need to live
  * in the same list. useBoundScope(ref, (el) => el.parentElement) is what

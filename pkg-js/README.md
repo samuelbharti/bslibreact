@@ -51,12 +51,11 @@ Shiny bindings work exactly as they would on a server-rendered bslib page.
 
 ## Two ways to ship this
 
-Every R or Python package built on bslib-react vendors a prebuilt IIFE
-bundle (`dist/bslib-react.js`) and serves it as a page dependency, the same
-way it serves shinyreact's own `shinyreact.js`. An app using
-`bslibreact::page_deps()` (R) or `bslib_react.page_deps()` (Python) gets
-this automatically and never installs the npm package at all - it reads
-this kit off `window.bslibReact` at runtime.
+The R and Python packages vendor a prebuilt IIFE bundle
+(`dist/bslib-react.js`). An app attaches it as a page dependency with
+`bslibreact::bslib_react_dep()` (R) or `bslib_react.bslib_react_dep()`
+(Python), next to shinyreact's own `shinyreact.js`, and never installs the
+npm package at all: it reads this kit off `window.bslibReact` at runtime.
 
 An app that bundles its own client with a JS bundler instead installs this
 package from npm and imports it directly:
