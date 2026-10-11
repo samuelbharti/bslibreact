@@ -23,3 +23,12 @@ First release. Experimental: component props may still change.
   its Shiny bindings behind.
 - `NavbarTabStrip` builds its tab links from the raw `id`, the same way
   `TabPane` builds its own id, so tabs switch inside a `<Module>` too.
+- `TableOutput` is now `DTOutput`, so it is not mistaken for
+  `shiny::tableOutput()`, which `UiOutput` hosts.
+- The fourteen input names (`SliderInput`, `SelectInput`, ...) are
+  exported from one file; each is still `HostedInput`.
+- Outputs pass their plain `id` to `ShinyOutput`, which applies the
+  `<Module>` namespace itself, so shinyreact's own `ShinyModuleProvider`
+  namespaces them too.
+- `TabPane` takes its `fillable` default from the surrounding
+  `PageNavbar`.

@@ -1,41 +1,26 @@
 import { ShinyOutput } from "../shinyreact";
-import { useNs } from "../module/Module";
+import { cx } from "../cx";
 
 type Props = { id: string; className?: string; fill?: boolean; inline?: boolean };
 
 /**
- * shiny::uiOutput() / renderUI(). Markup pinned against the `uiOutput`
- * catalog sample (shiny 1.14.0). The escape hatch: hosts an entire dynamic R UI fragment
- * as Shiny's own htmlOutput binding renders it, deps and all, rather than
- * hand-reproducing a complex control-by-control UI in TSX. Reach for this
- * only when a module's UI is genuinely dynamic or too complex to be worth
- * reproducing piece by piece, not to avoid writing TSX for static layout.
+ * shiny::uiOutput() / renderUI(). Markup pinned against the `uiOutput`,
+ * `uiOutput_fill` and `uiOutput_inline` catalog samples. The escape hatch:
+ * hosts a whole server-rendered UI fragment, dependencies and all. Use it
+ * for UI that is genuinely dynamic, or for a bslib piece this kit has no
+ * component for yet.
  *
- * Set fill when the parent placed the hosted UI's own top-level element
- * (its own bslib::card(height = "100%"), say) directly inside a fillable
- * page. shiny::uiOutput(fill = TRUE) adds html-fill-item html-fill-container
- * to the output div in that case (confirmed by rendering it from R); without
- * that, the plain shiny-html-output div has no fill classes and breaks the
- * fill chain between the page and the hosted content, no matter how the
- * hosted content itself is sized.
- *
- * Set inline when the parent called uiOutput(inline = TRUE): the only
- * difference (confirmed by rendering both from R) is the wrapping tag,
- * <span> instead of <div>, so a card-header "source link" slot (variant-
- * reviewer's vr_card_header(), say) sits next to its title instead of
- * dropping to its own line.
+ * `fill` matches uiOutput(fill = TRUE): it adds html-fill-item and
+ * html-fill-container, without which the fill chain between a fillable
+ * page and the hosted content breaks. `inline` matches
+ * uiOutput(inline = TRUE): a <span> in place of the <div>.
  */
 export function UiOutput({ id, className, fill = false, inline = false }: Props) {
-  const fullId = useNs(id);
-  const classes = ["shiny-html-output", fill && "html-fill-item html-fill-container", className]
-    .filter(Boolean)
-    .join(" ");
   return (
     <ShinyOutput
-      id={fullId}
+      id={id}
       tagName={inline ? "span" : "div"}
-      namespace={null}
-      className={classes}
+      className={cx("shiny-html-output", fill && "html-fill-item html-fill-container", className)}
     />
   );
 }

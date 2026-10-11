@@ -1,21 +1,14 @@
 import { ShinyOutput } from "../shinyreact";
-import { useNs } from "../module/Module";
+import { cx } from "../cx";
 
 /**
  * shiny::textOutput(). Markup pinned against the `textOutput` catalog
- * sample (shiny 1.14.0): a plain div carrying shiny-text-output. Hosted rather
- * than read with useShinyOutputValue so the parent's renderText() stays
- * completely unchanged, including how it formats its string.
+ * sample: a plain div carrying shiny-text-output. Hosted, not read with
+ * useShinyOutputValue, so the server's renderText() formats the string
+ * exactly as it does in a classic app.
  */
 export function TextOutput({ id, className }: { id: string; className?: string }) {
-  const fullId = useNs(id);
-  return (
-    <ShinyOutput
-      id={fullId}
-      namespace={null}
-      className={["shiny-text-output", className].filter(Boolean).join(" ")}
-    />
-  );
+  return <ShinyOutput id={id} className={cx("shiny-text-output", className)} />;
 }
 
 /**
@@ -24,13 +17,11 @@ export function TextOutput({ id, className }: { id: string; className?: string }
  * noplaceholder class.
  */
 export function VerbatimTextOutput({ id, className }: { id: string; className?: string }) {
-  const fullId = useNs(id);
   return (
     <ShinyOutput
-      id={fullId}
-      namespace={null}
+      id={id}
       tagName="pre"
-      className={["shiny-text-output noplaceholder", className].filter(Boolean).join(" ")}
+      className={cx("shiny-text-output noplaceholder", className)}
     />
   );
 }

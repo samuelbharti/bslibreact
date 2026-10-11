@@ -21,25 +21,11 @@ export * from "./module/Module";
 
 export * from "./inputs/HostedInput";
 export * from "./inputs/useHostedInputValue";
-export * from "./inputs/SelectInput";
-export * from "./inputs/SelectizeInput";
-export * from "./inputs/RadioButtons";
-export * from "./inputs/CheckboxInput";
-export * from "./inputs/SliderInput";
-export * from "./inputs/ActionButton";
-export * from "./inputs/TextAreaInput";
-export * from "./inputs/FileInput";
-export * from "./inputs/DarkModeInput";
-export * from "./inputs/TextInput";
-export * from "./inputs/ActionLink";
-export * from "./inputs/DownloadButton";
-export * from "./inputs/NumericInput";
-export * from "./inputs/PasswordInput";
 export * from "./misc/HelpText";
 
 export * from "./outputs/PlotOutput";
 export * from "./outputs/TextOutput";
-export * from "./outputs/TableOutput";
+export * from "./outputs/DTOutput";
 export * from "./outputs/ReactableOutput";
 export * from "./outputs/WidgetOutput";
 export * from "./outputs/UiOutput";

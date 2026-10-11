@@ -1,11 +1,17 @@
-import type { CSSProperties, ReactNode } from "react";
+import { createContext, useContext, type CSSProperties, type ReactNode } from "react";
 import { tabPaneId } from "./NavbarTabStrip";
+
+// PageNavbar's own `fillable`, so a TabPane inside it defaults to the same
+// value, as every nav_panel() does under page_navbar(fillable = TRUE/FALSE).
+export const NavbarFillableContext = createContext(false);
 
 type Props = {
   navId: string;
   value: string;
   active?: boolean;
-  /** page_navbar(fillable = ...): whether THIS panel is in that list. */
+  /** Whether this panel fills the page. Defaults to the surrounding
+   *  PageNavbar's `fillable`; set it per pane for page_navbar(fillable =
+   *  c("Browse")), where only the listed panels fill. */
   fillable?: boolean;
   children: ReactNode;
 };
@@ -30,7 +36,9 @@ const fillableStyle = { "--bslib-navbar-margin": "0" } as CSSProperties;
  * shapes from R side by side, since guessing this one from the fillable
  * sample alone would have been wrong.
  */
-export function TabPane({ navId, value, active = false, fillable = false, children }: Props) {
+export function TabPane({ navId, value, active = false, fillable: fillableProp, children }: Props) {
+  const navbarFillable = useContext(NavbarFillableContext);
+  const fillable = fillableProp ?? navbarFillable;
   const classes = fillable
     ? ["tab-pane html-fill-item html-fill-container bslib-gap-spacing", active && "active"]
         .filter(Boolean)

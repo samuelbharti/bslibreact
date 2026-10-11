@@ -25,7 +25,7 @@ the widget's HTML comes from the server at runtime, not from TSX.
 | `shiny::verbatimTextOutput()` | `ui.output_code(placeholder = False)` | `VerbatimTextOutput` | `verbatimTextOutput` |
 | `bslib::layout_columns()` | `ui.layout_columns()` | `LayoutColumns` | `layout_columns_value_box`, `layout_columns_fill`, `layout_columns_single_child` |
 | `bslib::value_box()` | `ui.value_box()` | `ValueBox` | `value_box` |
-| `DT::DTOutput()` | (no equivalent) | `TableOutput` | `DTOutput`, `DTOutput_no_fill` |
+| `DT::DTOutput()` | (no equivalent) | `DTOutput` | `DTOutput`, `DTOutput_no_fill` |
 | `reactable::reactableOutput()` | (no equivalent) | `ReactableOutput` | `reactableOutput` |
 | any other htmlwidget's `*Output()` | `shinywidgets` equivalents | `WidgetOutput` with `widgetClass` | `htmlwidget_output` |
 | `shiny::uiOutput()` / `renderUI()` | `ui.output_ui()` / `@render.ui` | `UiOutput` | `uiOutput`, `uiOutput_fill`, `uiOutput_inline` |
