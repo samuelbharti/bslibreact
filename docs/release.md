@@ -9,7 +9,7 @@ triggers all three release workflows. See
 
 ```
 make update-dist
-make examples
+make bundles
 git status --porcelain
 ```
 

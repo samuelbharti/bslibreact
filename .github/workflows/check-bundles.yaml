@@ -17,6 +17,8 @@ on:
       - "package.json"
       - "package-lock.json"
       - "Makefile"
+      - ".nvmrc"
+      - ".gitattributes"
       - ".github/workflows/check-bundles.yaml"
   pull_request:
     paths: *bundle-inputs
@@ -75,22 +77,25 @@ jobs:
         run: npm ci
 
       - name: Rebuild every committed bundle
+        id: bundles
         run: make bundles
+
+      - name: Typecheck the gallery
+        run: npm run typecheck --workspace gallery
 
       # `git status`, not `git diff`, so a new build output nobody committed
       # (a ui.css, say) fails too. The pathspecs end in `*` on purpose: a
       # wildcard pathspec has to match the whole file path, so one ending in
-      # `www/` matches nothing and the check would always pass.
+      # `www/` matches nothing and the check would always pass. Runs even
+      # when the typecheck above failed, so one CI round reports both.
       - name: Fail if a committed bundle is stale
+        if: ${{ !cancelled() && steps.bundles.outcome == 'success' }}
         run: |
           changed=$(git status --porcelain -- 'examples/*/www/*' 'gallery/apps/*/react/www/*')
           if [ -n "$changed" ]; then
             echo "These bundles differ from a fresh build:"
             echo "$changed"
-            echo "Run 'make bundles' and commit the result."
+            echo "Run 'npm ci' and 'make bundles', then commit the result."
             exit 1
           fi
           echo "every committed bundle matches its source"
-
-      - name: Typecheck the gallery
-        run: npm run typecheck --workspace gallery

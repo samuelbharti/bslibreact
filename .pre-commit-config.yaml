@@ -4,7 +4,7 @@
 # Docs: https://pre-commit.com / https://github.com/j178/prek
 
 # Generated, vendored, or cache paths that hooks should never touch.
-exclude: '^(node_modules/|.*/node_modules/|pkg-js/dist(-npm)?/|pkg-r/inst/lib/|pkg-py/src/bslib_react/www/|examples/.*/www/|docs/local/|\.cache/)'
+exclude: '^(node_modules/|.*/node_modules/|pkg-js/dist(-npm)?/|pkg-r/inst/lib/|pkg-py/src/bslib_react/www/|examples/.*/www/|gallery/apps/.*/react/www/|docs/local/|\.cache/)'
 
 repos:
   # R code formatting with air (matches air.toml).
