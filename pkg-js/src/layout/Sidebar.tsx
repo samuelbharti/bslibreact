@@ -18,9 +18,10 @@ type Props = {
   /** data-collapsible-mobile. True for a plain layout_sidebar(); PageSidebar
    *  passes false, since page_sidebar() keeps its sidebar open on mobile. */
   collapsibleMobile?: boolean;
-  /** data-open-mobile. "closed" for a plain layout_sidebar() (mobile does
-   *  not follow `open`'s default); PageSidebar passes "always", and
-   *  PageNavbar passes its own `sidebarOpen`. */
+  /** data-open-mobile. "closed" matches a plain layout_sidebar(), where
+   *  mobile does not follow `open`'s default. An explicit sidebar(open =
+   *  "open") sets mobile too, so pass openMobile="open" for it. PageSidebar
+   *  passes "always", and PageNavbar its own `sidebarOpen`. */
   openMobile?: "always" | "open" | "closed";
   /** layout_sidebar(border = ...). Undefined renders no attribute, bslib's
    *  default; page_sidebar() and page_navbar(sidebar = ) pass false. */
@@ -38,8 +39,8 @@ type Props = {
 
 /**
  * bslib::layout_sidebar() + sidebar(). Markup pinned against the
- * "sidebar_layout_titled", "sidebar_layout_right_closed",
- * "sidebar_layout_gap_padding" and "sidebar_custom_class" catalog samples;
+ * "sidebar_layout_titled", "sidebar_layout_right_closed" and
+ * "sidebar_custom_class" catalog samples;
  * PageSidebar and PageNavbar pass their own page-level defaults explicitly.
  * The <aside> starts `hidden`, as in bslib's own markup:
  * bslib.Sidebar.initCollapsibleAll(), called from an effect here, shows it

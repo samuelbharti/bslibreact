@@ -26,9 +26,9 @@ type Props = {
   /** sidebar(open = ...). bslib uses the same value for mobile, and the
    *  sidebar stays collapsible on mobile. */
   sidebarOpen?: "open" | "closed";
-  /** page_navbar(fillable = TRUE/FALSE). FALSE gives the bare
-   *  "bslib-page-navbar" <body> and drops the fill classes from the content
-   *  wrappers. Each TabPane defaults to this value; see TabPane for
+  /** page_navbar(fillable = TRUE/FALSE). FALSE drops the fill classes from
+   *  the content wrappers and, with no `sidebar`, gives the bare
+   *  "bslib-page-navbar" <body> with no html { height: 100% }. Each TabPane defaults to this value; see TabPane for
    *  page_navbar(fillable = c("Browse")). */
   fillable?: boolean;
   children: ReactNode;
@@ -73,6 +73,7 @@ export function PageNavbar({
         )
       : "bslib-page-navbar",
     fillablePage ? { padding: "0px", gap: "0px" } : {},
+    fillablePage,
   );
 
   const navRef = useRef<HTMLElement>(null);

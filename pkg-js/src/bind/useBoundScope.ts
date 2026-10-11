@@ -18,8 +18,8 @@ import { useShinyInitialized } from "../shinyreact";
  *
  * `scope(target)` gives the element to bind over. Shiny's find() is
  * descendants-only, so a bound element needs an ancestor as its scope (the
- * tab strip passes its parent). Cleanup unbinds only `target`, the element
- * captured when the effect ran.
+ * tab strip passes its parent). Cleanup unbinds `target`, the element
+ * captured when the effect ran, and everything inside it.
  *
  * Returns true at once, binding nothing, when `enabled` is false or the
  * page has no window.Shiny (the markup tests render without one).
@@ -42,6 +42,8 @@ export function useBoundScope(
     if (!el || !Shiny) return;
 
     let cancelled = false;
+    // Withhold content again if this re-binds (`enabled` turned back on).
+    setBound(false);
     const sc = scope(el) ?? el;
     Shiny.initializeInputs(sc);
     // bindAll() is typed Promise<void> | void.

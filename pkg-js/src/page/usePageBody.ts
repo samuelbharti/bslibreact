@@ -5,17 +5,21 @@ const HTML_HEIGHT_STYLE_ID = "bslib-html-height";
 /**
  * page_react() renders a bare <body>, but bslib's page_*() functions put
  * fill classes and an inline padding/gap style on <body> itself, so the
- * page components set them here. bslib::page_fillable() (and page_sidebar()
- * and page_navbar(), which build on it) also adds
+ * page components set them here. A fillable page (page_fillable(), and
+ * page_sidebar() and page_navbar(), which build on it, except a
+ * non-fillable page_navbar() with no sidebar) also adds
  * `html { height: 100% }` to <head>; without it the fill chain has no
- * height to measure against and every html-fill-container sizes to its
- * content. This hook adds that rule once per page.
+ * height to measure against. `fillHeight` adds that rule, once per page.
  */
-export function usePageBody(classes: string, style: Record<string, string> = {}) {
+export function usePageBody(
+  classes: string,
+  style: Record<string, string> = {},
+  fillHeight = true,
+) {
   useLayoutEffect(() => {
     let styleTag = document.getElementById(HTML_HEIGHT_STYLE_ID) as HTMLStyleElement | null;
-    const addedStyleTag = !styleTag;
-    if (!styleTag) {
+    const addedStyleTag = fillHeight && !styleTag;
+    if (addedStyleTag) {
       styleTag = document.createElement("style");
       styleTag.id = HTML_HEIGHT_STYLE_ID;
       styleTag.textContent = "html { height: 100%; }";
@@ -39,5 +43,5 @@ export function usePageBody(classes: string, style: Record<string, string> = {})
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [classes, JSON.stringify(style)]);
+  }, [classes, JSON.stringify(style), fillHeight]);
 }

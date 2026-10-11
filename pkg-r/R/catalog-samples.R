@@ -106,8 +106,8 @@
     "shiny",
     quote(shiny::actionButton("x", "Go"))
   ),
-  # Added for the gene-selector port: a selectize input with no starting
-  # choices, populated later from the server. The placeholder option is
+  # A selectize input with no starting choices, populated later from the
+  # server. The placeholder option is
   # part of the rendered markup, not just a runtime behavior.
   .sample(
     "selectizeInput_server_placeholder",
@@ -327,7 +327,7 @@
     "shiny",
     quote(shiny::verbatimTextOutput("x"))
   ),
-  # Added for the volcano-plot port: plotOutput with a click handler.
+  # plotOutput with a click handler.
   # click= adds a data-* attribute the plain plotOutput sample does not
   # have, which is why this is its own sample rather than a variant note.
   .sample(
@@ -380,7 +380,7 @@
       shiny::verbatimTextOutput("selected")
     ))
   ),
-  # Added for the gene-table port: card_footer(), pinned alongside a header
+  # card_footer(), pinned alongside a header
   # and body so the footer's own spacing rules (border-top, padding) show
   # up next to the two shapes already covered.
   .sample(
@@ -597,7 +597,7 @@
     ))
   ),
   # Added for coverage: layout_columns() with a single child, the edge
-  # case where col_widths recycling matters most.
+  # case for col_widths recycling.
   .sample(
     "layout_columns_single_child",
     "tag",
