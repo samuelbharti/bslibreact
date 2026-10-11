@@ -30,19 +30,14 @@ export type SampleGroup =
 export type CatalogSample = {
   kind: SampleKind;
   group: SampleGroup;
-  /** True for a "page" sample actually served through a running app
-   *  (`served: false` records a renderTags()-only fallback; see
-   *  docs/markup-catalog.md's render rules for "page"). */
-  served: boolean;
   /** The exact R or Python call this sample renders, for a human reading
    *  a failing test to reproduce by hand. */
   call: string;
   /** Raw HTML. Neither renderer normalises anything - see normaliseIds()
    *  below for the one place that happens. */
   html: string;
-  /** Served pages only: attributes of the served document's <html>. */
-  html_attrs: Record<string, string> | null;
-  /** Served pages only: the text of every <style> block found in <head>. */
+  /** The text of every <style> block the sample puts in <head> (page
+   *  samples: bslib's html { height: 100% }). */
   head_inline_css: string[];
   /** htmlDependency names/versions the sample's markup declares. */
   deps: string[];
@@ -52,7 +47,7 @@ export type CatalogSample = {
 };
 
 export type Catalog = {
-  schema: 1;
+  schema: 2;
   language: Lang;
   key: string;
   generated_at: string;
@@ -184,10 +179,10 @@ export function loadCatalog(lang: Lang): Catalog {
   }
 
   const parsed = JSON.parse(readFileSync(status.path, "utf8")) as Catalog;
-  if (parsed.schema !== 1) {
+  if (parsed.schema !== 2) {
     throw new Error(
       `loadCatalog("${lang}"): ${status.path} has schema ${JSON.stringify(parsed.schema)}, this ` +
-        "package only understands schema 1. Was it rendered by a newer, incompatible renderer?",
+        "package only understands schema 2. Was it rendered by an older or newer renderer?",
     );
   }
   catalogCache.set(lang, parsed);

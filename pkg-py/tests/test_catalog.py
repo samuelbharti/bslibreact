@@ -70,16 +70,15 @@ EXPECTED_NAMES = {
     "dateRangeInput",
 }
 
-# Names the R catalog has that Python's does not, because `shiny` alone (the
-# only package this catalog's `pkg` field ever names) cannot produce them.
+# Names the R catalog has that Python's does not, because `shiny` alone
+# cannot produce them.
 # A deliberate, visible decision -- see `_catalog.py`'s module docstring for
 # the reasoning behind each one.
 R_ONLY_NAMES = {
     "plotOutput_with_spinner",  # shinycssloaders
     "DTOutput",  # DT
     "DTOutput_no_fill",  # DT
-    # htmlwidget_output in R; shinywidgets is a separate Python package.
-    "igvShinyOutput",
+    "htmlwidget_output",  # htmlwidgets; shinywidgets is a separate package
     "reactableOutput",  # reactable
     "icon",  # shiny::icon() (Font Awesome via base shiny); py-shiny has no icon helper
 }
@@ -108,13 +107,8 @@ def test_every_sample_call_evaluates_without_error() -> None:
     assert not failures, "\n".join(failures)
 
 
-def test_every_sample_pkg_is_shiny() -> None:
-    assert all(sample.pkg == "shiny" for sample in SAMPLES)
-
-
 def test_every_sample_kind_is_tag_or_page() -> None:
-    # No "extra" (third-party) samples in Python -- see the `Sample.pkg`
-    # note in `_catalog.py`.
+    # No "extra" (third-party) samples in Python; see `_catalog.py`.
     assert all(sample.kind in ("tag", "page") for sample in SAMPLES)
 
 
@@ -128,7 +122,6 @@ def test_catalog_hash_changes_when_a_call_string_changes() -> None:
         name=original.name,
         kind=original.kind,
         group=original.group,
-        pkg=original.pkg,
         call=original.call + "  # changed",
     )
     edited_samples = (edited, *SAMPLES[1:])

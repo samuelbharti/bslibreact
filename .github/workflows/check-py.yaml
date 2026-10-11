@@ -5,12 +5,14 @@ on:
     branches: [main]
     paths:
       - "pkg-py/**"
+      - "tools/**"
       - "pyproject.toml"
       - ".github/workflows/check-py.yaml"
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
     paths:
       - "pkg-py/**"
+      - "tools/**"
       - "pyproject.toml"
       - ".github/workflows/check-py.yaml"
   workflow_dispatch:

@@ -38,15 +38,14 @@ docs already teach for attaching a dependency. There is no
 
 Everything else moves out of the shipped packages:
 
-- The markup catalog *renderer* (serving page-kind samples from a
-  background app, third party "extra" samples for DT/reactable/
-  htmlwidgets/shinycssloaders) becomes a dev-only concern.
-  `tools/markup/render-r.R` is now fully self-contained, reaching into
-  `pkg-r`'s unexported internals rather than calling an exported package
-  function. `pkg-py` keeps its renderer as an unexported module
-  (`_catalog_render.py`) since Python's packaging has no equivalent
-  pressure to relocate it, and its catalog has no "extra" kind samples to
-  begin with; `tools/markup/render_py.py` is a thin CLI wrapper over it.
+- The markup catalog *renderer* (third party "extra" samples for
+  DT/reactable/htmlwidgets/shinycssloaders included) becomes a dev-only
+  concern. `tools/markup/render-r.R` is fully self-contained, reaching
+  into `pkg-r`'s unexported internals rather than calling an exported
+  package function, and `tools/markup/render_py.py` does the same for
+  `pkg-py`. (Until 2026-10-11 the Python renderer and a background-app
+  runner for page samples still shipped inside `pkg-py`; both renderers
+  now render page samples with a plain tag render, so neither needs one.)
   The sample list itself (`catalog-samples.R`, `_catalog.py`) still ships
   inside both packages, unexported, since `page_deps()` needs it.
 - Port-checking (triage, a dependency diff, a headless-browser peek)
@@ -67,5 +66,4 @@ does it), in exchange for pkg-r's and pkg-py's own dependency trees
 staying close to what bslib and shiny already require. An app that
 depends on bslib-react never pulls in browser automation. Someone who
 wants the cut tools can still find their logic in this repository's git
-history (the commits before this decision) and in `tools/markup/render-r.R`,
-which keeps the served-page app runner alive in a dev-only form.
+history (the commits before this decision).

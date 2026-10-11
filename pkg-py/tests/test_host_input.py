@@ -2,9 +2,6 @@
 
 from __future__ import annotations
 
-import re
-import urllib.request
-from pathlib import Path
 from typing import Any
 
 import pytest
@@ -119,40 +116,3 @@ def test_host_input_collision_check_looks_inside_nested_tags() -> None:
     host_input(outputs, "bins", widget)
     with pytest.raises(ValueError, match="bins_ui"):
         _sync_value(outputs.registered["bins_ui"]["renderer"])
-
-
-def test_host_input_in_a_real_running_app(tmp_path: Path) -> None:
-    """Smoke test against a real app: the output exists and answers over HTTP.
-
-    Confirms `host_input()`'s use of the *real* `output`/`render.ui`
-    machinery works end to end (not just against the protocol
-    `_FakeOutputs` assumes), by starting an actual Shiny process and
-    checking the output placeholder it registers is present on the page --
-    the same placeholder Shiny fills in dynamically over the websocket once
-    a client connects, which a plain HTTP GET does not drive.
-    """
-    from bslib_react._app_runner import start_app
-
-    app_dir = tmp_path / "hostapp"
-    app_dir.mkdir()
-    (app_dir / "app.py").write_text(
-        "from shiny import App, ui\n"
-        "from bslib_react import host_input\n\n"
-        'app_ui = ui.page_fluid(ui.output_ui("bins_ui"))\n\n'
-        "def server(input, output, session):\n"
-        '    host_input(output, "bins", lambda: '
-        'ui.input_slider("bins", "Bins", 1, 50, 30))\n\n'
-        "app = App(app_ui, server)\n",
-        encoding="utf-8",
-    )
-
-    handle = start_app(app_dir, timeout=60)
-    try:
-        with urllib.request.urlopen(handle.url, timeout=10) as resp:
-            html = resp.read().decode("utf-8")
-        assert re.search(
-            r'id="bins_ui"[^>]*class="shiny-html-output"|class="shiny-html-output"[^>]*id="bins_ui"',
-            html,
-        )
-    finally:
-        handle.stop()

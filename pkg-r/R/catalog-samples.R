@@ -19,15 +19,9 @@
 # object. Do not `library()` anything here and do not shorten a call to its
 # unqualified name; the fully qualified form is part of the contract.
 #
-# A "kind: page" sample is a page shell (a `bslib::page_*()` call). Those
-# are rendered by starting one background Shiny app and fetching each
-# page's full served document, because a page shell's own classes and
-# inline styles (`page_fillable()`'s fill CSS, `page_navbar()`'s navbar
-# markup) render differently through a real `shiny::runApp()` session than
-# through a standalone `renderTags()` call outside one; see the long
-# comment above the `page_navbar` sample below, and
-# docs/decisions/0001-no-fixtures-live-ground-truth.md, for the bug this
-# once caused.
+# A "kind: page" sample is a page shell (a `bslib::page_*()` call). Its
+# rendered html is the page's own `<body>` tag, so a page component's body
+# classes and inline style are checked against it too.
 #
 # This package ships only "kind: tag" and "kind: page" samples: the
 # markup bslib-react's own components need to match. A "kind: extra"
@@ -36,8 +30,8 @@
 # markup catalog renderer's own dev-time list, so that this package's
 # tests and installed dependencies never need any of the four. Everything
 # below is "kind: tag" or "kind: page": a plain `htmltools::renderTags()`
-# call (or, for a page shell, a served document), under the same
-# Bootstrap-5-forcing wrap the renderer applies to both.
+# call under the Bootstrap-5-forcing option the renderer sets (see the page
+# shells section below).
 
 # A thin constructor, mostly so a typo in `kind` or `group` fails loudly
 # here instead of silently reaching the JSON with a value nothing expects.
@@ -686,35 +680,15 @@
 
   # ---- page shells --------------------------------------------------------
   #
-  # Every sample below is a full bslib page shell (a bslib::page_*() call),
-  # and every one is kind = "page": the markup catalog renderer serves
-  # each of these from one background Shiny app and fetches the browser's
-  # own served document, rather than calling renderTags() on the bare tag.
-  #
-  # This is not a stylistic choice. bslib's own nav-building code decides
-  # its markup at render time by asking shiny::getCurrentThemeVersion(),
-  # which reads the Shiny option "bootstrapTheme"
-  # (shiny::getShinyOption("bootstrapTheme")), not bslib::bs_global_set()
-  # and not the theme= argument a page_*() call was given. A real
-  # shiny::runApp() session sets that option itself while it serves a page;
-  # a plain script does not, unless something sets it by hand first. Get
-  # this wrong and every nav sample renders Bootstrap 3 markup that no real
-  # app ever ships: the active tab comes out as
-  # `<li class="active"><a>` instead of the real
-  # `<li class="nav-item"><a class="nav-link active">`. That wrong markup
-  # shipped in this kit's previous life as a committed HTML fixture, in
-  # four apps, before a screenshot diff (not a test) caught it; see
-  # docs/decisions/0001-no-fixtures-live-ground-truth.md for the full story.
-  #
-  # tools/markup/render-r.R's served path additionally sets
-  # shinyOptions(bootstrapTheme =) itself before the background app starts
-  # serving, as a second, redundant safety net: bslib's own page_*()
-  # functions already default theme = bs_theme() (Bootstrap 5), and a real
-  # runApp() session sets the option from that theme on its own, but
-  # setting it explicitly means a caller-supplied theme (with custom
-  # colors or fonts) is honored consistently across every page sample, not
-  # only the ones that happen to pass theme = bs_theme(version = 5)
-  # themselves.
+  # bslib's nav builders pick their markup at render time from
+  # shiny::getCurrentThemeVersion(), which reads the Shiny option
+  # "bootstrapTheme", not bslib::bs_global_set() and not a page's own
+  # theme= argument. Outside a running app that option is unset, and every
+  # nav sample would render Bootstrap 3 markup (`<li class="active"><a>`,
+  # not `<li class="nav-item"><a class="nav-link active">`), the bug
+  # docs/decisions/0001-no-fixtures-live-ground-truth.md describes.
+  # tools/markup/render-r.R sets the option around every render, which gives
+  # the same markup a running app serves.
   .sample(
     "page_fillable",
     "page",
@@ -788,8 +762,8 @@
   ),
   # Replaces an earlier fixture that was hand corrected because a plain
   # as.character() dump could not represent a nav_menu() dropdown
-  # faithfully (see docs/markup-catalog.md, "Sample names"). The live,
-  # served render needs no such correction.
+  # faithfully (see docs/markup-catalog.md, "Sample names"). Rendered under
+  # the bootstrapTheme option, it needs no such correction.
   .sample(
     "page_navbar_dropdown",
     "page",

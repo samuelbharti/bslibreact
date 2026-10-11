@@ -102,13 +102,13 @@ py-setup:  ## [py] Install Python dependencies
 
 .PHONY: py-check-format
 py-check-format:  ## [py] Check Python formatting
-	uv run ruff check pkg-py examples --config pyproject.toml
-	uv run ruff format --check pkg-py examples --config pyproject.toml
+	uv run ruff check pkg-py examples tools --config pyproject.toml
+	uv run ruff format --check pkg-py examples tools --config pyproject.toml
 
 .PHONY: py-format
 py-format:  ## [py] Format Python code
-	uv run ruff check --fix pkg-py examples --config pyproject.toml
-	uv run ruff format pkg-py examples --config pyproject.toml
+	uv run ruff check --fix pkg-py examples tools --config pyproject.toml
+	uv run ruff format pkg-py examples tools --config pyproject.toml
 
 .PHONY: py-check-types
 py-check-types:  ## [py] Type check Python code

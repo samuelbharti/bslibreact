@@ -115,8 +115,8 @@ const EXPECTED_VERSION_KEYS: Record<Lang, string[]> = {
 };
 
 describe.each(catalogLangs())("catalog contract: %s", (lang: Lang) => {
-  it("has schema 1", () => {
-    expect(loadCatalog(lang).schema).toBe(1);
+  it("has schema 2", () => {
+    expect(loadCatalog(lang).schema).toBe(2);
   });
 
   it("has a generator with a package name and version", () => {

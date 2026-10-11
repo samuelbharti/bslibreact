@@ -1,3 +1,4 @@
+import type { ReactElement } from "react";
 import { render } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import {
@@ -431,14 +432,56 @@ describeCatalog("r", "LayoutSidebar", () => {
 });
 
 describeCatalog("r", "PageFillable, PageSidebar and PageNavbar", () => {
-  // Body-level classes/style are not part of the markup catalog contract
-  // (docs/markup-catalog.md's "page" samples capture <html> attributes and
-  // <head> inline CSS, not <body>'s own attributes), so these three
-  // components' own body-class-setting behavior (usePageBody) is verified
-  // by reading bslib's source directly (see usePageBody.ts's own comment),
-  // not against the catalog. What IS comparable, and checked here, is the
-  // html{height:100%} style injection every page_*() function adds, and
-  // each component's own inner markup (nav shell, sidebar, tab-content).
+  // Each page component sets <body>'s classes and inline style the way the
+  // matching bslib page function does, and injects the same
+  // html { height: 100% } rule into <head>.
+  it("PageFillable sets page_fillable()'s <body> classes and style", () => {
+    render(
+      <PageFillable padding={8} gap={4}>
+        {"hi"}
+      </PageFillable>,
+    );
+    expect(shapeOf(document.body)).toEqual(catalogShape("page_fillable", "body"));
+  });
+
+  it("PageSidebar sets page_sidebar()'s <body> classes and style", () => {
+    render(
+      <PageSidebar title="Demo" sidebar={<div />}>
+        <div />
+      </PageSidebar>,
+    );
+    expect(shapeOf(document.body)).toEqual(catalogShape("sidebar_layout", "body"));
+  });
+
+  it("PageNavbar sets page_navbar()'s <body> classes for each page shape", () => {
+    const tabStrip = <NavbarTabStrip id="nav" panels={panels} />;
+    const cases: Array<[string, ReactElement]> = [
+      [
+        "page_navbar",
+        <PageNavbar key="a" title="Demo" tabStrip={tabStrip}>
+          {null}
+        </PageNavbar>,
+      ],
+      [
+        "page_navbar_not_fillable",
+        <PageNavbar key="b" title="Demo" fillable={false} tabStrip={tabStrip}>
+          {null}
+        </PageNavbar>,
+      ],
+      [
+        "page_navbar_sidebar",
+        <PageNavbar key="c" title="Demo" tabStrip={tabStrip} sidebar={<div />}>
+          {null}
+        </PageNavbar>,
+      ],
+    ];
+    for (const [name, ui] of cases) {
+      const { unmount } = render(ui);
+      expect(shapeOf(document.body), name).toEqual(catalogShape(name, "body"));
+      unmount();
+    }
+  });
+
   it("PageFillable injects the same html{height:100%} style bslib's page_fillable() does", () => {
     render(<PageFillable>{"hi"}</PageFillable>);
     const styleTag = document.getElementById("bslib-html-height");
