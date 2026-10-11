@@ -112,6 +112,7 @@ hosted widgets need. The Vite build bundles the kit's components into
 
 ```r
 library(shinyreact)
+library(bslibreact)
 
 ui <- page_react(page_deps(app_theme), title = "My app", theme = app_theme)
 ```

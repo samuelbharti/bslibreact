@@ -14,7 +14,7 @@ Returns the \code{\link[htmltools:htmlDependency]{htmltools::htmlDependency()}} 
 \code{bslib-react.js} bundle (and its stylesheet, when one is built), which
 sets \code{window.bslibReact}. Attach it only for a client with no build step
 that reads the kit from that global, for example
-\code{shinyreact::page_react(page_deps(app_theme), bslib_react_dep(), theme = app_theme)}.
+\code{page_react(page_deps(app_theme), bslib_react_dep(), theme = app_theme)}.
 A client built with Vite bundles the kit itself and does not need it.
 }
 \section{Load order}{

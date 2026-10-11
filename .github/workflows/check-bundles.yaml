@@ -44,7 +44,7 @@ jobs:
           cache-dependency-path: package-lock.json
 
       # Every gallery app and the shell itself must at least parse. This
-      # catches a broken app.R without installing shiny or booting 126
+      # catches a broken app.R without installing shiny or booting over a hundred
       # processes, which a runtime check of this gallery would need.
       - name: Parse every gallery R file
         run: |

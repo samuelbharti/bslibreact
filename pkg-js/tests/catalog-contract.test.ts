@@ -9,11 +9,9 @@ import { catalogDoc, catalogLangs, loadCatalog, type Lang } from "./catalog";
  * navbar), so the components are not compared with it.
  */
 
-// Every sample both catalogs must have: pkg-r's list minus the six only R
-// can render (the five "extra" samples, which need DT, reactable,
-// htmlwidgets or shinycssloaders, and "icon", which py-shiny has no helper
-// for). pkg-r's and pkg-py's tests hold the same list; renaming or dropping
-// a sample is a deliberate edit in all three.
+// Every sample both catalogs must have: the R catalog minus R_ONLY.
+// pkg-r's and pkg-py's own catalog tests each hold their language's list;
+// renaming or dropping a sample is a deliberate edit in all three.
 const REQUIRED_SAMPLES = [
   "selectInput",
   "selectizeInput",
@@ -77,6 +75,18 @@ const REQUIRED_SAMPLES = [
   "page_navbar_dropdown",
   "page_navbar_not_fillable",
 ] as const;
+
+// The six samples only R can render: the five "extra" ones, which need DT,
+// reactable, htmlwidgets or shinycssloaders, and "icon", which py-shiny
+// has no helper for.
+const R_ONLY = new Set([
+  "DTOutput",
+  "DTOutput_no_fill",
+  "htmlwidget_output",
+  "icon",
+  "plotOutput_with_spinner",
+  "reactableOutput",
+]);
 
 const VALID_KINDS = new Set(["tag", "page", "extra"]);
 const VALID_GROUPS = new Set([
@@ -168,5 +178,15 @@ describe.each(catalogLangs())("catalog contract: %s", (lang: Lang) => {
     const known = new Set(Object.keys(loadCatalog(lang).samples));
     const missing = REQUIRED_SAMPLES.filter((name) => !known.has(name));
     expect(missing, `${lang} catalog is missing: ${missing.join(", ")}`).toEqual([]);
+  });
+});
+
+const bothReady = catalogLangs().includes("r") && catalogLangs().includes("py");
+
+describe.skipIf(!bothReady)("catalog contract: R and Python", () => {
+  it("hold the same sample names, R-only samples aside", () => {
+    const r = Object.keys(loadCatalog("r").samples).filter((name) => !R_ONLY.has(name));
+    const py = Object.keys(loadCatalog("py").samples);
+    expect(py.sort()).toEqual(r.sort());
   });
 });

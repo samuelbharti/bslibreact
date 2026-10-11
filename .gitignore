@@ -47,7 +47,7 @@ test-results/
 playwright-report/
 
 # Claude Code. Skill source under .claude/skills/ is committed on purpose
-# (it ships inside pkg-r and pkg-py); everything else under .claude/ stays out.
+# (for contributors, see CONTRIBUTING.md); everything else under .claude/ stays out.
 !.claude/
 .claude/*
 !.claude/skills/

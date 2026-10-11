@@ -15,13 +15,12 @@ The three columns are the point of the thing:
 | `rpkg` | bslib-react from the R package's own vendored bundle, UI hand written in plain JS | no |
 
 `vite` and `rpkg` are the two tiers described in [docs/build.md](../docs/build.md).
-Their `app.R` differs in one line: the rpkg page also attaches
-`bslib_react_dep()`, the vendored bundle its client reads, while the vite
-client bundles the kit itself. Otherwise `bslibreact` is the server half of
-both, and the only thing that differs is where the client comes from. The `vite` column builds it from TSX; the `rpkg` column writes it
-by hand against `window.bslibReact`, the global that
-`bslib_react_dep()`'s vendored bundle publishes, so it needs no npm and
-no build step at all.
+`bslibreact` is the server half of both; what differs is where the client
+comes from. The `vite` column builds it from TSX, bundling the kit into its
+`ui.js`. The `rpkg` column writes it by hand against `window.bslibReact`,
+the global the vendored bundle publishes, so it needs no npm and no build
+step at all. Their `app.R` files therefore differ in one line: the rpkg
+page also attaches `bslib_react_dep()`, that vendored bundle.
 
 This is a real, single Shiny app (`app.R`), run with plain R. It replaced
 an earlier version built on `shinylive` (R compiled to WebAssembly, running

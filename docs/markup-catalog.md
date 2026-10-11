@@ -125,9 +125,11 @@ Names added for coverage this kit did not have before: `page_navbar_not_fillable
 `accordion`, `navset_card_tab`, `navset_pill`, `checkboxGroupInput`,
 `dateInput`, `dateRangeInput`, `icon`.
 
-A test in each of the three packages holds the same literal list of names.
-Renaming or dropping a sample is a deliberate edit made in three places,
-not something that happens by accident.
+Each package's tests hold a literal list of its names (pkg-r's and
+pkg-py's catalog tests, and pkg-js's contract test for the names both
+catalogs share), and the contract test also checks the two catalogs hold
+the same names, R-only samples aside. Renaming or dropping a sample is a
+deliberate edit, not something that happens by accident.
 
 ## Id normalisation
 

@@ -57,7 +57,7 @@ per port does not justify a permanent runtime or CI dependency.
    Run the parent and the port side by side (two ports, two browser tabs).
    Compare:
    - The `<head>` dependencies each one loads (browser devtools' Network
-     or Elements tab, or `curl -s <url> | grep -o '<link[^>]*>|<script[^>]*>'`):
+     or Elements tab, or `curl -s <url> | grep -o '<link[^>]*>\|<script[^>]*>'`):
      every CSS and JS file the parent's theme and widgets pull in should
      also appear on the port. A missing one renders a widget unstyled; an
      extra, unrelated one is usually harmless, but find out why it is there.
@@ -98,7 +98,8 @@ you are porting, and switch to the new component once it lands.
 
 ## Symptom table
 
-The full table is in `docs/porting.md`, under "Checks". Use it at
+The full table is in this repository's `docs/porting.md`, under "Checks"
+(https://github.com/samuelbharti/bslib-react/blob/main/docs/porting.md). Use it at
 checkpoint 2, and whenever the port looks different from its parent.
 
 ## Rules that bit previous ports
