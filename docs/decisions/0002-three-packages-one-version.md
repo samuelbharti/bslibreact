@@ -26,10 +26,10 @@ r-universe. Releasing means releasing all three, even when
 only one changed; that is an accepted cost for the docs, the README, and
 the mental model all naming one number.
 
-The JS bundle's own version is pinned separately in two constants
-(`pkg-r/R/dep.R`, `pkg-py/src/bslib_react/_dep.py`) but is bumped by
-hand in lockstep with the package version, since the
-vendored bundle always matches the release it ships in.
+The vendored JS bundle always matches the release it ships in, so its
+version is read from the package's own version at runtime
+(`pkg-r/R/dep.R`, `pkg-py/src/bslib_react/_dep.py`), not kept as a second
+constant.
 
 ## Consequences
 

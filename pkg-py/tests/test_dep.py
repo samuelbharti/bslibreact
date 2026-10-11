@@ -2,10 +2,10 @@
 
 from pathlib import Path
 
-from bslib_react import _dep
+from bslib_react import __version__, _dep
 
 
-def test_version_is_the_bare_constant_without_a_dev_checkout(
+def test_version_is_the_package_version_without_a_dev_checkout(
     monkeypatch, tmp_path: Path
 ) -> None:
     monkeypatch.setattr(
@@ -13,7 +13,7 @@ def test_version_is_the_bare_constant_without_a_dev_checkout(
     )
     dep = _dep.bslib_react_dep()
     # HTMLDependency parses `version=` into a packaging.version.Version.
-    assert str(dep.version) == _dep._BSLIB_REACT_JS_VERSION
+    assert str(dep.version) == __version__
 
 
 def test_version_gets_an_mtime_suffix_in_a_dev_checkout(
@@ -36,7 +36,7 @@ def test_version_gets_an_mtime_suffix_in_a_dev_checkout(
     monkeypatch.setattr(_dep, "_WWW_DIR", fake_www)
 
     version = _dep._bundle_version()
-    assert version == f"{_dep._BSLIB_REACT_JS_VERSION}.{known_mtime}"
+    assert version == f"{__version__}.{known_mtime}"
 
 
 def test_script_tag_is_deferred_with_no_type_attribute() -> None:

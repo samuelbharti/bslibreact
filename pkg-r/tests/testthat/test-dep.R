@@ -5,10 +5,10 @@ test_that("bslib_react_dep() has the right name, script, and defer attribute", {
   expect_identical(dep$script$defer, "")
 })
 
-test_that("version is the plain constant when not a dev checkout", {
+test_that("version is the package version when not a dev checkout", {
   local_mocked_bindings(.dev_checkout = function() FALSE)
   dep <- bslib_react_dep()
-  expect_identical(dep$version, .bslib_react_js_version)
+  expect_identical(dep$version, .package_version())
 })
 
 test_that("version gets an mtime suffix in a dev checkout", {
@@ -25,7 +25,7 @@ test_that("version gets an mtime suffix in a dev checkout", {
   dep <- bslib_react_dep()
   expect_identical(
     dep$version,
-    paste0(.bslib_react_js_version, ".", as.integer(known_mtime))
+    paste0(.package_version(), ".", as.integer(known_mtime))
   )
 })
 
@@ -39,7 +39,7 @@ test_that("bslib_react_dep() does not error when the bundle file does not exist 
     .www_dir = function() dir
   )
   expect_no_error(dep <- bslib_react_dep())
-  expect_identical(dep$version, .bslib_react_js_version)
+  expect_identical(dep$version, .package_version())
 })
 
 test_that("stylesheet is present iff the .css file exists", {

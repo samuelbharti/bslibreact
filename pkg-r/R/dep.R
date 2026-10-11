@@ -9,12 +9,11 @@
 
 .www_dir <- function() system.file("lib", "bslib-react", package = "bslibreact")
 
-# The bslib-react.js bundle's own version, i.e. the release of pkg-js this
-# copy was vendored from. Bump alongside pkg-js/package.json's version;
-# test-version.R checks the two agree once pkg-js exists in this checkout.
-# Mirrors shinyreact's .shinyreact_js_version and this package's own
-# Python sibling's _BSLIB_REACT_JS_VERSION.
-.bslib_react_js_version <- "0.1.0"
+# The vendored bundle always ships with the release it was built for, so
+# its version is the package's own (docs/decisions/0002).
+.package_version <- function() {
+  as.character(utils::packageVersion("bslibreact"))
+}
 
 # TRUE only in a repo checkout (devtools::load_all()), where the repo's
 # pkg-js/package.json sits four levels above inst/lib/bslib-react/. Never
@@ -32,13 +31,11 @@
   ))
 }
 
-# .bslib_react_js_version, suffixed with the bundle file's own mtime in a
-# dev checkout. Installed, a page loads version "0.1.0"; in the repo, where
-# the same file on disk can change between one `make update-dist` and the
-# next without this constant being bumped, it loads "0.1.0.<mtime>"
-# instead, so the browser's own dependency cache still gets busted on a
-# rebuild while the version string still names the release. Mirrors
-# shinyreact's .bundle_version().
+# The package version, suffixed with the bundle file's own mtime in a dev
+# checkout. Installed, a page loads version "0.1.0"; in the repo, where the
+# same file can change between one `make update-dist` and the next without
+# a version bump, it loads "0.1.0.<mtime>", so the browser's cache is still
+# busted on a rebuild. Mirrors shinyreact's .bundle_version().
 .bundle_version <- function() {
   if (.dev_checkout()) {
     mtime <- suppressWarnings(file.mtime(file.path(
@@ -46,10 +43,10 @@
       "bslib-react.js"
     )))
     if (length(mtime) == 1L && !is.na(mtime)) {
-      return(paste0(.bslib_react_js_version, ".", as.integer(mtime)))
+      return(paste0(.package_version(), ".", as.integer(mtime)))
     }
   }
-  .bslib_react_js_version
+  .package_version()
 }
 
 #' The vendored bslib-react.js dependency

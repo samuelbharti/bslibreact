@@ -14,12 +14,9 @@ from pathlib import Path
 
 from htmltools import HTMLDependency
 
-_WWW_DIR = Path(__file__).parent / "www"
+from ._version import __version__
 
-# bslib-react's own release version, i.e. the release of the bundle `www/`
-# should contain. Bump alongside `pkg-js/package.json`; `test_dep.py` and
-# `test_version.py` guard the three packages staying in step.
-_BSLIB_REACT_JS_VERSION = "0.1.0"
+_WWW_DIR = Path(__file__).parent / "www"
 
 # Only reachable from a repo checkout (this package installed editable from
 # source), never from an installed wheel -- a wheel has no `pkg-js/` sibling
@@ -36,7 +33,7 @@ def _file_mtime_int(path: Path) -> int | None:
 
 
 def _bundle_version() -> str:
-    """``_BSLIB_REACT_JS_VERSION``, suffixed with the bundle's mtime in a dev checkout.
+    """The package version, suffixed with the bundle's mtime in a dev checkout.
 
     An installed package serves ``/lib/bslib-react-0.1.0/``. In a repo
     checkout it is ``/lib/bslib-react-0.1.0.<mtime>/`` instead, so
@@ -46,8 +43,8 @@ def _bundle_version() -> str:
     if _JS_PACKAGE_JSON.is_file():
         mtime = _file_mtime_int(_WWW_DIR / "bslib-react.js")
         if mtime is not None:
-            return f"{_BSLIB_REACT_JS_VERSION}.{mtime}"
-    return _BSLIB_REACT_JS_VERSION
+            return f"{__version__}.{mtime}"
+    return __version__
 
 
 def bslib_react_dep() -> HTMLDependency:

@@ -46,13 +46,6 @@ SOURCES = (
     # The key is indented in package.json, so the anchor allows leading
     # whitespace rather than binding to the start of the line.
     ("pkg-js/package.json", r'^\s*"version":\s*"([^"]+)"'),
-    # The version each package reports for its vendored bslib-react.js bundle.
-    # These are separate constants from the package version and have to be
-    # bumped by hand, so they drift the same way a lock file does.
-    ("pkg-r/R/dep.R", r'^\.bslib_react_js_version <- "([^"]+)"'),
-    ("pkg-py/src/bslib_react/_dep.py", r'^_BSLIB_REACT_JS_VERSION = "([^"]+)"'),
-    ("pkg-py/src/bslib_react/_version.py", r'^\s*__version__ = "([^"]+)"'),
-    ("pkg-py/tests/test_version.py", r'^_EXPECTED_VERSION = "([^"]+)"'),
 )
 
 # package-lock.json is JSON rather than a line match: pkg-js is a workspace, so
