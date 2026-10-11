@@ -32,12 +32,12 @@ If the change touches the component kit or `page_deps()`, also run:
 
 ```
 make update-dist
-make examples
+make bundles
 git status --porcelain
 ```
 
-Both must come back empty. `www/ui.js` in each example is committed build
-output; CI fails a PR that leaves it stale.
+Both must come back empty. `www/ui.js` in each example and each gallery
+react app is committed build output; CI fails a PR that leaves one stale.
 
 ## Adding a component
 

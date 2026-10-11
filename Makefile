@@ -162,6 +162,15 @@ examples:  ## Build every example app's client bundle
 gallery-apps:  ## [gallery] Build every example's react/www/ui.js client bundle
 	cd gallery && npm install && npm run build
 
+# What CI's check-bundles.yaml runs after `npm ci`, so a failing check is
+# fixed by running this and committing the result. No `npm install` here,
+# so it builds against exactly the lockfile CI uses.
+.PHONY: bundles
+bundles:  ## Rebuild every committed www/ui.js (examples and gallery) from the current pkg-js
+	cd $(PATH_PKG_JS) && npm run build:npm
+	npm run build --workspace examples
+	npm run build --workspace gallery
+
 .PHONY: gallery
 gallery: gallery-apps  ## [gallery] Build the react client bundles, then run the gallery Shiny app
 	$(RSCRIPT) -e "shiny::runApp('gallery')"
