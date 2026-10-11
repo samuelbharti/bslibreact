@@ -48,7 +48,7 @@ ui <- page_react(page_deps(app_theme), bslib_react_dep(), title = "Demo", theme 
 
 server <- function(input, output, session) {
   host_input(output, "bins", sliderInput("bins", "Bins", 1, 50, 30))
-  output$plot <- renderPlot(hist(rnorm(input$bins)))
+  output$plot <- renderPlot(hist(rnorm(500), breaks = req(input$bins)))
 }
 
 shinyApp(ui, server)
@@ -57,7 +57,9 @@ shinyApp(ui, server)
 Server (Python):
 
 ```python
-from shiny import App, render, ui
+import matplotlib.pyplot as plt
+import numpy as np
+from shiny import App, render, req, ui
 from shinyreact import page_react
 from bslib_react import page_deps, bslib_react_dep, host_input
 
@@ -68,8 +70,9 @@ def server(input, output, session):
 
     @render.plot
     def plot():
-        import numpy as np
-        return None  # draw your plot here
+        fig, ax = plt.subplots()
+        ax.hist(np.random.normal(size=500), bins=req(input.bins()))
+        return fig
 
 app = App(app_ui, server)
 ```
@@ -81,7 +84,7 @@ import { PageSidebar, SliderInput, PlotOutput } from "bslib-react";
 
 export function App() {
   return (
-    <PageSidebar sidebar={<SliderInput id="bins_ui" />}>
+    <PageSidebar title="Demo" sidebar={<SliderInput id="bins_ui" />}>
       <PlotOutput id="plot" />
     </PageSidebar>
   );
@@ -132,7 +135,7 @@ is untested, not necessarily broken.
 | --- | --- |
 | bslib | >= 0.12.0 |
 | shiny (R) | >= 1.14.0 |
-| shiny (Python) | >= 1.7.0 |
+| shiny (Python) | >= 1.8.0 |
 | react | 19.x |
 | @posit-dev/shinyreact | >= 0.1.1 |
 
