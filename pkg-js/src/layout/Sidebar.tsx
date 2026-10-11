@@ -8,85 +8,30 @@ type Props = {
   sidebarWidth?: number;
   /** sidebar(title = ...): renders a <header class="sidebar-title">. */
   title?: string;
-  /** sidebar(position = ...). Default "left", page_sidebar()'s own shape. */
+  /** sidebar(position = ...). */
   position?: "left" | "right";
-  /** sidebar(open = ...). Default "open", page_sidebar()'s own shape. */
+  /** sidebar(open = ...), for desktop. */
   open?: "open" | "closed";
-  /**
-   * sidebar(id = ...): makes the aside a real Shiny input (adds
-   * bslib-sidebar-input, and toggle_sidebar()/input$<id> work server-side).
-   * Omit for a plain, non-controllable sidebar (page_sidebar()'s own
-   * shape, an auto id, no input binding).
-   */
+  /** sidebar(id = ...): makes the <aside> a Shiny input (bslib-sidebar-input),
+   *  so toggle_sidebar() and input$<id> work. Omit for a plain sidebar. */
   id?: string;
-  /**
-   * The two mobile/desktop collapse knobs page_sidebar() vs a plain
-   * layout_sidebar() set differently by default - page_sidebar() locks
-   * its sidebar always-open on mobile since it is primary navigation; a
-   * secondary in-page sidebar (Browse's filters, say) collapses on
-   * mobile like desktop. The default here (true) matches a plain
-   * layout_sidebar()+sidebar() (confirmed against the "sidebar_layout_titled",
-   * "sidebar_layout_right_closed", "sidebar_layout_gap_padding", and
-   * "sidebar_custom_class" catalog samples, all data-collapsible-mobile="true"
-   * with no explicit collapsible argument in the call); PageSidebar passes
-   * false explicitly to reproduce page_sidebar()'s own locked-open shape
-   * (confirmed against "sidebar_layout", data-collapsible-mobile="false").
-   * An earlier version of this component defaulted to false here, correct
-   * for its first caller (PageSidebar) but wrong for a direct
-   * layout_sidebar()+sidebar() use - a gap this component's own comment
-   * used to flag directly ("since that was this component's first and,
-   * until now, only caller").
-   */
+  /** data-collapsible-mobile. True for a plain layout_sidebar(); PageSidebar
+   *  passes false, since page_sidebar() keeps its sidebar open on mobile. */
   collapsibleMobile?: boolean;
-  /**
-   * data-open-mobile. Defaults to "closed", bslib's own default for a
-   * plain layout_sidebar()+sidebar() with no explicit open argument
-   * (confirmed against the same four standalone catalog samples above:
-   * every one shows data-open-desktop="open" data-open-mobile="closed",
-   * even though `open` itself was never passed - mobile does NOT inherit
-   * desktop's own "open" default). An explicit open="open"/"closed" on the
-   * `open` prop mirrors to both desktop and mobile instead, confirmed by
-   * "sidebar_layout_right_closed" (open="closed" produces both
-   * data-open-desktop and data-open-mobile "closed") and, from R directly,
-   * `page_navbar(sidebar = sidebar(open = "open"))`
-   * (data-open-mobile="open", not "always" or "closed") - callers that
-   * need that mirroring (PageNavbar's own sidebarOpen prop) pass
-   * `openMobile` explicitly rather than relying on this default.
-   * PageSidebar passes "always" explicitly, its own locked-open shape
-   * (confirmed against "sidebar_layout").
-   */
+  /** data-open-mobile. "closed" for a plain layout_sidebar() (mobile does
+   *  not follow `open`'s default); PageSidebar passes "always", and
+   *  PageNavbar passes its own `sidebarOpen`. */
   openMobile?: "always" | "open" | "closed";
-  /**
-   * layout_sidebar(border = ...). bslib's own default is NULL, which
-   * renders no attribute at all (the theme's own border style applies) -
-   * confirmed against the four standalone catalog samples above, none of
-   * which carries data-bslib-sidebar-border. page_sidebar() and
-   * page_navbar(sidebar = ...)'s own app-wide sidebar both pass FALSE
-   * explicitly (confirmed against "sidebar_layout" and
-   * "page_navbar_sidebar", both data-bslib-sidebar-border="false"); leave
-   * this undefined for a plain layout_sidebar()+sidebar() call.
-   */
+  /** layout_sidebar(border = ...). Undefined renders no attribute, bslib's
+   *  default; page_sidebar() and page_navbar(sidebar = ) pass false. */
   border?: boolean;
-  /** layout_sidebar(border_radius = ...), the same NULL-vs-explicit shape
-   *  as `border`, confirmed the same way. */
+  /** layout_sidebar(border_radius = ...), the same way as `border`. */
   borderRadius?: boolean;
-  /**
-   * sidebar(class = "..."): an extra class on the <aside> itself (a
-   * caller-side CSS hook, e.g. gene-list-builder's own "glb-build-sidebar"
-   * padding override), not on the surrounding layout div. Confirmed by
-   * rendering `sidebar(class = "x", ...)` from R: the class lands on
-   * `<aside class="sidebar x">`.
-   */
+  /** sidebar(class = ...): an extra class on the <aside> itself. */
   sidebarClassName?: string;
-  /** sidebar(gap = ...): an inline `gap` CSS value on `.sidebar-content`
-   *  (its own flex layout), tighter than the default bslib-gap-spacing.
-   *  Confirmed by rendering `sidebar(gap = "0.4rem", ...)` from R:
-   *  `style="gap:0.4rem;..."` on the content div, not the <aside> itself.
-   *  tahoe-explorer's drugs/cell_lines/coverage filter sidebars all set
-   *  this alongside `padding`. */
+  /** sidebar(gap = ...): an inline gap on .sidebar-content. */
   gap?: string;
-  /** sidebar(padding = ...): the matching inline `padding` value on the
-   *  same `.sidebar-content` div, confirmed the same way. */
+  /** sidebar(padding = ...): an inline padding on .sidebar-content. */
   padding?: string;
   children: ReactNode;
 };
@@ -94,15 +39,11 @@ type Props = {
 /**
  * bslib::layout_sidebar() + sidebar(). Markup pinned against the
  * "sidebar_layout_titled", "sidebar_layout_right_closed",
- * "sidebar_layout_gap_padding", and "sidebar_custom_class" catalog samples
- * for a plain, standalone call (bslib 0.12.0); PageSidebar and PageNavbar
- * each pin their OWN page-level defaults (collapsibleMobile, openMobile,
- * border, borderRadius) against "sidebar_layout" and "page_navbar_sidebar"
- * respectively, by passing them explicitly rather than relying on this
- * component's own defaults. The aside starts `hidden` in the
- * server-rendered version too: bslib.Sidebar.initCollapsibleAll() (called
- * from an effect here, the same script tag bslib itself emits) un-hides it
- * in the correct open/collapsed state for the viewport.
+ * "sidebar_layout_gap_padding" and "sidebar_custom_class" catalog samples;
+ * PageSidebar and PageNavbar pass their own page-level defaults explicitly.
+ * The <aside> starts `hidden`, as in bslib's own markup:
+ * bslib.Sidebar.initCollapsibleAll(), called from an effect here, shows it
+ * in the right open or collapsed state for the viewport.
  */
 export function LayoutSidebar({
   sidebar,
@@ -121,8 +62,7 @@ export function LayoutSidebar({
   children,
 }: Props) {
   const rawId = useId();
-  // useNs is a hook, so it always runs; the result is only used when id
-  // is actually given, matching the rule every other hosted piece follows.
+  // A hook, so it always runs; the result is used only when `id` is set.
   const fullId = useNs(id ?? "");
   const asideId = id ? fullId : `bslib-sidebar-${rawId}`;
   const asideRef = useRef<HTMLElement>(null);
@@ -132,31 +72,11 @@ export function LayoutSidebar({
     window.bslib?.Sidebar?.initCollapsibleAll();
   }, []);
 
-  // A sidebar with an id is bslib's own input (toggle_sidebar() targets it
-  // server-side), so it needs binding - through useBoundScope, not a plain
-  // useEffect calling Shiny.initializeInputs()/bindAll() directly, because
-  // this <aside> can hold a hosted output (a HostedInput, a PlotOutput, ...)
-  // in its `sidebar` content, same as `children` can in the surrounding
-  // <main>. See useBoundScope's own file comment for why calling
-  // Shiny.bindAll() on a scope that, in the same commit, also contains a
-  // freshly mounted hosted output produces Shiny's "Duplicate output IDs"
-  // warning, and why the fix is to withhold that content rather than make
-  // the manual call itself smarter.
-  //
-  // Scope is the outer layout div (layoutDivRef), an ancestor of <aside>,
-  // not <aside> itself: bslib-sidebar-input lives on <aside>, and every
-  // Shiny binding's find(scope) is descendants-only, so scope has to be
-  // something ABOVE the element being found, exactly the way the old
-  // effect already (correctly) used el.parentElement here. Unbinding on
-  // cleanup still targets the <aside> itself (asideRef, matching the old
-  // Shiny.unbindAll(el, true)), since that is the one element this hook
-  // bound, not the whole layout div.
-  //
-  // enabled = Boolean(id): with no id, useBoundScope returns true at once
-  // and does nothing else, matching the old code's plain `if (!id) return`
-  // early exit - a sidebar with no id is not a Shiny input, so there is
-  // nothing to bind or wait for, and `sidebar`/`children` render straight
-  // away.
+  // A sidebar with an id is a Shiny input, bound through useBoundScope so
+  // the hosted content in `sidebar` and `children` waits for that bind (see
+  // its file comment). The scope is the layout div, an ancestor of the
+  // <aside>, since Shiny's find() is descendants-only. Without an id there
+  // is nothing to bind and everything renders at once.
   const childrenReady = useBoundScope(asideRef, () => layoutDivRef.current, Boolean(id));
 
   return (

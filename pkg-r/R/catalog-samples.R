@@ -204,10 +204,9 @@
       options = list(plugins = list("remove_button"))
     ))
   ),
-  # Added for the recount-explorer Genes tab: a server-populated selectize
-  # with a maxOptions cap and no remove_button plugin, distinct enough from
-  # selectizeInput_remove_button above to be worth its own sample (the
-  # plugin changes the markup inside the selectize wrapper).
+  # A server-populated selectize with a maxOptions cap and no remove_button
+  # plugin; the plugin changes the markup inside the selectize wrapper, so
+  # this differs from selectizeInput_remove_button above.
   .sample(
     "selectizeInput_max_options",
     "tag",
@@ -463,11 +462,9 @@
       bslib::card(bslib::card_header("Main"), bslib::card_body("Content"))
     ))
   ),
-  # Added for the recount-explorer Browse tab: a titled sidebar, and a
-  # right-positioned, initially-closed one with an explicit id, which makes
-  # it a real Shiny input a caller can drive with toggle_sidebar(). Neither
-  # is a full page shell (there is no page_*() call here), so both stay
-  # kind = "tag" even though "sidebar" is in the name.
+  # A titled sidebar, and a right-positioned, initially closed one with an
+  # id, which makes it a Shiny input toggle_sidebar() can drive. Neither is
+  # a page shell, so both are kind = "tag".
   .sample(
     "sidebar_layout_titled",
     "tag",
@@ -494,10 +491,8 @@
       htmltools::div("main")
     ))
   ),
-  # Added for the gene-list-builder port: sidebar(class = ...) puts the
-  # class on the <aside> itself, alongside "sidebar" (and
-  # "bslib-sidebar-input" once the sidebar also has an id): a caller-side
-  # CSS hook, not a shape bslib itself varies structurally.
+  # sidebar(class = ...) puts the class on the <aside> itself, next to
+  # "sidebar" (and "bslib-sidebar-input" once the sidebar has an id).
   .sample(
     "sidebar_custom_class",
     "tag",
@@ -587,10 +582,9 @@
       )
     ))
   ),
-  # Added for the recount-explorer port: layout_columns()'s default
-  # fill = TRUE shape. The only structural difference from
-  # layout_columns_value_box above (fill = FALSE) is html-fill-item on the
-  # outer tag, which is exactly why both are pinned.
+  # layout_columns()'s default fill = TRUE shape. It differs from
+  # layout_columns_value_box above (fill = FALSE) only by html-fill-item on
+  # the outer tag, which is why both are pinned.
   .sample(
     "layout_columns_fill",
     "tag",
