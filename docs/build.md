@@ -6,10 +6,10 @@ and this component kit, not a port of an existing app. See
 
 ## Two ways to ship the client
 
-There is one supported client tier right now: a Vite build whose
-client bundle externalizes React to `window.shinyreact`, and whose server
-serves shinyreact's own runtime bundle. `examples/01-hello` is set up this
-way, and it is the only tier this kit's components are tested against.
+The main tier is a Vite build whose client bundle externalizes React to
+`window.shinyreact`, and whose server serves shinyreact's own runtime
+bundle. `examples/01-hello` is set up this way, and it is the tier this
+kit's examples and tests use.
 
 A no-build tier exists too: `bslib_react_dep()` (R or Python) serves a
 prebuilt IIFE that registers `window.bslibReact`, so a page with no Node
@@ -159,8 +159,8 @@ truly just data, not an interactive control.
 
 ## Tests
 
-R: `shiny::runTests(".")`. Python: `pytest`. Both run against the
-scaffolded starter test; extend it as you add server logic.
+R: `shiny::runTests(".")`. Python: `pytest`. Both run the tests copied
+from `examples/01-hello`; extend them as you add server logic.
 
 ## Deploy
 

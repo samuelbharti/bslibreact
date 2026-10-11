@@ -39,9 +39,10 @@ per port is not worth a permanent runtime or CI dependency.
    - Its `bs_theme()` call (or `_brand.yml`) and its page function
      (`page_navbar`, `page_sidebar`, `page_fillable`, or none). No bslib
      theme and no bslib page function means the page shell is built by
-     hand, and `page_react()` will attach Bootstrap 3 on its own unless
-     `page_deps()` is given an explicit theme. Plan for that before
-     writing the client.
+     hand, and `page_react()` attaches no Bootstrap at all unless it is
+     given a `theme`. Pass the parent's theme, or
+     `bslib::bs_theme(version = 5)` when it has none, before writing the
+     client.
    - Every `renderUI`/`@render.ui` block. Each is a decision: Level R when
      it only formats data, a hosted widget (`host_input()`) when it holds
      a real Shiny-bound control.
