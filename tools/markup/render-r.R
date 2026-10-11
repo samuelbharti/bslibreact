@@ -119,18 +119,34 @@ for (pkg in c("cli", "jsonlite")) {
 .catalog_hash <- function(catalog) {
   parts <- vapply(
     catalog,
-    function(s) paste(s$name, s$kind, deparse1(s$call), sep = ""),
+    function(s) paste(s$name, s$kind, s$group, deparse1(s$call), sep = ""),
     character(1)
   )
   rlang::hash(paste(parts, collapse = ""))
 }
 
+# Installing, removing or upgrading an "extra" sample's package changes
+# what those samples render, so it has to change the key too.
+.extras_versions <- function(catalog) {
+  extras <- Filter(function(s) identical(s$kind, "extra"), catalog)
+  pkgs <- sort(unique(vapply(extras, function(s) s$pkg, character(1))))
+  versions <- vapply(
+    pkgs,
+    function(p) {
+      if (.pkg_available(p)) as.character(utils::packageVersion(p)) else "none"
+    },
+    character(1)
+  )
+  paste0(pkgs, ":", versions, collapse = ",")
+}
+
 .markup_catalog_key <- function(catalog) {
   sprintf(
-    "r;bslib=%s;shiny=%s;htmltools=%s;catalog=%s;renderer=2",
+    "r;bslib=%s;shiny=%s;htmltools=%s;extras=%s;catalog=%s;renderer=2",
     utils::packageVersion("bslib"),
     utils::packageVersion("shiny"),
     utils::packageVersion("htmltools"),
+    .extras_versions(catalog),
     .catalog_hash(catalog)
   )
 }
@@ -150,14 +166,12 @@ for (pkg in c("cli", "jsonlite")) {
   on.exit(shiny::shinyOptions(bootstrapTheme = old_opt), add = TRUE)
 
   r <- htmltools::renderTags(eval(s$call, envir = baseenv()))
-  head_css <- regmatches(
-    as.character(r$head),
-    gregexpr(
-      "(?s)(?<=<style>).*?(?=</style>)",
-      as.character(r$head),
-      perl = TRUE
-    )
+  head <- as.character(r$head)
+  styles <- regmatches(
+    head,
+    gregexpr("(?s)<style[^>]*>.*?</style>", head, perl = TRUE)
   )[[1]]
+  head_css <- gsub("(?s)^<style[^>]*>|</style>$", "", styles, perl = TRUE)
   deps <- sort(unique(vapply(
     r$dependencies,
     function(d) paste0(d$name, "@", d$version),

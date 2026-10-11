@@ -27,10 +27,14 @@ import sys
 import warnings
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from bslib_react import __version__
 from bslib_react._catalog import SAMPLES, Sample, catalog_eval, catalog_hash
 from htmltools import TagList
+
+if TYPE_CHECKING:
+    from htmltools import TagChild
 
 # Bump when the render logic changes, so every cached catalog re-renders.
 RENDERER_VERSION = 2
@@ -62,27 +66,25 @@ def _bslib_vendored_version() -> str:
         return "unknown"
 
 
-def markup_catalog_key() -> str:
+def markup_catalog_key(bslib_vendored: str) -> str:
     """Changes with shiny, htmltools, vendored bslib, the samples, or this script."""
     return (
         f"py;shiny={_pkg_version('shiny')};htmltools={_pkg_version('htmltools')};"
-        f"bslib_vendored={_bslib_vendored_version()};catalog={catalog_hash()};"
+        f"bslib_vendored={bslib_vendored};catalog={catalog_hash()};"
         f"renderer={RENDERER_VERSION}"
     )
 
 
-def _render_sample(sample: Sample) -> dict:
+def _render_sample(sample: Sample, tag: TagChild) -> dict:
     """``htmltools.TagList(tag).render()``, for tag and page samples alike."""
-    rendered = TagList(catalog_eval([sample.name])[0]).render()
+    rendered = TagList(tag).render()
     deps = rendered["dependencies"]
     # A page's own <head> content (page_fillable()'s html { height: 100% },
-    # say) reaches htmltools as a dependency's head, not as markup.
-    head_css = [
-        css.strip()
-        for dep in deps
-        if getattr(dep, "head", None)
-        for css in _STYLE.findall(str(dep.head))
-    ]
+    # say) reaches htmltools as a dependency's head; a literal <head> in the
+    # markup is searched too.
+    heads = [str(dep.head) for dep in deps if getattr(dep, "head", None)]
+    heads += re.findall(r"<head>(.*?)</head>", rendered["html"], re.DOTALL)
+    head_css = [css.strip() for head in heads for css in _STYLE.findall(head)]
     return {
         "kind": sample.kind,
         "group": sample.group,
@@ -96,19 +98,24 @@ def _render_sample(sample: Sample) -> dict:
 
 
 def render_markup_catalog(path: Path) -> None:
+    bslib_vendored = _bslib_vendored_version()
+    tags = catalog_eval([sample.name for sample in SAMPLES])
     record = {
         "schema": 2,
         "language": "py",
-        "key": markup_catalog_key(),
+        "key": markup_catalog_key(bslib_vendored),
         "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "generator": {"package": "bslib-react", "version": __version__},
         "versions": {
             "shiny": _pkg_version("shiny"),
             "htmltools": _pkg_version("htmltools"),
-            "bslib_vendored": _bslib_vendored_version(),
+            "bslib_vendored": bslib_vendored,
             "runtime": f"Python {platform.python_version()}",
         },
-        "samples": {sample.name: _render_sample(sample) for sample in SAMPLES},
+        "samples": {
+            sample.name: _render_sample(sample, tag)
+            for sample, tag in zip(SAMPLES, tags)
+        },
     }
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(record, indent=2, default=str), encoding="utf-8")
@@ -116,7 +123,7 @@ def render_markup_catalog(path: Path) -> None:
 
 def main(argv: list[str]) -> int:
     if "--key" in argv:
-        print(markup_catalog_key())
+        print(markup_catalog_key(_bslib_vendored_version()))
         return 0
 
     if "--out" in argv:

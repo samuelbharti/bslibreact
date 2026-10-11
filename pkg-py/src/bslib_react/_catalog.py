@@ -479,7 +479,7 @@ def catalog_eval(names: Sequence[str]) -> list["TagChild"]:
 
 
 def catalog_hash(samples: Sequence[Sample] | None = None) -> str:
-    """A stable hash of the catalog's names, kinds and call text.
+    """A stable hash of the catalog's names, kinds, groups and call text.
 
     Part of the catalog render key (see ``tools/markup/render_py.py``): it changes
     whenever a sample is added, removed, or its call text edited, so a stale
@@ -487,6 +487,7 @@ def catalog_hash(samples: Sequence[Sample] | None = None) -> str:
     """
     selected = samples if samples is not None else SAMPLES
     lines = "\n".join(
-        f"{sample.name}|{sample.kind}|{sample.call}" for sample in selected
+        f"{sample.name}|{sample.kind}|{sample.group}|{sample.call}"
+        for sample in selected
     )
     return hashlib.sha256(lines.encode("utf-8")).hexdigest()

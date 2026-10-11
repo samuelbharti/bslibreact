@@ -29,8 +29,9 @@ uv run python tools/markup/render_py.py --out .cache/markup/py.json
 ```
 
 `--key` prints one line and renders nothing. The key changes when bslib,
-shiny, htmltools, or py-shiny versions change, when the sample file's
-bytes change, or when the renderer's own logic version is bumped. The R
+shiny, htmltools, or py-shiny versions change, when a sample's name, kind,
+group or call changes, when an R "extra" sample's package is installed,
+removed or upgraded, or when the renderer's own logic version is bumped. The R
 script always loads `pkg-r` from the checkout with `pkgload::load_all()`,
 never an installed copy, so `pkgload` must be installed.
 
@@ -68,8 +69,9 @@ it against the cached file, and only re-renders when it differs.
 
 Python's file differs only in `language` (`"py"`), `generator.package`
 (`"bslib-react"`), `versions` (Python adds `bslib_vendored`, the bslib
-version py-shiny bundles, read from `shiny._versions`), and `call` in
-Python syntax.
+version py-shiny bundles, read from `shiny._versions`), `call` in Python
+syntax, and a page sample's `html`, which is the whole `<html>` document
+py-shiny's page functions return, not just `<body>`.
 
 `html` is raw. Neither renderer normalises anything; the cache stays a
 faithful record of what bslib or py-shiny actually emitted, which is what

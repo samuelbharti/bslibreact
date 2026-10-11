@@ -148,11 +148,6 @@ update-dist: js-build r-update-dist py-update-dist  ## Build the JS bundle and v
 .PHONY: markup
 markup: r-markup py-markup  ## Render both markup catalogs into .cache/markup/
 
-.PHONY: markup-force
-markup-force:  ## Re-render both markup catalogs even if the cache looks fresh
-	rm -rf .cache/markup
-	$(MAKE) markup
-
 # What CI's check-bundles.yaml runs after `npm ci`. If that check fails,
 # run `npm ci` first (so node_modules match the lockfile CI builds with),
 # then this, and commit the result.

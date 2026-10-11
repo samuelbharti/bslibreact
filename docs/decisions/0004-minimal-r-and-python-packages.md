@@ -41,8 +41,8 @@ Everything else moves out of the shipped packages:
 - The markup catalog *renderer* (third party "extra" samples for
   DT/reactable/htmlwidgets/shinycssloaders included) becomes a dev-only
   concern. `tools/markup/render-r.R` is fully self-contained, reaching
-  into `pkg-r`'s unexported internals rather than calling an exported
-  package function, and `tools/markup/render_py.py` does the same for
+  into `pkg-r`'s unexported internals, not an exported package function,
+  and `tools/markup/render_py.py` does the same for
   `pkg-py`. (Until 2026-10-11 the Python renderer and a background-app
   runner for page samples still shipped inside `pkg-py`; both renderers
   now render page samples with a plain tag render, so neither needs one.)
