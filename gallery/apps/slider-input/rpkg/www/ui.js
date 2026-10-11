@@ -8,15 +8,11 @@
 // the ordering entirely.
 window.addEventListener("load", function () {
   const { React, ReactDOM } = window.shinyreact;
-  const { Card, CardHeader, CardBody, PageFillable, PlotOutput, SliderInput, useShinyInitialized } =
-    window.bslibReact;
+  const { Card, CardHeader, CardBody, PageFillable, PlotOutput, SliderInput } = window.bslibReact;
 
   const h = React.createElement;
 
   function App() {
-    const ready = useShinyInitialized();
-    if (!ready) return null;
-
     return h(
       PageFillable,
       null,

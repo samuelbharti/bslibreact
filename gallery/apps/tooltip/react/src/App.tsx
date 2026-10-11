@@ -7,9 +7,7 @@ export default function App() {
         <CardHeader>Tooltip</CardHeader>
         <CardBody>
           <Tooltip text="Extra detail on hover">
-            <span style={{ cursor: "help", textDecoration: "underline dotted" }}>
-              Hover for info
-            </span>
+            <i className="fas fa-circle-info" role="presentation" aria-label="circle-info icon" />
           </Tooltip>
         </CardBody>
       </Card>

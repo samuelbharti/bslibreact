@@ -26,11 +26,11 @@ window.addEventListener("load", function () {
           h(
             Tooltip,
             { text: "Extra detail on hover" },
-            h(
-              "span",
-              { style: { cursor: "help", textDecoration: "underline dotted" } },
-              "Hover for info",
-            ),
+            h("i", {
+              className: "fas fa-circle-info",
+              role: "presentation",
+              "aria-label": "circle-info icon",
+            }),
           ),
         ),
       ),
