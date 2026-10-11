@@ -159,7 +159,7 @@ markup-force:  ## Re-render both markup catalogs even if the cache looks fresh
 .PHONY: bundles
 bundles:  ## Rebuild every committed www/ui.js (examples and gallery) from the current pkg-js
 	cd $(PATH_PKG_JS) && npm run build:npm
-	npm run build --workspace examples
+	npm run build --workspace examples --if-present
 	npm run build --workspace gallery
 
 .PHONY: gallery
