@@ -40,10 +40,13 @@ def server(input, output, session):
     # is needed.
     @render.plot
     def plot():
+        # Read the input first: if it is not bound yet, nothing is drawn and
+        # no figure is left open.
+        bins = input.bins()
         fig, ax = plt.subplots()
         ax.hist(
             np.random.normal(size=500),
-            bins=input.bins(),
+            bins=bins,
             color="#447099",
             edgecolor="white",
         )

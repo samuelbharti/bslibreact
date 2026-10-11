@@ -71,8 +71,9 @@ def server(input, output, session):
 
     @render.plot
     def plot():
+        bins = input.bins()  # first, so an unbound input leaves no open figure
         fig, ax = plt.subplots()
-        ax.hist(np.random.normal(size=500), bins=input.bins())
+        ax.hist(np.random.normal(size=500), bins=bins)
         return fig
 
 app = App(app_ui, server)
