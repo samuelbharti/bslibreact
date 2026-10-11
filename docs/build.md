@@ -105,38 +105,33 @@ Two rules that matter here:
 
 ## The page
 
-A ui.tsx app's page is shinyreact's own `page_react()`, given two things
-from this package: `page_deps()`, the HTML dependencies this kit's
-components and the app's hosted widgets need, and `bslib_react_dep()`,
-the component bundle itself.
+A ui.tsx app's page is shinyreact's own `page_react()`, given
+`page_deps()`: the HTML dependencies this kit's components and the app's
+hosted widgets need. The Vite build bundles the kit's components into
+`ui.js`, so nothing else is needed.
 
 ```r
 library(shinyreact)
 
-ui <- page_react(
-  page_deps(app_theme),
-  bslib_react_dep(),
-  title = "My app",
-  theme = app_theme
-)
+ui <- page_react(page_deps(app_theme), title = "My app", theme = app_theme)
 ```
 
 ```python
 from shinyreact import page_react
-from bslib_react import page_deps, bslib_react_dep
+from bslib_react import page_deps
 
-app_ui = page_react(
-    page_deps(app_theme),
-    bslib_react_dep(),
-    title="My app",
-    theme=app_theme,
-)
+app_ui = page_react(page_deps(app_theme), title="My app", theme=app_theme)
 ```
 
-`bslib_react_dep()` must come after `page_deps()` so bslib-react's
-component script, which reads `window.shinyreact` at load time, runs
-after shinyreact's own script has set that global (see `bslib_react_dep()`'s
-own doc comment on `defer` and load order).
+A client with no build step reads the kit from `window.bslibReact`
+instead, so its page also attaches `bslib_react_dep()`, the prebuilt
+bundle. `page_react()` puts the app's own `ui.js` before that bundle, so
+such a client reads `window.bslibReact` inside a `window` `load` listener
+(see `gallery/apps/*/rpkg/www/ui.js`).
+
+```r
+ui <- page_react(page_deps(app_theme), bslib_react_dep(), title = "My app", theme = app_theme)
+```
 
 Pass extra tags to `page_deps()` for any third party widget the app hosts
 and this kit does not already sample, so its dependency gets collected

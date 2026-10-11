@@ -35,10 +35,10 @@ Renders a representative sample of bslib and shiny markup under \code{theme}
 and returns the \code{\link[htmltools:htmlDependency]{htmltools::htmlDependency()}} objects that markup
 attaches, deduplicated, minus the \code{"bootstrap"} and \code{"jquery"}
 dependencies the page function attaches itself (\code{page_react()} attaches
-Bootstrap only when it is given a \code{theme}). Attach the result
-to a shinyreact page alongside \code{\link[=bslib_react_dep]{bslib_react_dep()}}, for example
-\code{shinyreact::page_react(page_deps(app_theme), bslib_react_dep(), theme = app_theme)},
-so the client gets exactly the CSS and JavaScript a matching bslib page
+Bootstrap only when it is given a \code{theme}). Attach the result to a
+shinyreact page, for example
+\code{shinyreact::page_react(page_deps(app_theme), theme = app_theme)}, so the
+client gets exactly the CSS and JavaScript a matching bslib page
 would have attached on its own: \code{sliderInput()}'s ionRangeSlider skin,
 \code{selectizeInput()}'s selectize assets, \code{bslib::accordion()}'s and
 \code{bslib::tooltip()}'s Bootstrap bundles, and so on.
@@ -76,16 +76,12 @@ length(deps)
 length(page_deps(theme = NULL)) > 0
 
 \dontrun{
-# A real app: attach page_deps() to a shinyreact page alongside
-# bslib_react_dep(), after shinyreact's own dependency (both scripts
-# are `defer`, so relative document order is what determines that
-# shinyreact's globals exist before bslib-react's IIFE reads them).
+# A real app, with a client built by Vite:
 app_theme <- bslib::bs_theme(version = 5)
 ui <- shinyreact::page_react(
-  title = "Demo",
-  theme = app_theme,
   page_deps(app_theme),
-  bslib_react_dep()
+  title = "Demo",
+  theme = app_theme
 )
 }
 }

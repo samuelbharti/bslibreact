@@ -20,16 +20,14 @@ pip install bslib-react shinyreact
 from pathlib import Path
 from shiny import App, render, ui
 from shinyreact import page_react
-from bslib_react import page_deps, bslib_react_dep, host_input
+from bslib_react import page_deps, host_input
 
 app_theme = (
     ui.Theme.from_brand(Path(__file__).parent)
     if (Path(__file__).parent / "_brand.yml").exists()
-    else None
+    else ui.Theme()
 )
-app_ui = page_react(
-    page_deps(app_theme), bslib_react_dep(), title="Demo", theme=app_theme
-)
+app_ui = page_react(page_deps(app_theme), title="Demo", theme=app_theme)
 
 
 def server(input, output, session):
@@ -41,8 +39,9 @@ app = App(app_ui, server)
 
 `page_deps()` attaches the CSS and JS that bslib-react's React components
 need at runtime (ion.rangeSlider, selectize, and friends), the same way a
-plain bslib page would pick them up automatically; `bslib_react_dep()` is
-the component bundle itself. `host_input()` mounts one server-rendered
+plain bslib page would pick them up automatically. A client with no build
+step also attaches `bslib_react_dep()`, the prebuilt component bundle it
+reads as `window.bslibReact`. `host_input()` mounts one server-rendered
 Shiny widget (here, a slider) inside a React page and hands back the output
 id your `<SliderInput id="bins_ui" />` element should read.
 

@@ -31,9 +31,9 @@ independently flaky under `R CMD check`'s isolated environment.
 `pkg-r` and `pkg-py` each ship exactly three functions at runtime:
 `page_deps()`, `host_input()`, and `bslib_react_dep()`. `shinyreact` stays
 a `Suggests`/documentation-only relationship, never a hard dependency: an
-app assembles its own page with `page_react(page_deps(theme),
-bslib_react_dep(), ...)`, the same three-call pattern shinyreact's own
-docs already teach for attaching a dependency. There is no
+app assembles its own page with `page_react(page_deps(theme), ...)`,
+adding `bslib_react_dep()` for a client with no build step, the same
+pattern shinyreact's own docs already teach for attaching a dependency. There is no
 `bslib_react_page()` wrapper.
 
 Everything else moves out of the shipped packages:

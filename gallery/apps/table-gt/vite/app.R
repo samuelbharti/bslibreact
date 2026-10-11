@@ -7,7 +7,6 @@ library(gt)
 app_theme <- bs_theme(version = 5)
 ui <- page_react(
   page_deps(app_theme),
-  bslib_react_dep(),
   title = "Table (gt)",
   theme = app_theme
 )

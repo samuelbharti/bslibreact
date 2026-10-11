@@ -15,9 +15,10 @@ The three columns are the point of the thing:
 | `rpkg` | bslib-react from the R package's own vendored bundle, UI hand written in plain JS | no |
 
 `vite` and `rpkg` are the two tiers described in [docs/build.md](../docs/build.md).
-Their `app.R` is byte identical, deliberately: `bslibreact` is the server
-half of both, and the only thing that differs is where the client comes
-from. The `vite` column builds it from TSX; the `rpkg` column writes it
+Their `app.R` differs in one line: the rpkg page also attaches
+`bslib_react_dep()`, the vendored bundle its client reads, while the vite
+client bundles the kit itself. Otherwise `bslibreact` is the server half of
+both, and the only thing that differs is where the client comes from. The `vite` column builds it from TSX; the `rpkg` column writes it
 by hand against `window.bslibReact`, the global that
 `bslib_react_dep()`'s vendored bundle publishes, so it needs no npm and
 no build step at all.
@@ -86,7 +87,8 @@ all the way down, once per example per variant, proxied through an
    `vite/www/ui.js`, and commit it: unlike a typical build artifact,
    this one ships, the same way `examples/*/www/ui.js` does elsewhere in
    this repo, since there is no build step at deploy time.
-4. Copy `vite/app.R` to `rpkg/app.R` unchanged, and hand write
+4. Copy `vite/app.R` to `rpkg/app.R`, add `bslib_react_dep()` to its
+   `page_react()` call, and hand write
    `rpkg/www/ui.js` as the `React.createElement` form of `App.tsx`. Wrap
    it in a `window.addEventListener("load", ...)` and read the globals
    inside that listener: `page_react()` emits the app's own `ui.js`

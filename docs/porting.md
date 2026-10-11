@@ -46,7 +46,7 @@ runtime or CI dependency (see
    from the example"). Copy the parent's `R/`, `data/`, and `_brand.yml`
    unchanged.
 
-5. Server first. Build the page with `page_deps()` and `bslib_react_dep()`
+5. Server first. Build the page with `page_deps()`
    (see `docs/build.md`, "The page"), then wrap every widget the parent
    renders verbatim in `renderUI()` or `@render.ui` under an `_ui`
    suffixed name (or use `host_input()`). Keep module server signatures

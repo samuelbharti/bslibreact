@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Callable
 
 import pandas as pd
-from bslib_react import bslib_react_dep, host_input, page_deps
+from bslib_react import host_input, page_deps
 from shiny import App, Inputs, Outputs, Session, module, reactive, render, ui
 from shinyreact import page_react
 from volcano import plot_volcano, volcano_data, volcano_status_counts
@@ -21,7 +21,6 @@ de_results = pd.read_csv(Path(__file__).parent / "data" / "de_results.csv")
 
 app_ui = page_react(
     page_deps(app_theme),
-    bslib_react_dep(),
     title="Volcano plot",
     theme=app_theme,
 )

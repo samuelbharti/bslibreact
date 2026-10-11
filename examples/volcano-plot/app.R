@@ -23,8 +23,7 @@ de_results <- utils::read.csv("data/de_results.csv", stringsAsFactors = FALSE)
 ui <- page_react(
   title = "Volcano plot",
   theme = app_theme,
-  bslibreact::page_deps(app_theme),
-  bslibreact::bslib_react_dep()
+  bslibreact::page_deps(app_theme)
 )
 
 server <- function(input, output, session) {

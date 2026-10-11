@@ -51,11 +51,15 @@ def _bundle_version() -> str:
 def bslib_react_dep() -> HTMLDependency:
     """The bslib-react JS (and CSS, if built) bundle as an HTMLDependency.
 
+    The bundle sets ``window.bslibReact``. Attach it only for a client with no
+    build step that reads the kit from that global; a client built with Vite
+    bundles the kit itself.
+
     The stylesheet is attached only when ``www/bslib-react.css`` actually
     exists -- the bundle may ship JS only -- so this never points a
     ``<link>`` at a file that isn't there. Likewise the JS file itself may be
     absent before the first ``make update-dist``; :func:`_bundle_version`
-    handles that (falls back to the bare release string) rather than
+    handles that (falls back to the bare release string) instead of
     erroring, since importing ``bslib_react`` must work before the bundle
     has ever been built.
     """

@@ -130,9 +130,9 @@ read_code <- function(...) {
 # Every file someone needs to reproduce one variant of one example, in the
 # order they would read them. Labels double as a directory listing.
 #
-# app.R is byte identical across vite and rpkg on purpose: bslibreact is
-# the server half of both, and the only thing that changes is where the
-# client comes from. vite builds it from TSX with Vite; rpkg hand-writes
+# app.R differs between vite and rpkg in one line: rpkg also attaches
+# bslib_react_dep(), the bundle its client reads. bslibreact is the server
+# half of both; the only thing that changes is where the client comes from. vite builds it from TSX with Vite; rpkg hand-writes
 # it against the bundle the R package already vendors, so it needs no npm
 # and no build step at all.
 BUILD_NOTE <- paste(

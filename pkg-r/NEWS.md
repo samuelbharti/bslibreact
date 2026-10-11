@@ -17,5 +17,6 @@ what it exports, and their signatures may still change.
   `host_input()` does.
 
 * `bslib_react_dep()` returns the `htmlDependency()` for the vendored
-  `bslib-react.js` bundle. Attach it after shinyreact's own dependency:
+  `bslib-react.js` bundle, for a client with no build step that reads the
+  kit as `window.bslibReact`. Attach it after shinyreact's own dependency:
   the bundle reads `window.shinyreact` as it evaluates.
