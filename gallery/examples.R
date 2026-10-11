@@ -156,7 +156,7 @@ EXAMPLES <- list(
     "submit-button",
     "inputs",
     "Submit button",
-    "A real limitation, not a bug: shiny::submitButton()'s hold-back-until-click behavior cannot work when the button is hosted. Shiny's client checks for the button once, at page load, before any hosted widget has rendered, so it never finds it and never defers sending. Values reach the server immediately instead of waiting for a click."
+    "Classic only. shiny::submitButton() holds inputs back until clicked, which cannot work with a hosted button: Shiny looks for the button once, at page load, before any hosted widget exists. Use an actionButton() with bindEvent() in a bslib-react app."
   ),
 
   gallery_example(

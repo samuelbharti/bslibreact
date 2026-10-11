@@ -63,7 +63,7 @@ to whichever example you select, in the background, and keeps the nine
 most recently used alive after that, so going back to an example you have
 already opened is instant and a new one takes a second or two while its
 processes boot. An earlier version started all of them at once; with
-three variants apiece that is 126 R processes each loading shiny, bslib
+three variants apiece that is over a hundred R processes each loading shiny, bslib
 and sometimes plotly or leaflet, which pins the CPU hard enough that none
 of them finish booting. Start them on demand.
 
@@ -76,7 +76,7 @@ all the way down, once per example per variant, proxied through an
 1. Write `apps/<slug>/classic/app.R` and
    `apps/<slug>/vite/{app.R,src/App.tsx}`. Give the vite client's
    `src/ui.tsx` the same file every other example has (it mounts
-   `<App />` via `window.shinyreact.ReactDOM`); all 42 copies are
+   `<App />` via `window.shinyreact.ReactDOM`); every copy is
    identical.
 2. Any hosted input's client-side `id` must carry the `_ui` suffix
    (`host_input(output, "bins", ...)` on the server means

@@ -4,7 +4,7 @@
 # vendored bundle, each with its live demo and complete source below it.
 # Every one is a real, separate Shiny app under
 # apps/<slug>/{classic,vite,rpkg}, started on demand and kept warm after.
-# Only a handful stay alive at once (see MAX_LIVE): booting all 126 at
+# Only a handful stay alive at once (see MAX_LIVE): booting all of them at
 # startup pins the CPU loading heavy packages and nothing ever gets ready.
 # Real R throughout, no shinylive/webR: see gallery/README.md for why.
 library(shiny)
@@ -36,7 +36,7 @@ proc_alive <- function(key) {
 }
 
 # Keeps the most recently used apps running and stops the rest. Without a
-# cap, browsing the whole gallery would leave 126 R processes resident.
+# cap, browsing the whole gallery would leave over a hundred R processes resident.
 evict_stale <- function(keep) {
   live <- Filter(proc_alive, ls(.procs))
   if (length(live) <= MAX_LIVE) {
