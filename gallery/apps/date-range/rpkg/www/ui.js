@@ -12,7 +12,7 @@ window.addEventListener("load", function () {
 
   const h = React.createElement;
 
-  // bslib::dateRangeInput() has no dedicated component: hosted through HostedInput.
+  // shiny::dateRangeInput() has no dedicated component: hosted through HostedInput.
   function App() {
     return h(
       PageFillable,

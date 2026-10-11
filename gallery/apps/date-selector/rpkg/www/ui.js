@@ -12,7 +12,7 @@ window.addEventListener("load", function () {
 
   const h = React.createElement;
 
-  // bslib::dateInput() has no dedicated component: hosted through HostedInput.
+  // shiny::dateInput() has no dedicated component: hosted through HostedInput.
   function App() {
     return h(
       PageFillable,
