@@ -14,12 +14,15 @@ on:
 
 permissions:
   contents: read
-  # The routine job reads the pull request through the API on PRs; without
-  # this it stops with a 403 before checking anything.
-  pull-requests: read
 
 jobs:
+  # On a pull request from this repository, routine reads the PR through
+  # the API and pushes its air and document() fixes back to the PR branch,
+  # so it needs these two. It has no input to skip the push.
   routine:
+    permissions:
+      contents: write
+      pull-requests: read
     uses: rstudio/shiny-workflows/.github/workflows/routine.yaml@v1
     with:
       working-directory: pkg-r
