@@ -12,12 +12,11 @@ type Props = { id: string; className?: string; height?: string; width?: string }
  * height in place of 100% and 400px.
  */
 export function ReactableOutput({ id, className, height = "auto", width = "auto" }: Props) {
-  // ShinyOutput namespaces the element id itself; the attribute needs the
-  // same full id.
   const fullId = useNs(id);
   return (
     <ShinyOutput
-      id={id}
+      id={fullId}
+      namespace={null}
       className={cx(
         "reactable html-widget html-widget-output shiny-report-size html-fill-item",
         className,

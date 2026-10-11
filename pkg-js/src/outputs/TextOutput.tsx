@@ -1,5 +1,6 @@
 import { ShinyOutput } from "../shinyreact";
 import { cx } from "../cx";
+import { useNs } from "../module/Module";
 
 /**
  * shiny::textOutput(). Markup pinned against the `textOutput` catalog
@@ -8,7 +9,9 @@ import { cx } from "../cx";
  * exactly as it does in a classic app.
  */
 export function TextOutput({ id, className }: { id: string; className?: string }) {
-  return <ShinyOutput id={id} className={cx("shiny-text-output", className)} />;
+  return (
+    <ShinyOutput id={useNs(id)} namespace={null} className={cx("shiny-text-output", className)} />
+  );
 }
 
 /**
@@ -19,7 +22,8 @@ export function TextOutput({ id, className }: { id: string; className?: string }
 export function VerbatimTextOutput({ id, className }: { id: string; className?: string }) {
   return (
     <ShinyOutput
-      id={id}
+      id={useNs(id)}
+      namespace={null}
       tagName="pre"
       className={cx("shiny-text-output noplaceholder", className)}
     />

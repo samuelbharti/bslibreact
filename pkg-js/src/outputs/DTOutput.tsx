@@ -1,5 +1,6 @@
 import { ShinyOutput } from "../shinyreact";
 import { cx } from "../cx";
+import { useNs } from "../module/Module";
 
 type Props = { id: string; className?: string; fill?: boolean };
 
@@ -14,7 +15,8 @@ type Props = { id: string; className?: string; fill?: boolean };
 export function DTOutput({ id, className, fill = true }: Props) {
   return (
     <ShinyOutput
-      id={id}
+      id={useNs(id)}
+      namespace={null}
       className={cx(
         "datatables html-widget html-widget-output shiny-report-size",
         fill && "html-fill-item",

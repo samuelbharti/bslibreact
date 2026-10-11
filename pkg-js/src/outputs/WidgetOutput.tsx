@@ -1,5 +1,6 @@
 import { ShinyOutput } from "../shinyreact";
 import { cx } from "../cx";
+import { useNs } from "../module/Module";
 
 type Props = {
   id: string;
@@ -28,7 +29,8 @@ export function WidgetOutput({
 }: Props) {
   return (
     <ShinyOutput
-      id={id}
+      id={useNs(id)}
+      namespace={null}
       className={cx(
         `${widgetClass} html-widget html-widget-output shiny-report-size html-fill-item`,
         className,

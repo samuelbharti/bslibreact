@@ -1,5 +1,6 @@
 import { ShinyOutput } from "../shinyreact";
 import { cx } from "../cx";
+import { useNs } from "../module/Module";
 
 type Props = { id: string; className?: string; fill?: boolean; inline?: boolean };
 
@@ -18,7 +19,8 @@ type Props = { id: string; className?: string; fill?: boolean; inline?: boolean 
 export function UiOutput({ id, className, fill = false, inline = false }: Props) {
   return (
     <ShinyOutput
-      id={id}
+      id={useNs(id)}
+      namespace={null}
       tagName={inline ? "span" : "div"}
       className={cx("shiny-html-output", fill && "html-fill-item html-fill-container", className)}
     />

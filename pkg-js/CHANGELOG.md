@@ -27,8 +27,6 @@ First release. Experimental: component props may still change.
   `shiny::tableOutput()`, which `UiOutput` hosts.
 - The fourteen input names (`SliderInput`, `SelectInput`, ...) are
   exported from one file; each is still `HostedInput`.
-- Outputs pass their plain `id` to `ShinyOutput`, which applies the
-  `<Module>` namespace itself, so shinyreact's own `ShinyModuleProvider`
-  namespaces them too.
 - `TabPane` takes its `fillable` default from the surrounding
-  `PageNavbar`.
+  `PageNavbar`; for `page_navbar(fillable = c("Browse"))`, pass
+  `fillable={false}` on the panes that do not fill.

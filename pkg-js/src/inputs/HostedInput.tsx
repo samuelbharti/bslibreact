@@ -1,10 +1,11 @@
+import { useNs } from "../module/Module";
 import { ShinyOutput } from "../shinyreact";
 
 type Props = { id: string };
 
 /**
  * A traditional Shiny input widget (sliderInput, selectizeInput, and so
- * on), hosted rather than rebuilt in React. The server renders the
+ * on), hosted, not rebuilt in React. The server renders the
  * widget's own call through `renderUI()` (or `host_input()`), and this
  * shows that output: Shiny's own dynamic-UI binding loads the widget's
  * JS/CSS and binds it, so the widget behaves exactly as in a classic app.
@@ -14,7 +15,7 @@ type Props = { id: string };
  * `id` is the output's full name, `_ui` suffix included
  * (`<SliderInput id="bins_ui" />` for `output$bins_ui`), never the
  * widget's own input id: the output wrapper and the widget would then
- * share one DOM id. Inside a `<Module>`, `ShinyOutput` adds the namespace.
+ * share one DOM id. Inside a `<Module>`, the id is namespaced.
  *
  * `NavbarTabStrip.tsx`, and `LayoutSidebar` when given an `id`, still call
  * Shiny's binding functions themselves (through `useBoundScope`), since
@@ -22,7 +23,7 @@ type Props = { id: string };
  * `renderUI()` cannot express; see their own file comments.
  */
 export function HostedInput({ id }: Props) {
-  return <ShinyOutput id={id} className="shiny-html-output" />;
+  return <ShinyOutput id={useNs(id)} namespace={null} className="shiny-html-output" />;
 }
 
 // One name per Shiny widget, for readability at the call site. Each is

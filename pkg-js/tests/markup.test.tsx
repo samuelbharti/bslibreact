@@ -666,6 +666,15 @@ describe("Outputs inside a Module", () => {
     expect(el).not.toBeNull();
     expect(el!.getAttribute("data-click-id")).toBe("volcano-click");
   });
+
+  it("namespace reactable's data attribute the same way as its id", () => {
+    const { container } = render(
+      <Module namespace="m">
+        <ReactableOutput id="tbl" />
+      </Module>,
+    );
+    expect(container.querySelector("#m-tbl")!.getAttribute("data-reactable-output")).toBe("m-tbl");
+  });
 });
 
 describe("TabPane inside PageNavbar", () => {

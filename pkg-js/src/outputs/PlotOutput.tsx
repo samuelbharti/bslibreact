@@ -22,12 +22,11 @@ type Props = {
  * element shape.)
  */
 export function PlotOutput({ id, width = "100%", height = "400px", className, click }: Props) {
-  // ShinyOutput namespaces the element id itself; the click input id is an
-  // attribute, so it is namespaced here.
   const fullClickId = useNs(click ?? "");
   return (
     <ShinyOutput
-      id={id}
+      id={useNs(id)}
+      namespace={null}
       className={cx("shiny-plot-output html-fill-item", className)}
       style={{ width, height }}
       data-click-id={click ? fullClickId : undefined}
