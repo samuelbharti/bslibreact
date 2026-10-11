@@ -136,9 +136,9 @@ read_code <- function(...) {
 # it against the bundle the R package already vendors, so it needs no npm
 # and no build step at all.
 BUILD_NOTE <- paste(
-  "# once, from gallery/",
-  "npm install",
-  "npm run build     # bundles each src/ui.tsx to its app's www/ui.js",
+  "# once, from the repository root",
+  "npm ci",
+  "make bundles      # bundles each src/ui.tsx to its app's www/ui.js",
   "",
   "# then run this example on its own",
   sep = "\n"

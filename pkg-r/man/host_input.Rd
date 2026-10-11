@@ -48,10 +48,9 @@ it (a \verb{<div id="foo" class="form-group shiny-input-container">}, for a
 \code{shiny::sliderInput("foo", ...)}). These are two different ids on
 purpose: the wrapper is what the client's \code{HostedInput} component
 addresses to swap in new markup, and the widget's own id is what Shiny's
-input binding addresses to read \code{input$foo}. Give both the same id (by
-calling \code{host_input(output, "foo", sliderInput("foo", ...))}, omitting
-the suffix's effect by reusing the id) and the page holds two elements
-under the id \code{"foo"}; \code{document.getElementById()}, Shiny's own
+input binding addresses to read \code{input$foo}. If the two ever match (a
+widget whose own id is \code{"foo_ui"}, or \code{suffix = ""}), the page holds two
+elements under one id; \code{document.getElementById()}, Shiny's own
 \verb{$("#foo")} lookups, and every downstream consumer of that id become
 ambiguous, silently addressing whichever one the browser happens to
 return first. \code{check_no_id_collision()} (an internal helper) catches

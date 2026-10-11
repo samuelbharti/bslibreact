@@ -7,10 +7,9 @@
 page_deps(theme = NULL, ..., components = NULL)
 }
 \arguments{
-\item{theme}{A \code{\link[bslib:bs_theme]{bslib::bs_theme()}} object, or \code{NULL} for a themeless app
-(a plain \code{page_fillable()}/\code{page_sidebar()} with no \verb{theme=} argument,
-for example). When not \code{NULL}, it is validated with
-\code{\link[bslib:is_bs_theme]{bslib::is_bs_theme()}}.}
+\item{theme}{A \code{\link[bslib:bs_theme]{bslib::bs_theme()}} object, or \code{NULL} for an app with no
+bslib theme. Pass the same theme the page gets. When not \code{NULL}, it is
+validated with \code{\link[bslib:is_bs_theme]{bslib::is_bs_theme()}}.}
 
 \item{...}{Additional tags to include in the dependency sample, unnamed
 (checked with \code{\link[rlang:check_dots_unnamed]{rlang::check_dots_unnamed()}}). Use this for anything the
@@ -35,7 +34,8 @@ dependency named \code{"bootstrap"} or \code{"jquery"}.
 Renders a representative sample of bslib and shiny markup under \code{theme}
 and returns the \code{\link[htmltools:htmlDependency]{htmltools::htmlDependency()}} objects that markup
 attaches, deduplicated, minus the \code{"bootstrap"} and \code{"jquery"}
-dependencies every shiny page already carries. Attach the result
+dependencies the page function attaches itself (\code{page_react()} attaches
+Bootstrap only when it is given a \code{theme}). Attach the result
 to a shinyreact page alongside \code{\link[=bslib_react_dep]{bslib_react_dep()}}, for example
 \code{shinyreact::page_react(page_deps(app_theme), bslib_react_dep(), theme = app_theme)},
 so the client gets exactly the CSS and JavaScript a matching bslib page

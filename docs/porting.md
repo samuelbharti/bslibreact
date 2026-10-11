@@ -94,7 +94,7 @@ regeneration rewrote a random id. Deleting `.cache/` and running
 | What you see | Run | Usual cause |
 | --- | --- | --- |
 | Widget colors are stock, the parent is branded | Compare `<head>` dependencies | A theme deferred dependency resolved with no theme. Use `bslib::bs_global_set()`, not `bslib::bs_global_theme()`, inside `page_deps()`. |
-| Whole page washed out | Compare `<head>` dependencies | Bootstrap 3 from a themeless page function. |
+| Whole page washed out | Compare `<head>` dependencies | No Bootstrap at all: `page_react()` was given no `theme`. |
 | A hosted select never leaves Loading | Browser console | A JS error before Shiny connected. |
 | A card or plot clips, the page does not fill | View source | Check `page_fillable()`, `layout_columns()`, and `uiOutput(fill = )` classes. |
 | An output never updates | Browser devtools, `window.Shiny.shinyapp.$bindings` | A top level output was wrapped in `<Module>` by mistake. |
@@ -113,9 +113,9 @@ number as its first argument, not a theme object, so passing a theme
 there silently builds a different, unbranded theme instead.
 
 **A themeless `page_react()` served Bootstrap 3.** Fixed upstream in
-shinyreact; still visible in a `<head>` dependency comparison if it
-recurs, since a Bootstrap 3 file appearing on the port and not the parent
-is exactly the kind of difference that check is meant to catch.
+shinyreact: without a `theme`, `page_react()` now attaches no Bootstrap at
+all, which a `<head>` dependency comparison shows as Bootstrap missing on
+the port. Give `page_react()` the parent's theme.
 
 **The navbar's active tab had no underline.** bslib's nav item builder
 decides between Bootstrap 3 and 5 markup based on

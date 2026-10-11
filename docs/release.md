@@ -32,8 +32,10 @@ gh repo edit samuelbharti/bslib-react --visibility public --accept-visibility-ch
 
 ## Tag
 
-Set the new version by hand in every file `tools/check_versions.py`
-lists, then confirm they agree with `make version-check`.
+Set the new version in every file `tools/check_versions.py` lists
+(regenerate `uv.lock` with `uv lock` and `package-lock.json` with
+`npm install` in place of editing them), then confirm they agree with
+`make version-check`.
 
 ```
 git add -A

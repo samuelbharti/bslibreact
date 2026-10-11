@@ -706,7 +706,7 @@
   # four apps, before a screenshot diff (not a test) caught it; see
   # docs/decisions/0001-no-fixtures-live-ground-truth.md for the full story.
   #
-  # catalog-render.R's served path additionally sets
+  # tools/markup/render-r.R's served path additionally sets
   # shinyOptions(bootstrapTheme =) itself before the background app starts
   # serving, as a second, redundant safety net: bslib's own page_*()
   # functions already default theme = bs_theme() (Bootstrap 5), and a real

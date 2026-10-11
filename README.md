@@ -63,7 +63,8 @@ from shiny import App, render, req, ui
 from shinyreact import page_react
 from bslib_react import page_deps, bslib_react_dep, host_input
 
-app_ui = page_react(page_deps(), bslib_react_dep(), title="Demo")
+app_theme = ui.Theme()
+app_ui = page_react(page_deps(app_theme), bslib_react_dep(), title="Demo", theme=app_theme)
 
 def server(input, output, session):
     host_input(output, "bins", lambda: ui.input_slider("bins", "Bins", 1, 50, 30))
@@ -82,7 +83,7 @@ Client (`src/App.tsx`):
 ```tsx
 import { PageSidebar, SliderInput, PlotOutput } from "bslib-react";
 
-export function App() {
+export default function App() {
   return (
     <PageSidebar title="Demo" sidebar={<SliderInput id="bins_ui" />}>
       <PlotOutput id="plot" />
@@ -119,7 +120,8 @@ bslib original.
 No HTML is committed to this repository. `make markup` renders a catalog
 of bslib and shiny calls, using whichever versions of them you have
 installed, into a gitignored cache. The component tests compare against
-that cache. CI does the same on every pull request, and once a week
+that cache. CI does the same on every pull request that touches the kit,
+the catalog, or the pinned versions, and once a week
 against the newest released bslib, shiny, and py-shiny; a failure there
 means bslib changed its markup, which is the signal to read the diff and
 cut a new minor version, not a bug in this repository. See

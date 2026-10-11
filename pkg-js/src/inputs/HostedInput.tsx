@@ -14,10 +14,10 @@ type Props = { id: string };
  * hosted input needs -- loads the widget's JS/CSS, then runs
  * `initializeInputs()` and `bindAll()` -- because `renderUI()`'s client
  * binding calls `renderContent()`, and `ShinyOutput` already hosts that
- * path. `NavbarTabStrip.tsx` is the one remaining component that still
- * calls Shiny's binding functions by hand, since it mixes hosted tab
- * links with React-owned siblings in one list that `renderUI()` cannot
- * express; see its own file comment.
+ * path. `NavbarTabStrip.tsx`, and `LayoutSidebar` when given an `id`,
+ * still call Shiny's binding functions by hand (through `useBoundScope`),
+ * since each mixes Shiny-bound markup with React-owned content in a way
+ * `renderUI()` cannot express; see their own file comments.
  *
  * The app side of this: `app.R` defines
  * `output$<id>_ui <- renderUI({ sliderInput(<id>, ...) })`, with the

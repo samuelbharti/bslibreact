@@ -19,10 +19,9 @@
 #' `shiny::sliderInput("foo", ...)`). These are two different ids on
 #' purpose: the wrapper is what the client's `HostedInput` component
 #' addresses to swap in new markup, and the widget's own id is what Shiny's
-#' input binding addresses to read `input$foo`. Give both the same id (by
-#' calling `host_input(output, "foo", sliderInput("foo", ...))`, omitting
-#' the suffix's effect by reusing the id) and the page holds two elements
-#' under the id `"foo"`; `document.getElementById()`, Shiny's own
+#' input binding addresses to read `input$foo`. If the two ever match (a
+#' widget whose own id is `"foo_ui"`, or `suffix = ""`), the page holds two
+#' elements under one id; `document.getElementById()`, Shiny's own
 #' `$("#foo")` lookups, and every downstream consumer of that id become
 #' ambiguous, silently addressing whichever one the browser happens to
 #' return first. `check_no_id_collision()` (an internal helper) catches

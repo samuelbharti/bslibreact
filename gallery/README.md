@@ -53,7 +53,9 @@ Rscript -e "shiny::runApp('gallery')"
 
 Every `react/www/ui.js` is committed. After changing a react client's
 `src/`, or `pkg-js`, rebuild them from the repository root with `npm ci`
-and `make bundles`.
+and `make bundles`. The rpkg column reads the R package's vendored bundle,
+so a `pkg-js` change also needs `make update-dist` and a reinstall of
+`bslibreact` before that column shows it.
 
 Every example is a genuine, independent Shiny app under
 `apps/<slug>/{classic,react,rpkg}/`. `app.R` starts the three belonging

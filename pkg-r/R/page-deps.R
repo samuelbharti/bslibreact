@@ -36,7 +36,8 @@ ALWAYS_EXCLUDED <- c("bootstrap", "jquery")
 #' Renders a representative sample of bslib and shiny markup under `theme`
 #' and returns the [htmltools::htmlDependency()] objects that markup
 #' attaches, deduplicated, minus the `"bootstrap"` and `"jquery"`
-#' dependencies every shiny page already carries. Attach the result
+#' dependencies the page function attaches itself (`page_react()` attaches
+#' Bootstrap only when it is given a `theme`). Attach the result
 #' to a shinyreact page alongside [bslib_react_dep()], for example
 #' `shinyreact::page_react(page_deps(app_theme), bslib_react_dep(), theme = app_theme)`,
 #' so the client gets exactly the CSS and JavaScript a matching bslib page
@@ -67,10 +68,9 @@ ALWAYS_EXCLUDED <- c("bootstrap", "jquery")
 #' number, so passing it a theme object builds a different, stock theme
 #' and drops custom fonts.
 #'
-#' @param theme A [bslib::bs_theme()] object, or `NULL` for a themeless app
-#'   (a plain `page_fillable()`/`page_sidebar()` with no `theme=` argument,
-#'   for example). When not `NULL`, it is validated with
-#'   [bslib::is_bs_theme()].
+#' @param theme A [bslib::bs_theme()] object, or `NULL` for an app with no
+#'   bslib theme. Pass the same theme the page gets. When not `NULL`, it is
+#'   validated with [bslib::is_bs_theme()].
 #' @param ... Additional tags to include in the dependency sample, unnamed
 #'   (checked with [rlang::check_dots_unnamed()]). Use this for anything the
 #'   default `components` sampler does not cover: a hosted third party
@@ -129,9 +129,10 @@ page_deps <- function(theme = NULL, ..., components = NULL) {
     )
   }
 
-  # catalog_eval() only evaluates each sample's call to get a tag tree, page
-  # samples included; findDependencies() then reads the htmlDependency
-  # objects attached to it. Nothing is rendered or served.
+  # catalog_eval() evaluates each sample's call to get a tag tree, page
+  # samples included. findDependencies() resolves the tag functions in it,
+  # which is where the global theme set above takes effect, and returns the
+  # htmlDependency objects. Nothing is served.
   components <- components %||% catalog_names(kind = c("tag", "page"))
   sampler <- htmltools::tagList(catalog_eval(components), ...)
   deps <- htmltools::findDependencies(sampler)
