@@ -20,18 +20,20 @@ expects the same feature set as the other two.
 
 One version string, kept equal in `pkg-js/package.json`, the root
 `pyproject.toml`, and `pkg-r/DESCRIPTION`. A test in each language asserts
-the three agree. One git tag, `v0.1.0`, triggers all three release
-workflows in one pipeline. Releasing means releasing all three, even when
+the three agree. One git tag, `v0.1.0`, and the GitHub release made from
+it publish the npm and PyPI packages; the R package reaches users through
+r-universe. Releasing means releasing all three, even when
 only one changed; that is an accepted cost for the docs, the README, and
 the mental model all naming one number.
 
 The JS bundle's own version is pinned separately in two constants
-(`pkg-r/R/dep.R`, `pkg-py/src/bslib_react/_dep.py`) but is bumped in
-lockstep with the package version by `make version-bump`, since the
+(`pkg-r/R/dep.R`, `pkg-py/src/bslib_react/_dep.py`) but is bumped by
+hand in lockstep with the package version, since the
 vendored bundle always matches the release it ships in.
 
 ## Consequences
 
-An occasional release ships with no changes in one language. `make
-version-bump V=0.2.0` is the one write path for a version change, and
-`make version-check` fails CI if the three manifests ever disagree.
+An occasional release ships with no changes in one language. A version
+change is made by hand in every file `tools/check_versions.py` lists.
+`make version-check` fails if any of them disagree, and the release
+workflows run the same check against the tag before they build.
