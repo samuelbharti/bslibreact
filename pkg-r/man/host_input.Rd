@@ -21,10 +21,11 @@ reactive values, the same as any \code{renderUI()} block). Typically a
 single unevaluated widget call, for example
 \code{shiny::sliderInput("bins", "Bins", 1, 50, 30)}.}
 
-\item{suffix}{Appended to \code{id} to make the output name. The default,
-\code{"_ui"}, matches the naming \code{bslib-react}'s \code{HostedInput} React
-component expects when it is given \code{id="bins"}: it looks for an
-output named \code{"bins_ui"}.}
+\item{suffix}{Appended to \code{id} to make the output name. With the
+default, \code{"_ui"}, \code{host_input(output, "bins", ...)} registers
+\code{output$bins_ui}, and the client shows it with
+\verb{<SliderInput id="bins_ui" />} or any other \code{HostedInput}: the client
+always gets the full output name, suffix included.}
 }
 \value{
 The output name (\code{paste0(id, suffix)}), invisibly.

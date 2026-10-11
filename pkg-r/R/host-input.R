@@ -41,10 +41,11 @@
 #'   reactive values, the same as any `renderUI()` block). Typically a
 #'   single unevaluated widget call, for example
 #'   `shiny::sliderInput("bins", "Bins", 1, 50, 30)`.
-#' @param suffix Appended to `id` to make the output name. The default,
-#'   `"_ui"`, matches the naming `bslib-react`'s `HostedInput` React
-#'   component expects when it is given `id="bins"`: it looks for an
-#'   output named `"bins_ui"`.
+#' @param suffix Appended to `id` to make the output name. With the
+#'   default, `"_ui"`, `host_input(output, "bins", ...)` registers
+#'   `output$bins_ui`, and the client shows it with
+#'   `<SliderInput id="bins_ui" />` or any other `HostedInput`: the client
+#'   always gets the full output name, suffix included.
 #'
 #' @return The output name (`paste0(id, suffix)`), invisibly.
 #'

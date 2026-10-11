@@ -21,9 +21,8 @@ pack, or a page-level element specific to one app.}
 \item{components}{Character vector of catalog sample names to render for
 their dependencies, or \code{NULL} (the default) to
 use every \code{"tag"} and \code{"page"} sample, which is deliberately generous:
-an unused dependency costs a page nothing since the browser only
-fetches CSS or JS that a component on the page actually references,
-while a missing one is a widget that renders unstyled. Pass
+an unused dependency costs the page one extra download, while a
+missing one is a widget that renders unstyled. Pass
 \code{character()} to include no catalog samples at all, relying only on
 \code{...}.}
 }
@@ -53,35 +52,18 @@ separately compiled copies, which is wasted bytes at best and, if the
 two copies were compiled from different themes, a page that looks
 different depending on which \verb{<link>} happens to load last.
 }
-\section{\code{bs_global_set()}, not \code{bs_global_theme()}}{
+\section{The theme}{
 \code{theme}, when supplied, is set with \code{\link[bslib:bs_global_set]{bslib::bs_global_set()}} for the
-duration of this call and restored (to whatever was globally set before,
-or cleared if nothing was) on exit. This matters because several bslib
-widgets, \code{sliderInput()}'s ionRangeSlider skin among them, resolve their
-real CSS through \code{\link[bslib:bs_dependency_defer]{bslib::bs_dependency_defer()}}, a lazy
-\code{\link[htmltools:tagFunction]{htmltools::tagFunction()}} that only resolves against the theme that is
-globally active \emph{at render time}, not any theme value merely passed as
-an argument somewhere in the call tree. Outside a running Shiny session,
-which is exactly the situation here since this function typically runs
-once while an app's \code{ui} object is being built, bslib falls back to its
-own stock theme unless something has set the global theme first.
+duration of this call and restored on exit. Several bslib widgets,
+\code{sliderInput()}'s ionRangeSlider skin among them, resolve their CSS
+through \code{\link[bslib:bs_dependency_defer]{bslib::bs_dependency_defer()}}, which reads the globally active
+theme at render time. Outside a running Shiny session, which is where
+this function usually runs, that would be bslib's stock theme.
 
-\code{\link[bslib:bs_global_theme]{bslib::bs_global_theme()}} looks like the right function for this and is
-not: its first argument is named \code{version} and takes a Bootstrap version
-number (\code{3}, \code{4}, or \code{5}), not a theme object. Calling
-\code{bslib::bs_global_theme(theme)} silently builds and sets a brand new,
-\emph{different} theme (bslib's own stock theme at whatever Bootstrap version
-\code{theme} happens to coerce to) instead of setting \code{theme} itself. This has
-shipped as a real bug: a theme built from \verb{_brand.yml} kept its brand
-colors under the buggy call (they come from Sass variables that also
-happen to survive), but silently lost every typography customization
-(\code{heading_font}, \code{base_font}, \code{code_font}), because those are separate
-named arguments the buggy rebuild never passes through. \code{test-page-deps.R}
-reproduces this exact failure as a regression test: the same tag,
-rendered once under each call, resolves to two different compiled CSS
-files, and only the correct one contains the custom heading font. Use
-\code{page_deps()} (or \code{bslib::bs_global_set()} directly) and this class of
-bug cannot recur here.
+Set a global theme with \code{bs_global_set()}, not
+\code{\link[bslib:bs_global_theme]{bslib::bs_global_theme()}}: its first argument is a Bootstrap version
+number, so passing it a theme object builds a different, stock theme
+and drops custom fonts.
 }
 
 \examples{
