@@ -1,5 +1,6 @@
 import { useId, useLayoutEffect, type CSSProperties, type ReactNode } from "react";
 import { cx } from "../cx";
+import { useNs } from "../module/Module";
 import { Tooltip } from "../tooltip/Tooltip";
 
 type CardProps = {
@@ -35,6 +36,8 @@ export function Card({
 }: CardProps) {
   // bslib gives a card an automatic id only when full_screen = TRUE.
   const cardId = useId();
+  // A card with an id is a Shiny input, so the id takes the <Module> prefix.
+  const fullId = useNs(id ?? "");
 
   useLayoutEffect(() => {
     window.bslib?.Card?.initializeAllCards();
@@ -44,7 +47,7 @@ export function Card({
 
   return (
     <div
-      id={id ?? (fullScreen ? `bslib-card-${cardId}` : undefined)}
+      id={id ? fullId : fullScreen ? `bslib-card-${cardId}` : undefined}
       className={cx(
         "card bslib-card bslib-mb-spacing html-fill-container",
         id && "bslib-card-input",

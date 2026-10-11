@@ -97,6 +97,7 @@ export function NavbarTabStrip({ id, panels, children }: Props) {
                   data-value={p.value}
                   className={cx("dropdown-item", active && "active")}
                 >
+                  <PanelIcon icon={p.icon} />
                   {p.label}
                 </a>
               </li>
@@ -129,13 +130,7 @@ export function NavbarTabStrip({ id, panels, children }: Props) {
               data-value={entry.value}
               className={cx("nav-link", active && "active")}
             >
-              {entry.icon && (
-                <i
-                  className={`fas ${entry.icon} fa-fw`}
-                  role="presentation"
-                  aria-label={`${entry.icon.replace(/^fa-/, "")} icon`}
-                />
-              )}
+              <PanelIcon icon={entry.icon} />
               {entry.label}
             </a>
           </li>
@@ -143,6 +138,18 @@ export function NavbarTabStrip({ id, panels, children }: Props) {
       })}
       {childrenReady && children}
     </ul>
+  );
+}
+
+// nav_panel(icon = icon(...))'s <i>, for a tab or a dropdown item.
+function PanelIcon({ icon }: { icon?: string }) {
+  if (!icon) return null;
+  return (
+    <i
+      className={`fas ${icon} fa-fw`}
+      role="presentation"
+      aria-label={`${icon.replace(/^fa-/, "")} icon`}
+    />
   );
 }
 

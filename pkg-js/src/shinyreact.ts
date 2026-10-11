@@ -68,6 +68,9 @@ export interface ShinyGlobal {
    *  hosted input or output. */
   addCustomMessageHandler: (type: string, handler: (message: unknown) => void) => void;
   initializedPromise?: Promise<void>;
+  /** The last value of every bound input, keyed by id (sometimes with a
+   *  ":<type>" suffix). Read by useHostedInputValue for its first value. */
+  shinyapp?: { $inputValues: Record<string, unknown> };
 }
 
 // bslib's own component runtime. Its input/output-owning components attach

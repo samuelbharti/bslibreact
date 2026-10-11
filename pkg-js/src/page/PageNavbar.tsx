@@ -79,9 +79,12 @@ export function PageNavbar({
   const navRef = useRef<HTMLElement>(null);
 
   useLayoutEffect(() => {
-    if (bg) {
-      navRef.current?.style.setProperty("background-color", bg, "important");
-    }
+    const nav = navRef.current;
+    if (!nav || !bg) return;
+    nav.style.setProperty("background-color", bg, "important");
+    return () => {
+      nav.style.removeProperty("background-color");
+    };
   }, [bg]);
 
   const tabContent = (

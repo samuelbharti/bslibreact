@@ -46,9 +46,15 @@ export function useBoundScope(
     setBound(false);
     const sc = scope(el) ?? el;
     Shiny.initializeInputs(sc);
-    // bindAll() is typed Promise<void> | void.
-    void Promise.resolve(Shiny.bindAll(sc)).then(() => {
+    // bindAll() is typed Promise<void> | void. If it fails, show the
+    // content anyway (a hidden page helps no one) and report the error.
+    const done = () => {
       if (!cancelled) setBound(true);
+    };
+    void Promise.resolve(Shiny.bindAll(sc)).then(done, (error: unknown) => {
+      done();
+      // eslint-disable-next-line no-console
+      console.error("bslib-react: Shiny.bindAll() failed", error);
     });
 
     return () => {

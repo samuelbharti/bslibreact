@@ -30,3 +30,10 @@ First release. Experimental: component props may still change.
 - `TabPane` takes its `fillable` default from the surrounding
   `PageNavbar`; for `page_navbar(fillable = c("Browse"))`, pass
   `fillable={false}` on the panes that do not fill.
+- `useHostedInputValue` starts from the value Shiny already has and
+  resets when its id changes.
+- A `Card` with an `id` takes the `<Module>` prefix, like a sidebar id.
+- `NavbarTabStrip` shows a dropdown item's `icon`.
+- `PageNavbar` clears its background when `bg` goes away.
+- If Shiny's bind step fails, `NavbarTabStrip` and `LayoutSidebar` show
+  their content anyway and log the error.
