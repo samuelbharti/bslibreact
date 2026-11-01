@@ -5,8 +5,8 @@ This is the Python half of the contract in ``docs/markup-catalog.md``. bslib
 should render: rather than commit HTML fixtures that go stale the moment
 shiny's markup changes, this module holds a catalog of *calls* -- Python
 source text -- that get evaluated against whatever version of ``shiny`` is
-actually installed, by :func:`catalog_eval`. ``_catalog_render.py`` turns the
-result into the JSON file the JS test suite reads.
+actually installed, by :func:`catalog_eval`. ``tools/markup/render_py.py``
+turns the result into the JSON file the JS test suite reads.
 
 Sample names are frozen: they must match the R catalog's names wherever
 py-shiny has the component (see ``docs/markup-catalog.md``, "Sample names").
@@ -14,15 +14,13 @@ Renaming or removing one is a deliberate, visible edit -- ``test_catalog.py``
 pins the whole name set as a literal.
 
 Six of the R catalog's names have no Python entry, because ``shiny`` alone
-cannot produce them (this catalog's ``pkg`` is always ``"shiny"`` -- there is
-no "extra" third-party kind here the way R's DT/reactable/htmlwidgets
-samples exist):
+cannot produce them (there is no "extra" third-party kind here the way R's
+DT/reactable/htmlwidgets samples exist):
 
 - ``plotOutput_with_spinner`` -- wraps a plot in ``shinycssloaders``.
 - ``DTOutput``, ``DTOutput_no_fill`` -- the ``DT`` package.
-- ``igvShinyOutput`` (R's replacement name ``htmlwidget_output``) -- the
-  generic ``htmlwidgets`` output shape. Python's analogue lives in the
-  separate ``shinywidgets`` package, not in ``shiny`` itself.
+- ``htmlwidget_output`` -- the generic ``htmlwidgets`` output shape.
+  Python's analogue lives in the separate ``shinywidgets`` package.
 - ``reactableOutput`` -- the ``reactable`` package.
 - ``icon`` -- R's ``shiny::icon()`` renders Font Awesome markup that ships
   with base R shiny. py-shiny has no built-in icon helper at all (an icon is
@@ -47,7 +45,7 @@ from shiny import ui
 if TYPE_CHECKING:
     from htmltools import TagChild
 
-SampleKind = Literal["tag", "page", "extra"]
+SampleKind = Literal["tag", "page"]
 
 
 @dataclass(frozen=True)
@@ -57,12 +55,11 @@ class Sample:
     name: str
     kind: SampleKind
     group: str
-    pkg: Literal["shiny"]
     call: str
 
 
 def _s(name: str, kind: SampleKind, group: str, call: str) -> Sample:
-    return Sample(name=name, kind=kind, group=group, pkg="shiny", call=call)
+    return Sample(name=name, kind=kind, group=group, call=call)
 
 
 # Kept from the original R kit (`tools/kit/dump-markup.R`), same sample
@@ -331,7 +328,7 @@ SAMPLES: tuple[Sample, ...] = (
         'ui.layout_sidebar(ui.sidebar(ui.div("a"), width=420, '
         'class_="glb-build-sidebar"), ui.div("main"))',
     ),
-    # `page_navbar_dropdown` replaces the old hand-corrected fixture: a served
+    # `page_navbar_dropdown` replaces the old hand-corrected fixture: a
     # live render needs no correction for a shape `as.character()` could not
     # represent faithfully.
     _s(
@@ -482,14 +479,15 @@ def catalog_eval(names: Sequence[str]) -> list["TagChild"]:
 
 
 def catalog_hash(samples: Sequence[Sample] | None = None) -> str:
-    """A stable hash of the catalog's names, kinds and call text.
+    """A stable hash of the catalog's names, kinds, groups and call text.
 
-    Part of the catalog render key (see ``_catalog_render.py``): it changes
+    Part of the catalog render key (see ``tools/markup/render_py.py``): it changes
     whenever a sample is added, removed, or its call text edited, so a stale
     cache gets re-rendered.
     """
     selected = samples if samples is not None else SAMPLES
     lines = "\n".join(
-        f"{sample.name}|{sample.kind}|{sample.call}" for sample in selected
+        f"{sample.name}|{sample.kind}|{sample.group}|{sample.call}"
+        for sample in selected
     )
     return hashlib.sha256(lines.encode("utf-8")).hexdigest()

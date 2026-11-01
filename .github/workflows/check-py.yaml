@@ -5,13 +5,19 @@ on:
     branches: [main]
     paths:
       - "pkg-py/**"
+      - "tools/**"
+      - "examples/**"
       - "pyproject.toml"
+      - "Makefile"
       - ".github/workflows/check-py.yaml"
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
     paths:
       - "pkg-py/**"
+      - "tools/**"
+      - "examples/**"
       - "pyproject.toml"
+      - "Makefile"
       - ".github/workflows/check-py.yaml"
   workflow_dispatch:
 

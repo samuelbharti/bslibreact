@@ -15,19 +15,12 @@ export type NavPanelDef = {
 };
 
 /**
- * shiny::navbarPage()'s navbarMenu(title, tabPanel(...), tabPanel(...)): a
- * dropdown grouping of sub-panels under one label (genescout's "Docs" menu).
- * Markup verified against a real running app's served HTML, not an
- * as.character() dump - the distinction documented above and in
- * docs/porting.md matters for navbar markup specifically. A real
- * `navbarPage(collapsible = TRUE, theme = bs_theme(...), tabPanel(...),
- * navbarMenu("Docs", tabPanel(...), tabPanel(...)))`, served through a live
- * shiny::runApp(), renders one `<li class="dropdown nav-item">` holding a
- * `.dropdown-toggle.nav-link` (a caret, no href target - it never becomes an
- * active tab itself) and its own nested `<ul class="dropdown-menu">` of
- * `.dropdown-item` links, one per sub-panel. Pinned against the
- * `page_navbar_dropdown` catalog sample (a served `bslib::page_navbar(id =
- * "nav", bslib::nav_menu(...))`, the bslib equivalent of the same shape).
+ * shiny::navbarPage()'s navbarMenu(), or bslib's nav_menu(): a dropdown
+ * grouping of sub-panels under one label. Renders one
+ * `<li class="dropdown nav-item">` holding a `.dropdown-toggle.nav-link` (a
+ * caret, no href target; it never becomes an active tab itself) and its own
+ * nested `<ul class="dropdown-menu">` of `.dropdown-item` links, one per
+ * sub-panel. Pinned against the `page_navbar_dropdown` catalog sample.
  */
 export type NavDropdownDef = {
   label: string;
@@ -63,28 +56,19 @@ export function tabPaneId(navId: string, value: string) {
  * The <ul class="nav ... shiny-tab-input"> bslib::page_navbar()/nav_panel()
  * render.
  *
- * A plain `htmltools::renderTags()` dump of this call, outside a running
- * Shiny session, is stale here: page_navbar()'s own tab markup comes out
- * differently depending on that, which is why the `page_navbar` catalog
- * sample is a "kind: page" sample, served through a real running app
- * rather than rendered with `renderTags()` (see docs/markup-catalog.md's
- * render rules). Confirmed by diffing a real `shiny::runApp()` response
- * against an as.character() dump of the exact same page_navbar() call:
- * outside Shiny, the active tab is `<li class="active"><a data-toggle=
- * "tab">`, no "nav-link" class anywhere; inside a real running app, it is
- * `<li class="nav-item"><a class="nav-link active" data-toggle="tab">` -
- * full BS5-native shape, every tab's <li> gets "nav-item", only the
- * selected tab's <a> gets "active". bs_global_set() first makes no
- * difference (tried it); this is not a theme-resolution issue.
+ * Rendered outside a running app without the `bootstrapTheme` Shiny option,
+ * bslib gives this strip Bootstrap 3 markup: the active tab is
+ * `<li class="active"><a>`, with no "nav-link" class anywhere. A running
+ * app, and the markup catalog, which sets that option, give
+ * `<li class="nav-item"><a class="nav-link active">`: every tab's <li> gets
+ * "nav-item", and only the selected tab's <a> gets "active".
  *
  * This second shape is the one that matters, for two reasons, not just
  * cosmetic polish:
  * - bslib's own `.nav-underline :where(ul.nav.navbar-nav > li)>a.active`
  *   CSS rule (the underline that marks the active tab) needs "active" ON
- *   THE <a>, not the <li>. Rendering "active" on <li> only, the way the
- *   stale fixture shows, means the CSS rule can never match, so the
- *   active tab never gets its underline - confirmed live against a real
- *   running parent app, which does show it.
+ *   THE <a>, not the <li>. With "active" on the <li> only, the rule never
+ *   matches and the active tab gets no underline.
  * - Shiny's own BootstrapTabInputBinding.getValue() branches on isBS3()
  *   (`!window.bootstrap`, false once real Bootstrap 5 JS is loaded, which
  *   every page_navbar app here does): false means it looks for

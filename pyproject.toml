@@ -46,7 +46,7 @@ examples = ["pandas>=2.1.0", "matplotlib>=3.8.0", "brand_yml>=0.1.0", "shinyreac
 testpaths = ["pkg-py/tests", "examples"]
 
 [tool.pyright]
-include = ["pkg-py/src/bslib_react", "pkg-py/tests", "examples"]
+include = ["pkg-py/src/bslib_react", "pkg-py/tests", "examples", "tools"]
 exclude = ["**/node_modules", "**/www"]
 pythonVersion = "3.10"
 typeCheckingMode = "basic"

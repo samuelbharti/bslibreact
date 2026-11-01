@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { catalogLangs, loadCatalog, type Lang } from "./catalog";
+import { catalogDoc, catalogLangs, loadCatalog, type Lang } from "./catalog";
 
 /**
  * Structural checks against the markup catalog contract itself
@@ -115,8 +115,8 @@ const EXPECTED_VERSION_KEYS: Record<Lang, string[]> = {
 };
 
 describe.each(catalogLangs())("catalog contract: %s", (lang: Lang) => {
-  it("has schema 1", () => {
-    expect(loadCatalog(lang).schema).toBe(1);
+  it("has schema 2", () => {
+    expect(loadCatalog(lang).schema).toBe(2);
   });
 
   it("has a generator with a package name and version", () => {
@@ -164,6 +164,15 @@ describe.each(catalogLangs())("catalog contract: %s", (lang: Lang) => {
         s.deps.length,
       );
     }
+  });
+
+  // The Bootstrap 3 nav markup a render without the bootstrapTheme option
+  // gives (docs/markup-catalog.md, render rules) must never reach either
+  // catalog: NavbarTabStrip is pinned to the Bootstrap 5 shape.
+  it("renders page_navbar's tabs in Bootstrap 5 shape", () => {
+    const doc = catalogDoc("page_navbar", lang);
+    expect(doc.querySelector("li.nav-item > a.nav-link.active")).not.toBeNull();
+    expect(doc.querySelector("li.active")).toBeNull();
   });
 
   it("includes every required sample name", () => {

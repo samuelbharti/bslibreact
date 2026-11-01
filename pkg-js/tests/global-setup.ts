@@ -165,7 +165,7 @@ function resolveR(): CatalogLangStatus {
     return {
       state: "renderer-missing",
       path: cachePath,
-      detail: `tools/markup/render-r.R does not exist yet (looked at ${RENDER_R_SCRIPT}). It ships from pkg-r; nothing to render against until that package lands.`,
+      detail: `tools/markup/render-r.R is missing (looked at ${RENDER_R_SCRIPT}).`,
     };
   }
 
@@ -200,7 +200,7 @@ function resolvePy(): CatalogLangStatus {
     return {
       state: "renderer-missing",
       path: cachePath,
-      detail: `tools/markup/render_py.py does not exist yet (looked at ${RENDER_PY_SCRIPT}). It ships from pkg-py, nothing to render against until that package lands.`,
+      detail: `tools/markup/render_py.py is missing (looked at ${RENDER_PY_SCRIPT}).`,
     };
   }
 

@@ -64,20 +64,17 @@ jobs:
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           working-directory: pkg-r
-          # tools/markup/render-r.R renders the "extra" catalog samples,
-          # the ones whose markup comes from a package bslibreact itself
-          # deliberately does not depend on. Without these the samples
-          # render as null and the markup tests compare against nothing.
+          # tools/markup/render-r.R loads pkg-r with pkgload and renders the
+          # "extra" catalog samples, the ones whose markup comes from a
+          # package bslibreact itself deliberately does not depend on.
+          # Without these the samples render as null and the markup tests
+          # compare against nothing.
           extra-packages: |
             any::DT
             any::reactable
             any::shinycssloaders
             any::htmlwidgets
-            any::callr
-            any::curl
-            any::httpuv
             any::pkgload
-            any::xml2
 
       - name: Install pinned bslib and shiny
         if: ${{ !inputs.latest }}

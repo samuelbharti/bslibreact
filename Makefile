@@ -102,13 +102,13 @@ py-setup:  ## [py] Install Python dependencies
 
 .PHONY: py-check-format
 py-check-format:  ## [py] Check Python formatting
-	uv run ruff check pkg-py examples --config pyproject.toml
-	uv run ruff format --check pkg-py examples --config pyproject.toml
+	uv run ruff check pkg-py examples tools --config pyproject.toml
+	uv run ruff format --check pkg-py examples tools --config pyproject.toml
 
 .PHONY: py-format
 py-format:  ## [py] Format Python code
-	uv run ruff check --fix pkg-py examples --config pyproject.toml
-	uv run ruff format pkg-py examples --config pyproject.toml
+	uv run ruff check --fix pkg-py examples tools --config pyproject.toml
+	uv run ruff format pkg-py examples tools --config pyproject.toml
 
 .PHONY: py-check-types
 py-check-types:  ## [py] Type check Python code
@@ -147,11 +147,6 @@ update-dist: js-build r-update-dist py-update-dist  ## Build the JS bundle and v
 
 .PHONY: markup
 markup: r-markup py-markup  ## Render both markup catalogs into .cache/markup/
-
-.PHONY: markup-force
-markup-force:  ## Re-render both markup catalogs even if the cache looks fresh
-	rm -rf .cache/markup
-	$(MAKE) markup
 
 # What CI's check-bundles.yaml runs after `npm ci`. If that check fails,
 # run `npm ci` first (so node_modules match the lockfile CI builds with),
