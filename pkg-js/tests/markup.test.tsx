@@ -453,6 +453,20 @@ describeCatalog("r", "PageFillable, PageSidebar and PageNavbar", () => {
     expect(shapeOf(document.body)).toEqual(catalogShape("sidebar_layout", "body"));
   });
 
+  it("a non-fillable PageNavbar adds no html { height: 100% }, like page_navbar()", () => {
+    render(
+      <PageNavbar
+        title="Demo"
+        fillable={false}
+        tabStrip={<NavbarTabStrip id="nav" panels={panels} />}
+      >
+        {null}
+      </PageNavbar>,
+    );
+    expect(sample("page_navbar_not_fillable", "r").head_inline_css).toEqual([]);
+    expect(document.getElementById("bslib-html-height")).toBeNull();
+  });
+
   it("PageNavbar sets page_navbar()'s <body> classes for each page shape", () => {
     const tabStrip = <NavbarTabStrip id="nav" panels={panels} />;
     const cases: Array<[string, ReactElement]> = [
@@ -630,7 +644,7 @@ describeCatalog("r", "HelpText", () => {
 });
 
 // HostedInput has no markup of its own to pin against the catalog (see
-// MARKUP.md): the widget's HTML comes from the parent app's own R call at
+// docs/markup.md): the widget's HTML comes from the parent app's own R call at
 // runtime, not from this component. What IS worth a fixed assertion is the
 // wrapper contract every hosted widget depends on: a shiny-html-output div
 // (or span/etc via ShinyOutput's own tagName) carrying the id the parent's

@@ -7,9 +7,8 @@ type CardProps = {
   fill?: boolean;
   height?: string;
   className?: string;
-  /** card(id = "..."): a caller-given id, e.g. a cicerone tour step
-   *  target. Only ever set this way; a non-full-screen card otherwise
-   *  gets no id at all (see the fullScreen ? ... : undefined below). */
+  /** card(id = ...). Adds bslib-card-input, as bslib does; without it a
+   *  non-full-screen card has no id. */
   id?: string;
   children: ReactNode;
 };
@@ -34,8 +33,7 @@ export function Card({
   id,
   children,
 }: CardProps) {
-  // bslib only assigns a card an auto id when full_screen = TRUE (seen by
-  // comparing the two fixtures); useId() gives a stable one across renders.
+  // bslib gives a card an automatic id only when full_screen = TRUE.
   const cardId = useId();
 
   useLayoutEffect(() => {
@@ -49,20 +47,9 @@ export function Card({
       id={id ?? (fullScreen ? `bslib-card-${cardId}` : undefined)}
       className={cx(
         "card bslib-card bslib-mb-spacing html-fill-container",
-        // card(id = "..."): confirmed against the "card_id" catalog sample
-        // to add this class, making the card a real bound Shiny input the
-        // same way a sidebar with an id gets bslib-sidebar-input - not a
-        // plain passthrough the way an earlier version of this component
-        // (and the fixture-based tests before it, which never pinned an id
-        // sample) assumed.
         id && "bslib-card-input",
-        // Confirmed against "card_full_screen" (fill defaults TRUE: both
-        // classes present) vs "card_no_fill" (fill = FALSE: html-fill-item
-        // absent, html-fill-container still present) - html-fill-container
-        // is unconditional (a card is always a valid fill container for
-        // its OWN children), html-fill-item depends on `fill` (whether the
-        // card itself participates as a flex item in ITS OWN parent). An
-        // earlier version of this component had these backwards.
+        // html-fill-container always (a card fills its own children);
+        // html-fill-item only when the card itself fills its parent.
         fill && "html-fill-item",
         className,
       )}
@@ -102,8 +89,7 @@ export function CardHeader({
   children,
 }: {
   className?: string;
-  /** card_header(id = "..."): a caller-given id, e.g. a cicerone tour
-   *  step target (most ports' own card headers use this). */
+  /** card_header(id = ...). */
   id?: string;
   children: ReactNode;
 }) {

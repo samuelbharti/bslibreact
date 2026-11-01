@@ -5,20 +5,10 @@ import { describe, inject } from "vitest";
 import type { CatalogLangStatus } from "./global-setup";
 
 /**
- * Reads the markup catalogs `tests/global-setup.ts` rendered (or found
- * already fresh in `.cache/markup/`) and turns a catalog sample's raw HTML
- * into the same comparable "shape" the old fixture-based tests compared
- * against (see the shinyreact-apps `tests/fixture.ts` this replaces). The
- * catalog is the ground truth now, not a committed file: see
- * docs/markup-catalog.md at the repo root for the full contract this file
- * codes against, and decisions/0001-no-fixtures-live-ground-truth.md for
- * why.
- *
- * Every test-facing function here (`sample`, `catalogDoc`, `catalogShape`,
- * `catalogClasses`, `loadCatalog`) throws if the requested language's
- * catalog is not ready. Call `catalogLangs()` or `describeCatalog()` first,
- * the same way every markup test in this package does, rather than calling
- * these directly on a language that might not be ready.
+ * Reads the markup catalogs tests/global-setup.ts rendered (see
+ * docs/markup-catalog.md) and turns a sample's raw HTML into a comparable
+ * "shape". Every reader here throws if the language's catalog is not ready;
+ * wrap tests in describeCatalog(), which skips them instead.
  */
 
 export type Lang = "r" | "py";
@@ -89,32 +79,12 @@ type IdPattern = {
 };
 
 /**
- * The four id-normalisation patterns from docs/markup-catalog.md, applied
- * to a sample's raw `html` STRING before it is parsed (see normaliseIds()).
- * bslib mints these from Shiny's own private RNG, which cannot be seeded;
- * py-shiny mints its own, in a different format (R favors hyphens
- * throughout, e.g. "bslib-card-3f8a1c2b"; py-shiny's ids are hex with
- * underscores). The `[-_]` alternation in the first two patterns matches
- * either; the replacer functions (rather than a plain "$1"-style backref)
- * additionally normalise the CAPTURED separator itself to a hyphen, so
- * "accordion-panel" and "accordion_panel" collapse to the exact same
- * normalised string - otherwise a difference in separator convention alone
- * would look like a real markup divergence to tests/parity.test.ts.
- *
- * The trailing `\b` on the first two patterns is load-bearing, not
- * decorative: `[0-9a-f]+` is greedy but has no minimum-length requirement
- * beyond one character, and "b", "a", "c", "d", "e", and "f" are all valid
- * hex digits on their own. Without a word boundary forcing the match to
- * end where the surrounding word actually ends, `bslib[-_]sidebar[-_]` in
- * the attribute NAME "data-bslib-sidebar-border" (no random id involved at
- * all) matched "bslib-sidebar-b" - just the leading "b" of "border" - and
- * replaced it with "bslib-sidebar-ID", corrupting the attribute name into
- * "data-bslib-sidebar-IDorder". `\b` after the hex run forces the engine to
- * keep matching hex digits until a real word boundary, which "border" (an
- * all-letters, non-hex tail after that first "b") can never satisfy, so
- * the pattern simply does not match there at all - while a genuine id like
- * "bslib-sidebar-2225", followed by a quote, satisfies the boundary
- * immediately and matches exactly as intended.
+ * The id-normalisation patterns from docs/markup-catalog.md, applied to a
+ * sample's raw html before parsing. R ids use hyphens, py-shiny's
+ * underscores; the replacers normalise the separator too, so the two
+ * compare equal. The trailing `\b` keeps a hex run from matching the start
+ * of a word: without it, "bslib-sidebar-b" in the attribute name
+ * data-bslib-sidebar-border looked like an id.
  */
 export const ID_PATTERNS: IdPattern[] = [
   {

@@ -11,14 +11,9 @@ export type InputOpts = {
 
 export type OutputStatus = "pending" | "ready" | "recalculating" | "error";
 
-// Matches @posit-dev/shinyreact's own ErrorsMessageValue exactly (call/type
-// are string ARRAYS, not plain strings: R's condition class chain, or null
-// for both on py-shiny). tests/shinyreact-surface.test.ts and tests/setup.ts
-// (which assigns the real package's exports into window.shinyreact, typed
-// as ShinyReactGlobal below) both fail to type-check the moment this drifts
-// from the real shape, which is what caught the mismatch this comment now
-// documents: an earlier version of this type had call/type as plain
-// optional strings, which is not what the real package ever sends.
+// Matches @posit-dev/shinyreact's ErrorsMessageValue: call and type are R's
+// condition call and class chain, null on py-shiny. tests/setup.ts assigns
+// the real package to a ShinyReactGlobal, so drift fails to type-check.
 export type OutputError = { message: string; call: string[] | null; type?: string[] | null };
 
 export interface ShinyReactGlobal {
@@ -39,11 +34,7 @@ export interface ShinyReactGlobal {
     className?: string;
     [attr: string]: unknown;
   }) => import("react").ReactElement;
-  // Mirrors @posit-dev/shinyreact's real ImageOutput props exactly (width
-  // and height are plain strings there, not number|string as an earlier,
-  // looser version of this type guessed - tests/setup.ts's assignment of
-  // the real module into window.shinyreact, typed as ShinyReactGlobal,
-  // fails to compile the moment this drifts from the real shape again).
+  // Mirrors @posit-dev/shinyreact's ImageOutput props.
   ImageOutput: (props: {
     id: string;
     className?: string;
@@ -52,9 +43,7 @@ export interface ShinyReactGlobal {
     debounceMs?: number;
     onRecalculating?: (isRecalculating: boolean) => void;
     namespace?: string | null;
-    // The real component returns null before its image dimensions are
-    // known (nothing to size an <img> to yet), so this cannot be typed as
-    // always returning a ReactElement.
+    // null until the image's size is known.
   }) => import("react").ReactElement | null;
   ShinyModuleProvider: (props: {
     namespace: string;
@@ -103,18 +92,8 @@ export interface JQueryLite {
 declare global {
   interface Window {
     shinyreact: ShinyReactGlobal;
-    // Optional, not required: @posit-dev/shinyreact's own ambient
-    // declaration (shiny-react/index.ts) augments the same global Window
-    // interface with `Shiny?: ShinyClassExtended`, and TypeScript requires
-    // every merged declaration of one property to share the exact same
-    // optionality (TS2687, "All declarations of 'Shiny' must have
-    // identical modifiers"). Any file in this package's own test suite
-    // that imports @posit-dev/shinyreact (tests/setup.ts does, to install
-    // the real hooks onto this same global) pulls that declaration into
-    // the program, so this one has to match it - which also happens to be
-    // the more honest shape anyway: a page can genuinely have no Shiny at
-    // all (see useBoundScope.ts and the markup tests, both of which render
-    // this kit with window.Shiny absent on purpose).
+    // Optional, to match @posit-dev/shinyreact's own declaration of the same
+    // property (TS2687 otherwise), and because a page can have no Shiny.
     Shiny?: ShinyGlobal;
     bslib?: BslibGlobal;
     $: JQueryLite;
@@ -124,30 +103,14 @@ declare global {
 let providedShinyReact: ShinyReactGlobal | undefined;
 
 /**
- * Hand this module a `@posit-dev/shinyreact` instance directly, instead of
- * relying on `window.shinyreact`.
+ * Hand this kit a `@posit-dev/shinyreact` module instead of relying on
+ * `window.shinyreact`. The served page's shinyreact.js sets that global; an
+ * app that bundles `@posit-dev/shinyreact` itself instead calls this once at
+ * startup with the module it imported.
  *
- * The server-tier IIFE build (see vite.config.ts) externalizes react and
- * react-dom to `window.shinyreact.React` / `.ReactDOM`, so every hook here
- * reads the one React instance the page's shinyreact.js dependency already
- * installed. An npm-tier app is different: it bundles `@posit-dev/shinyreact`
- * itself (a real dependency, resolved by its own bundler) rather than
- * loading shinyreact.js as a page dependency, so there is no global to read.
- * Such an app calls this once, at startup, with the module it already
- * imported, and every hook and component in this kit resolves against that
- * instance instead of a `window.shinyreact` that build may never populate.
- *
- * Deliberately NOT auto-detected with a static `import * as shinyreact from
- * "@posit-dev/shinyreact"` in this file: that would force EVERY consumer of
- * this package, including the server-tier IIFE build, to also resolve
- * "@posit-dev/shinyreact" as a real dependency and bundle whatever React
- * copy IT resolves to. That is exactly the "two React instances on one
- * page" failure mode the externalization above exists to prevent (every
- * hook silently returns nothing, or throws about hooks being called
- * outside a component, once two React copies disagree about which one is
- * "the" dispatcher). Requiring an explicit call instead keeps this file
- * import-free of "@posit-dev/shinyreact", so only an app that opts in by
- * calling provideShinyReact() pays for that dependency at all.
+ * Not done with a static import here: that would make every consumer,
+ * including the IIFE build, bundle shinyreact and its own React copy, and
+ * two React copies on one page break every hook.
  */
 export function provideShinyReact(mod: ShinyReactGlobal): void {
   providedShinyReact = mod;

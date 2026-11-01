@@ -1,6 +1,6 @@
 import { Card, CardHeader, CardBody, PageFillable, UiOutput } from "bslib-react";
 
-// bslib::popover() has no dedicated component: MARKUP.md recommends
+// bslib::popover() has no dedicated component: docs/porting.md recommends
 // hosting the whole call through UiOutput, the generic escape hatch.
 export default function App() {
   return (

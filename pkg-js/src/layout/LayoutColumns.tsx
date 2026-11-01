@@ -5,22 +5,11 @@ type Props = {
   colWidths: number[];
   /** bslib::layout_columns()'s own default is TRUE. */
   fill?: boolean;
-  /** layout_columns(class = "..."): an extra class on the outer element,
-   *  e.g. variant-reviewer's own "vr-home-grid" (a CSS hook its app.css
-   *  uses to widen the assistant's column on wide screens - see
-   *  bslib::layout_columns(class = ...) rendering the class straight onto
-   *  the same <bslib-layout-columns> tag, confirmed by dumping it from R). */
+  /** layout_columns(class = ...): an extra class on <bslib-layout-columns>. */
   className?: string;
-  /** layout_columns(id = "..."): a caller-given id straight on the
-   *  <bslib-layout-columns> tag itself (confirmed by dumping
-   *  layout_columns(id = "x", ...) from R), usually a cicerone tour step
-   *  target -- tahoe-explorer's own overview/about/qc pages each anchor a
-   *  tour step to one. */
+  /** layout_columns(id = ...), on <bslib-layout-columns>. */
   id?: string;
-  /** A single child is a real R shape too (variant-reviewer's own About
-   *  page calls layout_columns(col_widths = 12, card(...)) four times, one
-   *  card each) - Children.toArray() below normalizes either shape, since
-   *  JSX only infers an array type for two or more children. */
+  /** One child or many; each gets its own .bslib-grid-item wrapper. */
   children: ReactNode | ReactNode[];
 };
 

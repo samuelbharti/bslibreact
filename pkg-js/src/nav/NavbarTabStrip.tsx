@@ -6,11 +6,9 @@ import { useBoundScope } from "../bind/useBoundScope";
 export type NavPanelDef = {
   value: string;
   label: string;
-  /** bslib::nav_panel(icon = icon("...")): a Font Awesome class, e.g.
-   *  "fa-chart-column". Rendered with the same fa-fw (fixed width) class
-   *  nav_panel()'s own icon gets, before the label. Markup pinned
-   *  against a real nav_panel(icon=) dump: `fas <name> fa-fw`, no
-   *  wrapping span, as a sibling of the label text inside the <a>. */
+  /** nav_panel(icon = icon("...")): a Font Awesome class such as
+   *  "fa-chart-column", rendered as `<i class="fas <name> fa-fw">` before
+   *  the label, as in the `page_navbar_icon` catalog sample. */
   icon?: string;
 };
 
@@ -53,74 +51,32 @@ export function tabPaneId(navId: string, value: string) {
 }
 
 /**
- * The <ul class="nav ... shiny-tab-input"> bslib::page_navbar()/nav_panel()
- * render.
+ * The <ul class="nav ... shiny-tab-input"> bslib::page_navbar() renders,
+ * pinned against the `page_navbar`, `page_navbar_icon` and
+ * `page_navbar_dropdown` catalog samples: every tab's <li> gets "nav-item"
+ * and only the selected tab's <a> gets "active". Both bslib's active-tab
+ * underline (`.nav-underline ... > a.active`) and Shiny's Bootstrap 5 tab
+ * binding (`.nav-link:not(.dropdown-toggle).active`) read "active" on the
+ * <a>; the Bootstrap 3 shape puts it on the <li> instead.
  *
- * Rendered outside a running app without the `bootstrapTheme` Shiny option,
- * bslib gives this strip Bootstrap 3 markup: the active tab is
- * `<li class="active"><a>`, with no "nav-link" class anywhere. A running
- * app, and the markup catalog, which sets that option, give
- * `<li class="nav-item"><a class="nav-link active">`: every tab's <li> gets
- * "nav-item", and only the selected tab's <a> gets "active".
+ * Written by hand, not hosted through renderUI(), because the <ul> mixes
+ * tab links with React siblings (nav_spacer(), nav_item() content). It is
+ * bound as a Shiny input through useBoundScope over its parent, since
+ * Shiny's find() is descendants-only and would never find the <ul> as its
+ * own scope. `children` waits for that bind (see useBoundScope); the tab
+ * links do not, since they hold nothing hosted.
  *
- * This second shape is the one that matters, for two reasons, not just
- * cosmetic polish:
- * - bslib's own `.nav-underline :where(ul.nav.navbar-nav > li)>a.active`
- *   CSS rule (the underline that marks the active tab) needs "active" ON
- *   THE <a>, not the <li>. With "active" on the <li> only, the rule never
- *   matches and the active tab gets no underline.
- * - Shiny's own BootstrapTabInputBinding.getValue() branches on isBS3()
- *   (`!window.bootstrap`, false once real Bootstrap 5 JS is loaded, which
- *   every page_navbar app here does): false means it looks for
- *   `.nav-link:not(.dropdown-toggle).active` to read the current tab, the
- *   same selector the CSS needs. No app here reads input$nav server-side
- *   yet, so this has stayed invisible, but it is a real latent gap, not
- *   just missing polish.
- *
- * Written by hand, not hosted through renderUI() like the input widgets,
- * because this <ul> holds a mix of hosted tab links and real React siblings
- * (nav_spacer, a Level R study chip, hosted buttons) that all need to live
- * in the same list. useBoundScope(ref, (el) => el.parentElement) is what
- * turns this into a real input: it runs Shiny.initializeInputs()/bindAll()
- * over the <ul>'s PARENT, not the <ul> itself. That is not a stylistic
- * choice - every Shiny binding's find(scope), including the tab-input
- * binding that looks for ul.shiny-tab-input, is $(scope).find(selector),
- * which is descendants-only and therefore EXCLUDES scope itself. Passing
- * the <ul> as its own scope (an earlier version of this component did)
- * never actually finds or binds it, no matter how many times bindAll
- * runs: clicking a tab silently never produces an input$<id> update
- * server-side. Passing the parent instead means the <ul> is a descendant
- * of the scanned scope, so find() actually reaches it.
- *
- * The `children` prop is withheld until useBoundScope reports ready (see
- * its own file comment for the full "why": in short, any hosted output
- * among `children` must not exist in the DOM while the manual bindAll()
- * call above is still in flight, or shiny.js's own async bindOutputs() and
- * that output's own bind pass can both discover it "unbound" and both
- * register it, which Shiny logs as a duplicate output id). The tab <li>
- * items themselves are NOT withheld - they carry no hosted output of their
- * own, only plain data-value/href tab links, so there is nothing there for
- * a concurrent bind pass to double-register, and withholding them too
- * would just make every tab strip flash empty on first paint for nothing.
- *
- * The a[href] fragments are invented here (bslib's own are a random
- * tabsetid), so tabPaneId() is exported for TabPane to build matching ids;
- * only the data-value attribute has to match the parent byte for byte,
- * since that is the string Shiny reports as input$<id>.
+ * Only data-value has to match the parent exactly: it is what Shiny reports
+ * as input$<id>. The href fragments are made up here (bslib's are random),
+ * which is why tabPaneId() is exported for TabPane.
  */
 export function NavbarTabStrip({ id, panels, children }: Props) {
   const fullId = useNs(id);
   const ref = useRef<HTMLUListElement>(null);
   const childrenReady = useBoundScope(ref, (el) => el.parentElement);
 
-  // The first PANEL overall wins the default "active" state - flattened
-  // across top-level tabs AND any dropdown's own sub-panels, in declaration
-  // order, matching bslib/shiny's own "first tabPanel declared wins" default.
-  // Every app in this repo so far defaults to a top-level panel (genescout's
-  // own default, "Review", included), so a dropdown's own toggle getting
-  // "active" when ITS child is the default has no live-verified example yet;
-  // kept here anyway since it is a one-line correct generalization of the
-  // same rule, not a guess at a different shape.
+  // The first panel declared is active, counting dropdown sub-panels in
+  // order, as in bslib; a dropdown whose child is active marks its toggle.
   let flatIndex = 0;
 
   return (

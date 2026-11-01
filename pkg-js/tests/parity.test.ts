@@ -8,42 +8,12 @@ import { catalogLangs, loadCatalog, normaliseIds, shapeOf, type Shape } from "./
 const BASELINE_PATH = join(dirname(fileURLToPath(import.meta.url)), "parity-baseline.json");
 
 /**
- * Compares the R and Python catalogs against EACH OTHER, not against this
- * kit's own components (tests/markup.test.tsx does that, against R as the
- * reference - see docs/markup-catalog.md). Skips entirely unless both
- * languages are ready this run: a parity comparison with only one side
- * rendered is not a comparison at all.
- *
- * Two different bars for two different kinds of divergence:
- *
- * - The SAMPLE NAME SET is a hard fail if it differs. Both renderers are
- *   supposed to answer the exact same frozen name list (docs/markup-catalog.md's
- *   "Sample names" section, copied into pkg-r's, pkg-py's, and this
- *   package's own catalog-contract.test.ts) - even an "extra" sample whose
- *   backing package is missing is supposed to still appear as a key, with
- *   `skipped` set, not vanish from the JSON entirely. A missing key here
- *   means a renderer dropped a sample instead of recording why it could
- *   not render it.
- * - Everything else - an actual markup SHAPE difference between the two
- *   languages for a shared sample - is only ever printed, via
- *   console.table, never failed on. bslib and py-shiny are two different
- *   implementations of the same design; some divergence is expected and
- *   not a bug in either one. KNOWN_PY_DIFFS documents the ones already
- *   looked at and accepted; anything else shows up in the table for a
- *   human to actually look at, which is the point of printing it rather
- *   than either failing on it or silently dropping it.
+ * Compares the R and Python catalogs with each other (markup.test.tsx
+ * compares the kit's components with the R one). Runs only when both are
+ * ready. The two catalogs must hold the same sample names, R-only samples
+ * aside. Shape differences between them are recorded in
+ * parity-baseline.json, and the test fails only when a new one appears.
  */
-
-// Documented, accepted R-vs-Python shape divergences, keyed by sample
-// name, each entry a short list of human-readable notes about what
-// differs and why it is fine. Starts empty: bsOptions="[]" vs "{}" (R vs
-// py-shiny/the TS default) is the one divergence anticipated up front, but
-// shapeOf() already normalises that for every sample structurally (see
-// tests/catalog.ts), so it never actually surfaces as a difference here
-// and needs no entry. Add a real entry the day an actual, permanent,
-// accepted divergence is found, rather than loosening the comparison
-// below to ignore a whole class of differences.
-const KNOWN_PY_DIFFS: Record<string, string[]> = {};
 
 // Sample names that exist only in the R catalog because plain shiny plus
 // htmltools has no call that produces them at all: py-shiny has no
@@ -129,8 +99,6 @@ describe.skipIf(!bothReady)("parity: R vs Python catalog", () => {
     const rows: Array<{ sample: string; index: number; r: string; py: string }> = [];
 
     for (const name of sharedNames) {
-      if (KNOWN_PY_DIFFS[name]) continue;
-
       const rSample = r.samples[name]!;
       const pySample = py.samples[name]!;
       if (rSample.skipped || pySample.skipped) continue;
@@ -155,11 +123,7 @@ describe.skipIf(!bothReady)("parity: R vs Python catalog", () => {
 
     const current = rows.map((row) => `${row.sample}:${row.index}`).sort();
 
-    // R shiny and py-shiny genuinely word some markup differently, so
-    // demanding zero divergence would mean either chasing every one of
-    // them or parking a hundred entries in KNOWN_PY_DIFFS. The baseline
-    // records what already differs; this test only fails when the set
-    // GROWS. Regenerate it with PARITY_UPDATE_BASELINE=1 after a
+    // Regenerate the baseline with PARITY_UPDATE_BASELINE=1 after a
     // deliberate change, and read the printed table before you do.
     if (process.env.PARITY_UPDATE_BASELINE === "1") {
       writeFileSync(
