@@ -1,5 +1,5 @@
 // Barrel export. Every app imports the kit as one package:
-//   import { Card, SliderInput, useShinyOutputValue } from "@apps/bslib-react";
+//   import { Card, SliderInput, useShinyOutputValue } from "bslib-react";
 
 // Real re-export, not a side-effect import: custom-elements.ts augments the
 // "react" module's own JSX.IntrinsicElements so TSX can write <bslib-tooltip>

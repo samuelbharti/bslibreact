@@ -12,18 +12,15 @@ computation.
 R:
 
 ```powershell
-npm ci
-npm run build
 Rscript --% -e "shiny::runApp('.', port = 3838)"
 ```
 
 Python:
 
 ```bash
-npm ci
-npm run build
 uv run shiny run app.py --port 8000
 ```
 
-`www/ui.js` is committed, so either server runs with no Node step once
-it is built once.
+`www/ui.js` is committed, so either server runs with no Node step. After
+changing `src/`, rebuild it from the repository root with `npm ci` and
+`make bundles`.

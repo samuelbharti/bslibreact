@@ -29,7 +29,7 @@ ui <- page_react(
 
 server <- function(input, output, session) {
   # Every hosted input is renderUI()-wrapped and hosted through bslib-react's
-  # HostedInput components (see docs/porting.md, "Hosting a widget").
+  # HostedInput components (see docs/build.md, "Hosting a widget").
   bslibreact::host_input(
     output,
     "lfc",

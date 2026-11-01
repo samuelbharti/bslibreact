@@ -36,7 +36,8 @@ ALWAYS_EXCLUDED <- c("bootstrap", "jquery")
 #' Renders a representative sample of bslib and shiny markup under `theme`
 #' and returns the [htmltools::htmlDependency()] objects that markup
 #' attaches, deduplicated, minus the `"bootstrap"` and `"jquery"`
-#' dependencies every shiny page already carries. Attach the result
+#' dependencies the page function attaches itself (`page_react()` attaches
+#' Bootstrap only when it is given a `theme`). Attach the result
 #' to a shinyreact page alongside [bslib_react_dep()], for example
 #' `shinyreact::page_react(page_deps(app_theme), bslib_react_dep(), theme = app_theme)`,
 #' so the client gets exactly the CSS and JavaScript a matching bslib page
@@ -53,41 +54,23 @@ ALWAYS_EXCLUDED <- c("bootstrap", "jquery")
 #' different depending on which `<link>` happens to load last.
 #'
 #' @details
-#' # `bs_global_set()`, not `bs_global_theme()`
+#' # The theme
 #'
 #' `theme`, when supplied, is set with [bslib::bs_global_set()] for the
-#' duration of this call and restored (to whatever was globally set before,
-#' or cleared if nothing was) on exit. This matters because several bslib
-#' widgets, `sliderInput()`'s ionRangeSlider skin among them, resolve their
-#' real CSS through [bslib::bs_dependency_defer()], a lazy
-#' [htmltools::tagFunction()] that only resolves against the theme that is
-#' globally active *at render time*, not any theme value merely passed as
-#' an argument somewhere in the call tree. Outside a running Shiny session,
-#' which is exactly the situation here since this function typically runs
-#' once while an app's `ui` object is being built, bslib falls back to its
-#' own stock theme unless something has set the global theme first.
+#' duration of this call and restored on exit. Several bslib widgets,
+#' `sliderInput()`'s ionRangeSlider skin among them, resolve their CSS
+#' through [bslib::bs_dependency_defer()], which reads the globally active
+#' theme at render time. Outside a running Shiny session, which is where
+#' this function usually runs, that would be bslib's stock theme.
 #'
-#' [bslib::bs_global_theme()] looks like the right function for this and is
-#' not: its first argument is named `version` and takes a Bootstrap version
-#' number (`3`, `4`, or `5`), not a theme object. Calling
-#' `bslib::bs_global_theme(theme)` silently builds and sets a brand new,
-#' *different* theme (bslib's own stock theme at whatever Bootstrap version
-#' `theme` happens to coerce to) instead of setting `theme` itself. This has
-#' shipped as a real bug: a theme built from `_brand.yml` kept its brand
-#' colors under the buggy call (they come from Sass variables that also
-#' happen to survive), but silently lost every typography customization
-#' (`heading_font`, `base_font`, `code_font`), because those are separate
-#' named arguments the buggy rebuild never passes through. `test-page-deps.R`
-#' reproduces this exact failure as a regression test: the same tag,
-#' rendered once under each call, resolves to two different compiled CSS
-#' files, and only the correct one contains the custom heading font. Use
-#' `page_deps()` (or `bslib::bs_global_set()` directly) and this class of
-#' bug cannot recur here.
+#' Set a global theme with `bs_global_set()`, not
+#' [bslib::bs_global_theme()]: its first argument is a Bootstrap version
+#' number, so passing it a theme object builds a different, stock theme
+#' and drops custom fonts.
 #'
-#' @param theme A [bslib::bs_theme()] object, or `NULL` for a themeless app
-#'   (a plain `page_fillable()`/`page_sidebar()` with no `theme=` argument,
-#'   for example). When not `NULL`, it is validated with
-#'   [bslib::is_bs_theme()].
+#' @param theme A [bslib::bs_theme()] object, or `NULL` for an app with no
+#'   bslib theme. Pass the same theme the page gets. When not `NULL`, it is
+#'   validated with [bslib::is_bs_theme()].
 #' @param ... Additional tags to include in the dependency sample, unnamed
 #'   (checked with [rlang::check_dots_unnamed()]). Use this for anything the
 #'   default `components` sampler does not cover: a hosted third party
@@ -96,9 +79,8 @@ ALWAYS_EXCLUDED <- c("bootstrap", "jquery")
 #' @param components Character vector of catalog sample names to render for
 #'   their dependencies, or `NULL` (the default) to
 #'   use every `"tag"` and `"page"` sample, which is deliberately generous:
-#'   an unused dependency costs a page nothing since the browser only
-#'   fetches CSS or JS that a component on the page actually references,
-#'   while a missing one is a widget that renders unstyled. Pass
+#'   an unused dependency costs the page one extra download, while a
+#'   missing one is a widget that renders unstyled. Pass
 #'   `character()` to include no catalog samples at all, relying only on
 #'   `...`.
 #'
@@ -147,15 +129,10 @@ page_deps <- function(theme = NULL, ..., components = NULL) {
     )
   }
 
-  # catalog_eval() only evaluates each sample's R call to produce a tag
-  # object; it never starts a server. That holds for "page"-kind samples
-  # too, since a page_*() call is, at the R level, still just a function
-  # that returns a tag tree. findDependencies() walks any tag tree,
-  # served or not: whether the resulting HTML is byte-identical to what a
-  # real running app would serve (which does matter for the CATALOG
-  # RENDERER's own output, in catalog-render.R) is irrelevant here, since
-  # this function only reads the `htmlDependency` objects attached to the
-  # tree, not its rendered HTML.
+  # catalog_eval() evaluates each sample's call to get a tag tree, page
+  # samples included. findDependencies() resolves the tag functions in it,
+  # which is where the global theme set above takes effect, and returns the
+  # htmlDependency objects. Nothing is served.
   components <- components %||% catalog_names(kind = c("tag", "page"))
   sampler <- htmltools::tagList(catalog_eval(components), ...)
   deps <- htmltools::findDependencies(sampler)

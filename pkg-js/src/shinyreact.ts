@@ -1,6 +1,6 @@
 // Typed accessors for window.shinyreact, window.Shiny, and window.bslib.
 // React and Shiny both come from globals on the page (see
-// templates/app/vite.config.ts), so every hook in the kit goes through here
+// examples/01-hello/vite.config.ts), so every hook in the kit goes through here
 // instead of touching `window` directly.
 
 export type InputOpts = {
@@ -64,8 +64,8 @@ export interface ShinyReactGlobal {
 
 // window.Shiny is the real Shiny.js runtime, loaded because page_react()
 // always attaches shiny's own JS dependency to the page (shinyreact is a
-// bridge, not a replacement for Shiny). The kit's hosted-input mechanism
-// (ShinyInput.tsx) calls these two methods directly.
+// bridge, not a replacement for Shiny). useBoundScope.ts calls its bind
+// methods directly for the two components that bind their own markup.
 export interface ShinyGlobal {
   initializeInputs: (scope: Document | Element) => void;
   bindAll: (scope: Document | Element) => Promise<void> | void;

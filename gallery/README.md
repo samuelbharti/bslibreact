@@ -48,10 +48,14 @@ gallery/
 ## Running it
 
 ```bash
-npm install                        # once, for the react client build tooling
-npm run build                      # from gallery/: builds every react/www/ui.js
 Rscript -e "shiny::runApp('gallery')"
 ```
+
+Every `react/www/ui.js` is committed. After changing a react client's
+`src/`, or `pkg-js`, rebuild them from the repository root with `npm ci`
+and `make bundles`. The rpkg column reads the R package's vendored bundle,
+so a `pkg-js` change also needs `make update-dist` and a reinstall of
+`bslibreact` before that column shows it.
 
 Every example is a genuine, independent Shiny app under
 `apps/<slug>/{classic,react,rpkg}/`. `app.R` starts the three belonging
@@ -71,14 +75,14 @@ all the way down, once per example per variant, proxied through an
 
 1. Write `apps/<slug>/classic/app.R` and
    `apps/<slug>/react/{app.R,src/App.tsx}`. Give the react client's
-   `src/ui.tsx` the same three lines every other example's has (mount
+   `src/ui.tsx` the same file every other example has (it mounts
    `<App />` via `window.shinyreact.ReactDOM`); all 42 copies are
    identical.
 2. Any hosted input's client-side `id` must carry the `_ui` suffix
    (`host_input(output, "bins", ...)` on the server means
-   `id="bins_ui"` on the client) -- this is the one mistake every example
+   `id="bins_ui"` on the client). This is the one mistake every example
    in this gallery hit at least once while it was being built.
-3. Run `npm run build` (from `gallery/`) to produce that example's
+3. Run `make bundles` (from the repository root) to produce that example's
    `react/www/ui.js`, and commit it: unlike a typical build artifact,
    this one ships, the same way `examples/*/www/ui.js` does elsewhere in
    this repo, since there is no build step at deploy time.

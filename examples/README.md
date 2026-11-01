@@ -23,8 +23,8 @@ uv run shiny run examples/01-hello/app.py --port 8000
 ```
 
 Each example's `www/ui.js` is committed, so the R server runs with no
-Node step at all. Run `npm run build` inside the example's own directory
-after changing `src/` before the change shows up.
+Node step at all. After changing `src/`, run `npm ci` and `make bundles`
+from the repository root before the change shows up.
 
 ## Checking a port against a parent
 

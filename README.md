@@ -48,7 +48,7 @@ ui <- page_react(page_deps(app_theme), bslib_react_dep(), title = "Demo", theme 
 
 server <- function(input, output, session) {
   host_input(output, "bins", sliderInput("bins", "Bins", 1, 50, 30))
-  output$plot <- renderPlot(hist(rnorm(input$bins)))
+  output$plot <- renderPlot(hist(rnorm(500), breaks = req(input$bins)))
 }
 
 shinyApp(ui, server)
@@ -57,19 +57,23 @@ shinyApp(ui, server)
 Server (Python):
 
 ```python
-from shiny import App, render, ui
+import matplotlib.pyplot as plt
+import numpy as np
+from shiny import App, render, req, ui
 from shinyreact import page_react
 from bslib_react import page_deps, bslib_react_dep, host_input
 
-app_ui = page_react(page_deps(), bslib_react_dep(), title="Demo")
+app_theme = ui.Theme()
+app_ui = page_react(page_deps(app_theme), bslib_react_dep(), title="Demo", theme=app_theme)
 
 def server(input, output, session):
     host_input(output, "bins", lambda: ui.input_slider("bins", "Bins", 1, 50, 30))
 
     @render.plot
     def plot():
-        import numpy as np
-        return None  # draw your plot here
+        fig, ax = plt.subplots()
+        ax.hist(np.random.normal(size=500), bins=req(input.bins()))
+        return fig
 
 app = App(app_ui, server)
 ```
@@ -79,9 +83,9 @@ Client (`src/App.tsx`):
 ```tsx
 import { PageSidebar, SliderInput, PlotOutput } from "bslib-react";
 
-export function App() {
+export default function App() {
   return (
-    <PageSidebar sidebar={<SliderInput id="bins_ui" />}>
+    <PageSidebar title="Demo" sidebar={<SliderInput id="bins_ui" />}>
       <PlotOutput id="plot" />
     </PageSidebar>
   );
@@ -116,7 +120,8 @@ bslib original.
 No HTML is committed to this repository. `make markup` renders a catalog
 of bslib and shiny calls, using whichever versions of them you have
 installed, into a gitignored cache. The component tests compare against
-that cache. CI does the same on every pull request, and once a week
+that cache. CI does the same on every pull request that touches the kit,
+the catalog, or the pinned versions, and once a week
 against the newest released bslib, shiny, and py-shiny; a failure there
 means bslib changed its markup, which is the signal to read the diff and
 cut a new minor version, not a bug in this repository. See
@@ -132,7 +137,7 @@ is untested, not necessarily broken.
 | --- | --- |
 | bslib | >= 0.12.0 |
 | shiny (R) | >= 1.14.0 |
-| shiny (Python) | >= 1.7.0 |
+| shiny (Python) | >= 1.8.0 |
 | react | 19.x |
 | @posit-dev/shinyreact | >= 0.1.1 |
 

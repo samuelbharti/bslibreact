@@ -38,9 +38,11 @@ test suite reads that JSON and compares rendered React output against it.
 The renderer sets `shiny::shinyOptions(bootstrapTheme = bslib::bs_theme(version = 5))`
 before rendering, which is the fix for failure 1. Volatile ids are
 normalised by the JS reader before comparison, which is the fix for
-failure 2. The renderer runs on every pull request against the pinned
-versions in `markup-versions.json`, and weekly against the newest bslib,
-shiny, and py-shiny, which is the fix for failure 3: a red weekly run is
+failure 2. The renderer runs on every pull request that touches the kit,
+the catalog, or the pins, against the pinned versions (bslib and R shiny
+in `markup-versions.json`, py-shiny in `uv.lock`), and weekly against the
+newest bslib, shiny, and py-shiny, which is the fix for failure 3: a red
+weekly run is
 the signal that bslib changed something, not a bug in this repository.
 
 ## Consequences

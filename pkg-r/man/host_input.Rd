@@ -21,10 +21,11 @@ reactive values, the same as any \code{renderUI()} block). Typically a
 single unevaluated widget call, for example
 \code{shiny::sliderInput("bins", "Bins", 1, 50, 30)}.}
 
-\item{suffix}{Appended to \code{id} to make the output name. The default,
-\code{"_ui"}, matches the naming \code{bslib-react}'s \code{HostedInput} React
-component expects when it is given \code{id="bins"}: it looks for an
-output named \code{"bins_ui"}.}
+\item{suffix}{Appended to \code{id} to make the output name. With the
+default, \code{"_ui"}, \code{host_input(output, "bins", ...)} registers
+\code{output$bins_ui}, and the client shows it with
+\verb{<SliderInput id="bins_ui" />} or any other \code{HostedInput}: the client
+always gets the full output name, suffix included.}
 }
 \value{
 The output name (\code{paste0(id, suffix)}), invisibly.
@@ -47,10 +48,9 @@ it (a \verb{<div id="foo" class="form-group shiny-input-container">}, for a
 \code{shiny::sliderInput("foo", ...)}). These are two different ids on
 purpose: the wrapper is what the client's \code{HostedInput} component
 addresses to swap in new markup, and the widget's own id is what Shiny's
-input binding addresses to read \code{input$foo}. Give both the same id (by
-calling \code{host_input(output, "foo", sliderInput("foo", ...))}, omitting
-the suffix's effect by reusing the id) and the page holds two elements
-under the id \code{"foo"}; \code{document.getElementById()}, Shiny's own
+input binding addresses to read \code{input$foo}. If the two ever match (a
+widget whose own id is \code{"foo_ui"}, or \code{suffix = ""}), the page holds two
+elements under one id; \code{document.getElementById()}, Shiny's own
 \verb{$("#foo")} lookups, and every downstream consumer of that id become
 ambiguous, silently addressing whichever one the browser happens to
 return first. \code{check_no_id_collision()} (an internal helper) catches

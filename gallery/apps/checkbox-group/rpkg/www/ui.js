@@ -12,7 +12,7 @@ window.addEventListener("load", function () {
 
   const h = React.createElement;
 
-  // bslib::checkboxGroupInput() has no dedicated component: hosted through
+  // shiny::checkboxGroupInput() has no dedicated component: hosted through
   // HostedInput, the same generic mechanism every named input alias uses.
   function App() {
     return h(

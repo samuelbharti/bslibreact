@@ -1,6 +1,6 @@
 import { Card, CardHeader, CardBody, HostedInput, PageFillable, TextOutput } from "bslib-react";
 
-// bslib::dateInput() has no dedicated component: hosted through HostedInput.
+// shiny::dateInput() has no dedicated component: hosted through HostedInput.
 export default function App() {
   return (
     <PageFillable>

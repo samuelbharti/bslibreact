@@ -7,8 +7,8 @@ import react from "@vitejs/plugin-react";
 // (see src/global.ts and src/shinyreact.ts's own comments on why load order
 // matters here). React and ReactDOM are externalized to
 // window.shinyreact.React / .ReactDOM instead of bundled, the same
-// external/globals shape templates/app/vite.config.ts uses for every ported
-// app's own ui.js bundle in shinyreact-apps: the page's one shinyreact.js
+// external/globals shape examples/01-hello/vite.config.ts uses for an app's
+// own ui.js bundle: the page's one shinyreact.js
 // dependency already carries a React instance, and bundling a second copy
 // here is exactly the "every hook silently returns nothing" failure mode
 // that externalizing exists to prevent.
