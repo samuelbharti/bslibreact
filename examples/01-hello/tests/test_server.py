@@ -29,5 +29,6 @@ def test_the_served_page_loads_the_expected_bundles(app_url):
         status = response.status
     assert status == 200
     assert "ui.js" in html
-    assert "bslib-react.js" in html
+    # A Vite client bundles the kit, so the prebuilt bundle is not attached.
+    assert "bslib-react.js" not in html
     assert "shinyreact" in html

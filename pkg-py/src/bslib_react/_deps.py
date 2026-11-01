@@ -33,16 +33,8 @@ _ALWAYS_EXCLUDED = frozenset({"bootstrap", "jquery"})
 
 
 def _validate_theme(theme: object) -> None:
-    """Raise ``TypeError`` unless ``theme`` is one of the accepted shapes.
-
-    Unlike R's ``page_deps()``, the value is otherwise unused here: py-shiny
-    compiles component CSS (ion.rangeSlider, selectize, bslib's own component
-    JS) into the *page's own* theme stylesheet at render time, keyed off
-    whatever theme the page function itself was given -- there is no
-    R-style ``bslib::bs_global_set()`` step to mirror. This validation exists
-    so the same call signature works in both languages, and so a typo'd
-    ``theme=`` argument fails loudly here rather than silently doing nothing.
-    """
+    """Raise ``TypeError`` unless ``theme`` is one of the accepted shapes, so a
+    wrong ``theme=`` fails loudly even though the value is not used yet."""
     if theme is None:
         return
     if isinstance(theme, (str, Path)):
@@ -64,9 +56,9 @@ def page_deps(
 ) -> TagList:
     """The HTML dependencies bslib-react's components need at runtime.
 
-    Attach the result to a shinyreact page alongside :func:`bslib_react_dep`,
-    for example
-    ``page_react(page_deps(app_theme), bslib_react_dep(), theme=app_theme)``.
+    Attach the result to a shinyreact page, for example
+    ``page_react(page_deps(app_theme), theme=app_theme)``. A client with no
+    build step also attaches :func:`bslib_react_dep`.
     It works by rendering a representative sample of the markup catalog --
     the same sample calls the catalog renderer uses for ``bslib-react
     markup`` -- and reading back whichever :class:`~htmltools.HTMLDependency`
@@ -74,14 +66,11 @@ def page_deps(
     attaches on its own (``bootstrap``, ``jquery``).
 
     Args:
-        theme: Accepted so the same call signature exists in R and Python;
-            py-shiny resolves component CSS against whatever theme the page
-            itself declares, so this value is validated (must be ``None``, a
-            ``str``/``Path`` to a ``_brand.yml``, or a
-            :class:`shiny.ui.Theme`) but otherwise unused. Pass your page's
-            real theme here anyway -- it keeps the call symmetric with R's
-            ``page_deps()``, and a future py-shiny that *does* need it here
-            will not require an API change.
+        theme: The page's theme: ``None``, a ``str``/``Path`` to a
+            ``_brand.yml``, or a :class:`shiny.ui.Theme`. Validated but not
+            used yet (py-shiny themes component CSS from the page's own
+            theme); it keeps the call the same as R's ``page_deps()`` and
+            leaves room to use it later.
         *extra: Additional tags to render alongside the catalog sample --
             typically the actual inputs and outputs your page uses, so their
             dependencies are included too even if the catalog doesn't happen

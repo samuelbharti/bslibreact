@@ -2,29 +2,16 @@ import { describe, expect, it } from "vitest";
 import { catalogDoc, catalogLangs, loadCatalog, type Lang } from "./catalog";
 
 /**
- * Structural checks against the markup catalog contract itself
- * (docs/markup-catalog.md at the repo root), independent of any one
- * component's own markup - tests/markup.test.tsx checks THAT; this file
- * checks that the catalog JSON each renderer produced actually has the
- * shape every one of those tests (and tests/parity.test.ts) assumes it can
- * rely on without re-checking itself. Skips entirely for a language whose
- * catalog is not ready this run, the same way every catalog-dependent test
- * in this package does - see tests/global-setup.ts.
+ * Checks each rendered catalog's own shape (docs/markup-catalog.md), for R
+ * and for Python. markup.test.tsx compares the kit's components with the R
+ * catalog; the Python catalog is checked only here: py-shiny renders some
+ * markup differently from R bslib (no data-require-bs-* on cards, its own
+ * navbar), so the components are not compared with it.
  */
 
-// A straight copy of pkg-r's own sample list (R/catalog-samples.R) minus
-// six names Python's catalog never attempts at all, because plain shiny
-// plus htmltools has no call that produces them: the five "kind: extra"
-// samples backed by an R-only package (DT, reactable, htmlwidgets,
-// shinycssloaders), and "icon" itself, since py-shiny has no built-in
-// icon helper analogous to shiny::icon() (see
-// pkg-py/src/bslib_react/_catalog.py's own module docstring for the
-// per-name reasoning). That is the one documented, permanent R-vs-Python
-// divergence in the sample list; anything else missing from a catalog is
-// a real gap this test should catch, not something to quietly allow for.
-// Renaming or dropping a name from this list is a deliberate edit made in
-// pkg-r's, pkg-py's, and this file's own copy together, per
-// docs/markup-catalog.md's "Sample names" section.
+// Every sample both catalogs must have: the R catalog minus R_ONLY.
+// pkg-r's and pkg-py's own catalog tests each hold their language's list;
+// renaming or dropping a sample is a deliberate edit in all three.
 const REQUIRED_SAMPLES = [
   "selectInput",
   "selectizeInput",
@@ -88,6 +75,18 @@ const REQUIRED_SAMPLES = [
   "page_navbar_dropdown",
   "page_navbar_not_fillable",
 ] as const;
+
+// The six samples only R can render: the five "extra" ones, which need DT,
+// reactable, htmlwidgets or shinycssloaders, and "icon", which py-shiny
+// has no helper for.
+const R_ONLY = new Set([
+  "DTOutput",
+  "DTOutput_no_fill",
+  "htmlwidget_output",
+  "icon",
+  "plotOutput_with_spinner",
+  "reactableOutput",
+]);
 
 const VALID_KINDS = new Set(["tag", "page", "extra"]);
 const VALID_GROUPS = new Set([
@@ -179,5 +178,15 @@ describe.each(catalogLangs())("catalog contract: %s", (lang: Lang) => {
     const known = new Set(Object.keys(loadCatalog(lang).samples));
     const missing = REQUIRED_SAMPLES.filter((name) => !known.has(name));
     expect(missing, `${lang} catalog is missing: ${missing.join(", ")}`).toEqual([]);
+  });
+});
+
+const bothReady = catalogLangs().includes("r") && catalogLangs().includes("py");
+
+describe.skipIf(!bothReady)("catalog contract: R and Python", () => {
+  it("hold the same sample names, R-only samples aside", () => {
+    const r = Object.keys(loadCatalog("r").samples).filter((name) => !R_ONLY.has(name));
+    const py = Object.keys(loadCatalog("py").samples);
+    expect(py.sort()).toEqual(r.sort());
   });
 });

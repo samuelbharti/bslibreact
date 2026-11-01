@@ -56,23 +56,19 @@
 #' The vendored bslib-react.js dependency
 #'
 #' Returns the [htmltools::htmlDependency()] for the vendored
-#' `bslib-react.js` bundle (and its stylesheet, when one is built). Attach
-#' this to a shinyreact page alongside [page_deps()]'s result, for example
-#' `shinyreact::page_react(..., page_deps(app_theme), bslib_react_dep())`.
+#' `bslib-react.js` bundle (and its stylesheet, when one is built), which
+#' sets `window.bslibReact`. Attach it only for a client with no build step
+#' that reads the kit from that global, for example
+#' `page_react(page_deps(app_theme), bslib_react_dep(), theme = app_theme)`.
+#' A client built with Vite bundles the kit itself and does not need it.
 #'
 #' # Load order
 #'
-#' `bslib_react_dep()` must be attached to the page *after* shinyreact's
-#' own bundle dependency (whatever attaches `shinyreact.js`, typically
-#' something `shinyreact::page_react()` already does on its own). Both
-#' scripts load with `defer`, so the browser is free to fetch them in
-#' parallel; what `defer` does guarantee is that deferred scripts *execute*
-#' in the relative order they appear in the document, after the DOM is
-#' parsed. `bslib-react.js` is an IIFE that reads `window.shinyreact.React`
-#' and `window.shinyreact.ReactDOM` at the moment it evaluates, expecting
-#' shinyreact's own bundle to have already run and populated that global.
-#' Get the order backwards and `bslib-react.js` throws while trying to read
-#' a property of `undefined`, before it ever assigns `window.bslibReact`.
+#' The bundle reads `window.shinyreact` as it evaluates, so it must run after
+#' shinyreact's own bundle. `shinyreact::page_react()` attaches that first,
+#' and both scripts use `defer`, which keeps document order. The app's own
+#' `ui.js` also runs before this bundle, so a client script reads
+#' `window.bslibReact` inside a `window` `load` listener.
 #'
 #' # Before `pkg-js` has built anything
 #'

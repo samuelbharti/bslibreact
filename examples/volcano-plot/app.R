@@ -23,8 +23,7 @@ de_results <- utils::read.csv("data/de_results.csv", stringsAsFactors = FALSE)
 ui <- page_react(
   title = "Volcano plot",
   theme = app_theme,
-  bslibreact::page_deps(app_theme),
-  bslibreact::bslib_react_dep()
+  bslibreact::page_deps(app_theme)
 )
 
 server <- function(input, output, session) {
@@ -74,20 +73,19 @@ server <- function(input, output, session) {
     sliderInput("topn", "Max labels", min = 0, max = 30, value = 10, step = 1)
   )
 
-  # Hosted inputs have no value on the very first reactive flush, before
-  # their own client round-trip completes (see examples/01-hello/app.R for
-  # the same point made about a single input). %||% falls back to each
-  # widget's own initial value so the plot renders immediately instead of
-  # waiting on req().
+  # Hosted inputs have no value until the client has bound them, so each
+  # one waits with req(). An unchecked box is FALSE, which req() would also
+  # stop on, so the checkbox is tested with is.null().
   vol <- volcano_server(
     "volcano",
     de_results = reactive(de_results),
-    lfc_threshold = reactive(input$lfc %||% 1),
-    p_threshold = reactive(input$p %||% 0.05),
-    p_col = reactive(input$pcol %||% "padj"),
-    label_top_n = reactive(
-      if (isTRUE(input$dolabel %||% TRUE)) (input$topn %||% 10) else 0L
-    )
+    lfc_threshold = reactive(req(input$lfc)),
+    p_threshold = reactive(req(input$p)),
+    p_col = reactive(req(input$pcol)),
+    label_top_n = reactive({
+      req(!is.null(input$dolabel), !is.null(input$topn))
+      if (isTRUE(input$dolabel)) input$topn else 0L
+    })
   )
 
   counts <- reactive(volcano_status_counts(vol$data()))

@@ -13,8 +13,7 @@ app_theme <- bs_theme(version = 5)
 ui <- page_react(
   title = "Hello bslib-react",
   theme = app_theme,
-  bslibreact::page_deps(app_theme),
-  bslibreact::bslib_react_dep()
+  bslibreact::page_deps(app_theme)
 )
 
 server <- function(input, output, session) {

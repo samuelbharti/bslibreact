@@ -4,7 +4,7 @@
 # vendored bundle, each with its live demo and complete source below it.
 # Every one is a real, separate Shiny app under
 # apps/<slug>/{classic,vite,rpkg}, started on demand and kept warm after.
-# Only a handful stay alive at once (see MAX_LIVE): booting all 126 at
+# Only a handful stay alive at once (see MAX_LIVE): booting all of them at
 # startup pins the CPU loading heavy packages and nothing ever gets ready.
 # Real R throughout, no shinylive/webR: see gallery/README.md for why.
 library(shiny)
@@ -36,7 +36,8 @@ proc_alive <- function(key) {
 }
 
 # Keeps the most recently used apps running and stops the rest. Without a
-# cap, browsing the whole gallery would leave 126 R processes resident.
+# cap, browsing the whole gallery would leave over a hundred R processes
+# resident.
 evict_stale <- function(keep) {
   live <- Filter(proc_alive, ls(.procs))
   if (length(live) <= MAX_LIVE) {
@@ -130,11 +131,10 @@ read_code <- function(...) {
 # Every file someone needs to reproduce one variant of one example, in the
 # order they would read them. Labels double as a directory listing.
 #
-# app.R is byte identical across vite and rpkg on purpose: bslibreact is
-# the server half of both, and the only thing that changes is where the
-# client comes from. vite builds it from TSX with Vite; rpkg hand-writes
-# it against the bundle the R package already vendors, so it needs no npm
-# and no build step at all.
+# bslibreact is the server half of vite and rpkg alike; what differs is
+# where the client comes from. vite builds it from TSX with Vite; rpkg
+# hand-writes it against the bundle the R package vendors, so it needs no
+# npm and no build step, and its app.R also attaches bslib_react_dep().
 BUILD_NOTE <- paste(
   "# once, from the repository root",
   "npm ci",
@@ -475,6 +475,7 @@ ui <- tagList(
       var label = spinner.querySelector('.gallery-spinner-text');
       var busy = spinner.querySelector('.spinner-border');
       if (msg.missing) {
+        frame.removeAttribute('src');
         spinner.style.display = 'flex';
         frame.style.visibility = 'hidden';
         if (busy) busy.style.display = 'none';

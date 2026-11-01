@@ -33,7 +33,7 @@ library(bslibreact)
 
 app_theme <- bs_theme(version = 5)
 
-ui <- page_react(page_deps(app_theme), bslib_react_dep(), title = "Demo", theme = app_theme)
+ui <- page_react(page_deps(app_theme), title = "Demo", theme = app_theme)
 
 server <- function(input, output, session) {
   host_input(output, "bins", sliderInput("bins", "Bins", 1, 50, 30))
@@ -44,7 +44,9 @@ shinyApp(ui, server)
 
 The client reads the hosted slider with `<ShinyOutput id="bins_ui" />` (or
 the `HostedInput` component from the `bslib-react` npm package), and reads
-its value the usual way, from `input$bins`.
+its value the usual way, from `input$bins`. A client with no build step
+also attaches `bslib_react_dep()`, the vendored bundle it reads as
+`window.bslibReact`.
 
 ## Starting a new app or porting one
 

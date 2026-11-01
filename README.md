@@ -44,7 +44,7 @@ library(shinyreact)
 library(bslibreact)
 
 app_theme <- bs_theme(version = 5)
-ui <- page_react(page_deps(app_theme), bslib_react_dep(), title = "Demo", theme = app_theme)
+ui <- page_react(page_deps(app_theme), title = "Demo", theme = app_theme)
 
 server <- function(input, output, session) {
   host_input(output, "bins", sliderInput("bins", "Bins", 1, 50, 30))
@@ -61,10 +61,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 from shiny import App, render, req, ui
 from shinyreact import page_react
-from bslib_react import page_deps, bslib_react_dep, host_input
+from bslib_react import page_deps, host_input
 
 app_theme = ui.Theme()
-app_ui = page_react(page_deps(app_theme), bslib_react_dep(), title="Demo", theme=app_theme)
+app_ui = page_react(page_deps(app_theme), title="Demo", theme=app_theme)
 
 def server(input, output, session):
     host_input(output, "bins", lambda: ui.input_slider("bins", "Bins", 1, 50, 30))
@@ -92,8 +92,12 @@ export default function App() {
 }
 ```
 
+This client is built with Vite, which bundles the kit into `ui.js`. A
+client with no build step also attaches `bslib_react_dep()`, the prebuilt
+bundle; see `docs/build.md`.
+
 See `examples/01-hello` for the full runnable version of this app, in both
-languages, and `docs/build.md` for scaffolding a new app from scratch.
+languages, and `docs/build.md` for building a new app from scratch.
 
 ## Hosted widgets versus React state
 

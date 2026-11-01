@@ -81,8 +81,8 @@ type IdPattern = {
 /**
  * The id-normalisation patterns from docs/markup-catalog.md, applied to a
  * sample's raw html before parsing. R ids use hyphens, py-shiny's
- * underscores; the replacers normalise the separator too, so the two
- * compare equal. The trailing `\b` keeps a hex run from matching the start
+ * underscores; the replacers normalise the separator too, so a test
+ * reads either catalog the same way. The trailing `\b` keeps a hex run from matching the start
  * of a word: without it, "bslib-sidebar-b" in the attribute name
  * data-bslib-sidebar-border looked like an id.
  */

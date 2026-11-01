@@ -8,7 +8,7 @@ hosts one server-rendered widget for the client to display.
 
 import matplotlib.pyplot as plt
 import numpy as np
-from bslib_react import bslib_react_dep, host_input, page_deps
+from bslib_react import host_input, page_deps
 from shiny import App, render, req, ui
 from shinyreact import page_react
 
@@ -19,7 +19,6 @@ app_theme = ui.Theme()
 
 app_ui = page_react(
     page_deps(app_theme),
-    bslib_react_dep(),
     title="Hello bslib-react",
     theme=app_theme,
 )
