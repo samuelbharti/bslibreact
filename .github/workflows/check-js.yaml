@@ -7,7 +7,7 @@ on:
       - "pkg-js/**"
       - "pkg-r/R/catalog*.R"
       - "pkg-r/DESCRIPTION"
-      - "pkg-py/src/bslib_react/_catalog*.py"
+      - "pkg-py/src/bslibreact/_catalog*.py"
       - "pyproject.toml"
       - "uv.lock"
       - "package.json"
@@ -35,7 +35,7 @@ jobs:
   check:
     runs-on: ubuntu-latest
     env:
-      BSLIB_REACT_REQUIRE_CATALOG: "1"
+      BSLIBREACT_REQUIRE_CATALOG: "1"
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 

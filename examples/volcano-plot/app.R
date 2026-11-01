@@ -1,4 +1,4 @@
-# Volcano plot, a small real analysis app built with bslib-react.
+# Volcano plot, a small real analysis app built with bslibreact.
 #
 # The React client (src/, built to www/ui.js) owns the page. This file
 # holds only reactive computation and the ggplot2 rendering that R does
@@ -27,7 +27,7 @@ ui <- page_react(
 )
 
 server <- function(input, output, session) {
-  # Every hosted input is renderUI()-wrapped and hosted through bslib-react's
+  # Every hosted input is renderUI()-wrapped and hosted through bslibreact's
   # HostedInput components (see docs/build.md, "Hosting a widget").
   bslibreact::host_input(
     output,

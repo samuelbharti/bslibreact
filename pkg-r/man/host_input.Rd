@@ -34,7 +34,7 @@ The output name (\code{paste0(id, suffix)}), invisibly.
 Registers \code{widget} as a \code{\link[shiny:renderUI]{shiny::renderUI()}} output named
 \code{paste0(id, suffix)}, the way \code{\link[shinyreact:page_react]{shinyreact::page_react()}} apps host a
 bslib or shiny widget the client displays with \verb{<ShinyOutput id="<id><suffix>" />} (or the matching kit component, \code{HostedInput},
-from the \code{bslib-react} npm package) instead of rebuilding the widget's
+from the \code{bslibreact} npm package) instead of rebuilding the widget's
 markup in React. See \code{docs/decisions/0003-hosted-widgets.md} in the
 repository for the reasoning behind hosting widgets this way instead of
 driving them from React state.

@@ -5,7 +5,7 @@ import {
   PageFillable,
   PlotOutput,
   VerbatimTextOutput,
-} from "bslib-react";
+} from "bslibreact";
 
 export default function App() {
   return (

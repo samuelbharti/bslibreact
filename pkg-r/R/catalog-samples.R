@@ -24,7 +24,7 @@
 # classes and inline style are checked against it too.
 #
 # This package ships only "kind: tag" and "kind: page" samples: the
-# markup bslib-react's own components need to match. A "kind: extra"
+# markup bslibreact's own components need to match. A "kind: extra"
 # sample depends on a package this package itself does not need (DT,
 # reactable, shinycssloaders, htmlwidgets); those samples live only in the
 # markup catalog renderer's own dev-time list, so that this package's

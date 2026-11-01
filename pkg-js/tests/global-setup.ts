@@ -24,7 +24,7 @@ import type { TestProject } from "vitest/node";
  * Why this does not throw by default: a machine with no R or no uv should
  * still run pkg-js's own tests. Every state short of "ready" skips the
  * tests that need that language, loudly, unless
- * BSLIB_REACT_REQUIRE_CATALOG=1 is set, which CI sets so a broken renderer
+ * BSLIBREACT_REQUIRE_CATALOG=1 is set, which CI sets so a broken renderer
  * fails there and cannot hide behind a quiet skip.
  */
 
@@ -44,12 +44,12 @@ export type CatalogLangStatus = {
 export type CatalogStatusByLang = { r: CatalogLangStatus; py: CatalogLangStatus };
 
 // Augments vitest's own (otherwise empty) ProvidedContext interface so that
-// `project.provide("bslibReactCatalog", ...)` below, and every test file's
-// own `inject("bslibReactCatalog")` (see tests/catalog.ts's catalogStatus()),
+// `project.provide("bslibreactCatalog", ...)` below, and every test file's
+// own `inject("bslibreactCatalog")` (see tests/catalog.ts's catalogStatus()),
 // type-check against the real shape instead of `any`.
 declare module "vitest" {
   export interface ProvidedContext {
-    bslibReactCatalog: CatalogStatusByLang;
+    bslibreactCatalog: CatalogStatusByLang;
   }
 }
 
@@ -64,8 +64,8 @@ const CACHE_DIR = join(REPO_ROOT, ".cache", "markup");
 // the default PATH (a version manager, a CI image with a non-standard
 // layout) can point straight at the binary without this file needing to
 // know anything about how it got there.
-const RSCRIPT = process.env.BSLIB_REACT_RSCRIPT || "Rscript";
-const UV = process.env.BSLIB_REACT_UV || "uv";
+const RSCRIPT = process.env.BSLIBREACT_RSCRIPT || "Rscript";
+const UV = process.env.BSLIBREACT_UV || "uv";
 const RENDER_R_SCRIPT = join(REPO_ROOT, "tools", "markup", "render-r.R");
 const RENDER_PY_SCRIPT = join(REPO_ROOT, "tools", "markup", "render_py.py");
 
@@ -156,7 +156,7 @@ function resolveR(): CatalogLangStatus {
     return {
       state: "missing-tool",
       path: cachePath,
-      detail: `"${RSCRIPT}" is not on PATH (${tool.detail ?? "unknown error"}). Install R, or point BSLIB_REACT_RSCRIPT at Rscript.`,
+      detail: `"${RSCRIPT}" is not on PATH (${tool.detail ?? "unknown error"}). Install R, or point BSLIBREACT_RSCRIPT at Rscript.`,
     };
   }
 
@@ -183,7 +183,7 @@ function resolvePy(): CatalogLangStatus {
     return {
       state: "missing-tool",
       path: cachePath,
-      detail: `"${UV}" is not on PATH (${tool.detail ?? "unknown error"}). Install uv, or point BSLIB_REACT_UV at it.`,
+      detail: `"${UV}" is not on PATH (${tool.detail ?? "unknown error"}). Install uv, or point BSLIBREACT_UV at it.`,
     };
   }
 
@@ -215,11 +215,11 @@ function warnBanner(lang: Lang, status: CatalogLangStatus): void {
   console.warn(
     [
       "",
-      `[bslib-react] markup catalog for "${lang}" is not ready: ${state}.`,
+      `[bslibreact] markup catalog for "${lang}" is not ready: ${state}.`,
       `  ${STATE_EXPLAIN[state]}.`,
       status.detail ? `  ${status.detail}` : undefined,
       `  Every test that reads the "${lang}" catalog is SKIPPED this run.`,
-      "  Set BSLIB_REACT_REQUIRE_CATALOG=1 to make this a failure instead; CI does.",
+      "  Set BSLIBREACT_REQUIRE_CATALOG=1 to make this a failure instead; CI does.",
       "",
     ]
       .filter((line): line is string => line !== undefined)
@@ -235,17 +235,17 @@ export default function setup(project: TestProject): void {
     const status = statuses[lang];
     if (status.state === "ready") continue;
     warnBanner(lang, status);
-    if (process.env.BSLIB_REACT_REQUIRE_CATALOG === "1") {
+    if (process.env.BSLIBREACT_REQUIRE_CATALOG === "1") {
       hardFailures.push(`${lang}: ${status.state}${status.detail ? ` - ${status.detail}` : ""}`);
     }
   }
 
   if (hardFailures.length > 0) {
     throw new Error(
-      "BSLIB_REACT_REQUIRE_CATALOG=1 is set, so a markup catalog that is not ready is " +
+      "BSLIBREACT_REQUIRE_CATALOG=1 is set, so a markup catalog that is not ready is " +
         `a hard failure, not a skip:\n  ${hardFailures.join("\n  ")}`,
     );
   }
 
-  project.provide("bslibReactCatalog", statuses);
+  project.provide("bslibreactCatalog", statuses);
 }

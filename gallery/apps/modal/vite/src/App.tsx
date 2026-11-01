@@ -1,6 +1,6 @@
-import { ActionButton, Card, CardHeader, CardBody, PageFillable } from "bslib-react";
+import { ActionButton, Card, CardHeader, CardBody, PageFillable } from "bslibreact";
 
-// No modal-display component exists in bslib-react: shiny::showModal()
+// No modal-display component exists in bslibreact: shiny::showModal()
 // renders through Shiny's own client JS, independent of the component
 // tree, the same discovery as the Notification example.
 export default function App() {

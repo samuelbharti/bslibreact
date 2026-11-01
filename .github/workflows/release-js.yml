@@ -11,7 +11,7 @@ name: release-js
 # publish of a package that does not exist on npm yet, since there is nothing
 # for the trusted-publisher relationship to attach to. The "Publish to npm"
 # step below carries a temporary NODE_AUTH_TOKEN, read from the short-lived
-# NPM_TOKEN repository secret, only to get bslib-react's first version onto the
+# NPM_TOKEN repository secret, only to get bslibreact's first version onto the
 # registry. Once that publish succeeds, configure the npm Trusted Publisher on
 # the now-existing package, remove the NODE_AUTH_TOKEN line below in a
 # follow-up commit, and delete the NPM_TOKEN secret.

@@ -1,4 +1,4 @@
-import { PageFillable, TextOutput, ValueBox } from "bslib-react";
+import { PageFillable, TextOutput, ValueBox } from "bslibreact";
 
 export default function App() {
   return (

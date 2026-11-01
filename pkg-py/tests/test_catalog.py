@@ -1,6 +1,6 @@
 """The markup catalog: every sample call must work, and the name set is frozen."""
 
-from bslib_react._catalog import SAMPLES, catalog_eval, catalog_hash
+from bslibreact._catalog import SAMPLES, catalog_eval, catalog_hash
 
 # The full, frozen set of Python catalog sample names. Hardcoded here (not
 # derived from SAMPLES) so a change to SAMPLES that adds, removes, or renames

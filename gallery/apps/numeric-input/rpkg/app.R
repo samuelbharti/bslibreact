@@ -6,7 +6,7 @@ library(bslibreact)
 app_theme <- bs_theme(version = 5)
 ui <- page_react(
   page_deps(app_theme),
-  bslib_react_dep(),
+  bslibreact_dep(),
   title = "Numeric input",
   theme = app_theme
 )

@@ -1,4 +1,4 @@
-import { Card, CardHeader, CardBody, PageFillable, UiOutput } from "bslib-react";
+import { Card, CardHeader, CardBody, PageFillable, UiOutput } from "bslibreact";
 
 // Plain shiny::tableOutput() has no dedicated component (and needs no
 // widget binding beyond basic Shiny output plumbing): UiOutput hosts it.

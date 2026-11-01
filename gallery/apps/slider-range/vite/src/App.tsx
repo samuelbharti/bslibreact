@@ -1,4 +1,4 @@
-import { Card, CardHeader, CardBody, PageFillable, SliderInput, TextOutput } from "bslib-react";
+import { Card, CardHeader, CardBody, PageFillable, SliderInput, TextOutput } from "bslibreact";
 
 // A two-handle sliderInput() is hosted by SliderInput like any other
 // slider; no separate "range" component is needed.

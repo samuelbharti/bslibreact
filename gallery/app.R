@@ -1,6 +1,6 @@
 # The gallery shell: a sidebar listing every example, grouped by category.
 # Selecting one shows three columns side by side, classic bslib + Shiny,
-# bslib-react built from npm, and bslib-react from the R package's own
+# bslibreact built from npm, and bslibreact from the R package's own
 # vendored bundle, each with its live demo and complete source below it.
 # Every one is a real, separate Shiny app under
 # apps/<slug>/{classic,vite,rpkg}, started on demand and kept warm after.
@@ -134,7 +134,7 @@ read_code <- function(...) {
 # bslibreact is the server half of vite and rpkg alike; what differs is
 # where the client comes from. vite builds it from TSX with Vite; rpkg
 # hand-writes it against the bundle the R package vendors, so it needs no
-# npm and no build step, and its app.R also attaches bslib_react_dep().
+# npm and no build step, and its app.R also attaches bslibreact_dep().
 BUILD_NOTE <- paste(
   "# once, from the repository root",
   "npm ci",
@@ -245,7 +245,7 @@ nav_list <- function() {
   }))
 }
 
-REPO_URL <- "https://github.com/samuelbharti/bslib-react"
+REPO_URL <- "https://github.com/samuelbharti/bslibreact"
 
 gallery_footer <- function() {
   tags$footer(
@@ -340,7 +340,7 @@ GALLERY_CSS <- "
 ui <- page_sidebar(
   title = tags$div(
     class = "gallery-brand",
-    tags$span("bslib-react component gallery"),
+    tags$span("bslibreact component gallery"),
     tags$a(
       class = "gallery-brand-link",
       href = REPO_URL,
@@ -376,13 +376,13 @@ ui <- page_sidebar(
     ),
     demo_column(
       "vite",
-      "bslib-react from npm",
+      "bslibreact from npm",
       "UI written in TSX, bundled by Vite. Needs Node.",
       uiOutput("code_vite")
     ),
     demo_column(
       "rpkg",
-      "bslib-react from the R package",
+      "bslibreact from the R package",
       "Same UI from the vendored bundle. No npm, no build step.",
       uiOutput("code_rpkg")
     )

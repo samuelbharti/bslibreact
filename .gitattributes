@@ -3,7 +3,7 @@
 # Generated bundles. Committed so a clone runs with no Node step, kept out
 # of diffs and language stats.
 pkg-r/inst/lib/** linguist-generated -diff
-pkg-py/src/bslib_react/www/** linguist-generated -diff
+pkg-py/src/bslibreact/www/** linguist-generated -diff
 examples/*/www/ui.js linguist-generated -diff
 examples/*/www/ui.css linguist-generated -diff
 gallery/apps/*/vite/www/ui.js linguist-generated -diff

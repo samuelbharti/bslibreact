@@ -41,7 +41,7 @@ jobs:
         run: uv build --out-dir dist
 
       # The package is useless without its vendored bundle: a wheel missing
-      # www/bslib-react.js installs cleanly and then serves a page with no
+      # www/bslibreact.js installs cleanly and then serves a page with no
       # components on it. That cannot be undone after upload, so it is a check
       # of its own.
       - name: Check the artifacts carry the vendored bundle
@@ -67,7 +67,7 @@ jobs:
       id-token: write
     environment:
       name: pypi
-      url: https://pypi.org/p/bslib-react
+      url: https://pypi.org/p/bslibreact
     steps:
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:

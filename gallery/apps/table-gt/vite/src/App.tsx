@@ -1,4 +1,4 @@
-import { Card, CardHeader, CardBody, PageFillable, UiOutput } from "bslib-react";
+import { Card, CardHeader, CardBody, PageFillable, UiOutput } from "bslibreact";
 
 // gt has no dedicated component: gt_output() is a plain HTML output
 // binding (like tableOutput()/uiOutput()), so UiOutput hosts it.

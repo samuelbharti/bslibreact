@@ -12,7 +12,7 @@ import {
   TextOutput,
   ValueBox,
   useShinyInitialized,
-} from "bslib-react";
+} from "bslibreact";
 
 /**
  * A small real analysis app: five hosted inputs in a sidebar drive a

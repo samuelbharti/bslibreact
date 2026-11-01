@@ -1,5 +1,5 @@
 {
-  "name": "bslib-react-repo",
+  "name": "bslibreact-repo",
   "private": true,
   "workspaces": [
     "pkg-js",

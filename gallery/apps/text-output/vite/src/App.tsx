@@ -1,4 +1,4 @@
-import { Card, CardHeader, CardBody, PageFillable, SliderInput, TextOutput } from "bslib-react";
+import { Card, CardHeader, CardBody, PageFillable, SliderInput, TextOutput } from "bslibreact";
 
 export default function App() {
   return (

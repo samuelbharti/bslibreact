@@ -1,4 +1,4 @@
-"""Volcano plot, a small real analysis app built with bslib-react.
+"""Volcano plot, a small real analysis app built with bslibreact.
 
 The React client (src/, built to www/ui.js) owns the page. This file
 holds only reactive computation and the matplotlib rendering; volcano.py
@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Callable
 
 import pandas as pd
-from bslib_react import host_input, page_deps
+from bslibreact import host_input, page_deps
 from shiny import App, Inputs, Outputs, Session, module, reactive, render, ui
 from shinyreact import page_react
 from volcano import plot_volcano, volcano_data, volcano_status_counts
@@ -59,7 +59,7 @@ def volcano_server(
 
 def server(input: Inputs, output: Outputs, session: Session):
     # Every hosted input is a @render.ui-wrapped output, hosted through
-    # bslib-react's HostedInput components (see docs/porting.md, "Hosting
+    # bslibreact's HostedInput components (see docs/porting.md, "Hosting
     # a widget").
     host_input(
         output,

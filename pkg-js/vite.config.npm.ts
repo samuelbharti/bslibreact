@@ -5,7 +5,7 @@ import { defineConfig } from "vite";
 
 const dir = path.dirname(fileURLToPath(import.meta.url));
 
-// The `bslib-react` npm build: ESM, react/react-dom externalized as peer
+// The `bslibreact` npm build: ESM, react/react-dom externalized as peer
 // dependencies so a bundler-tier app resolves a single React (and keeps its
 // own dev build, with Fast Refresh, in development). The IIFE build
 // (vite.config.ts) is built from the same source but maps those same

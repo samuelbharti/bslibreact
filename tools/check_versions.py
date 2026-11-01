@@ -36,7 +36,7 @@ SOURCES = (
     # uv.lock records the project's own version, and it is one that drifts
     # quietly: bumping pyproject.toml without re-running `uv lock` leaves it
     # behind. Anchored to this project's own stanza, not a dependency's.
-    ("uv.lock", r'^name = "bslib-react"\nversion = "([^"]+)"'),
+    ("uv.lock", r'^name = "bslibreact"\nversion = "([^"]+)"'),
     ("pkg-r/DESCRIPTION", r"^Version:\s*(\S+)"),
     ("pkg-r/NEWS.md", r"^#\s+bslibreact\s+(\d\S*)"),
     # Both changelogs may carry an unreleased section between releases, so these

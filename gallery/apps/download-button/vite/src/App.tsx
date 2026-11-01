@@ -1,4 +1,4 @@
-import { DownloadButton, Card, CardHeader, CardBody, PageFillable } from "bslib-react";
+import { DownloadButton, Card, CardHeader, CardBody, PageFillable } from "bslibreact";
 
 export default function App() {
   return (

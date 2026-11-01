@@ -1,4 +1,4 @@
-import { Card, CardHeader, CardBody, HostedInput, PageFillable, TextOutput } from "bslib-react";
+import { Card, CardHeader, CardBody, HostedInput, PageFillable, TextOutput } from "bslibreact";
 
 // bslib::input_task_button() has no dedicated component: hosted through HostedInput.
 export default function App() {

@@ -1,7 +1,7 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
-// The IIFE build: dist/bslib-react.js, the file `make update-dist` vendors
+// The IIFE build: dist/bslibreact.js, the file `make update-dist` vendors
 // into pkg-r's inst/lib/ and pkg-py's www/, and a served page attaches as a
 // classic <script defer>, loaded right after shinyreact's own dependency
 // (see src/global.ts and src/shinyreact.ts's own comments on why load order
@@ -20,13 +20,13 @@ export default defineConfig({
     lib: {
       entry: "src/global.ts",
       formats: ["iife"],
-      name: "bslibReact",
-      fileName: () => "bslib-react.js",
+      name: "bslibreact",
+      fileName: () => "bslibreact.js",
     },
     rollupOptions: {
       external: ["react", "react-dom", "react-dom/client"],
       output: {
-        assetFileNames: "bslib-react.[ext]",
+        assetFileNames: "bslibreact.[ext]",
         globals: {
           react: "window.shinyreact.React",
           "react-dom": "window.shinyreact.ReactDOM",

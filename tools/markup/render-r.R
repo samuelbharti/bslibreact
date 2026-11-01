@@ -13,7 +13,7 @@
 #
 # This script is deliberately self-contained rather than a thin wrapper
 # around an exported pkg-r function: pkg-r ships only page_deps(),
-# host_input(), and bslib_react_dep(), so that an app installing it gets
+# host_input(), and bslibreact_dep(), so that an app installing it gets
 # no browser-automation or third-party-widget dependencies it does not
 # need at runtime. The "extra" kind samples (DT, reactable, htmlwidgets,
 # shinycssloaders) live only here; install those packages to render them.

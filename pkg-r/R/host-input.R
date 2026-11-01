@@ -4,7 +4,7 @@
 #' `paste0(id, suffix)`, the way [shinyreact::page_react()] apps host a
 #' bslib or shiny widget the client displays with `<ShinyOutput
 #' id="<id><suffix>" />` (or the matching kit component, `HostedInput`,
-#' from the `bslib-react` npm package) instead of rebuilding the widget's
+#' from the `bslibreact` npm package) instead of rebuilding the widget's
 #' markup in React. See `docs/decisions/0003-hosted-widgets.md` in the
 #' repository for the reasoning behind hosting widgets this way instead of
 #' driving them from React state.
