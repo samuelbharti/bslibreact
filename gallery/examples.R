@@ -138,7 +138,7 @@ EXAMPLES <- list(
     "slider-range",
     "inputs",
     "Slider range",
-    "No separate component needed: a two handle sliderInput() uses the same HostedInput mechanism SliderInput itself is built on."
+    "Dedicated component: SliderInput, the same one a single handle slider uses (hosts a two handle shiny::sliderInput())."
   ),
   gallery_example(
     "task-button",

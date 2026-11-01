@@ -21,3 +21,5 @@ First release. Experimental: component props may still change.
 - `useBoundScope` unbinds the element it bound rather than whatever the
   ref points at during cleanup, so a node React swaps out does not leave
   its Shiny bindings behind.
+- `NavbarTabStrip` builds its tab links from the raw `id`, the same way
+  `TabPane` builds its own id, so tabs switch inside a `<Module>` too.

@@ -35,8 +35,8 @@ uv run python tools/markup/render_py.py --out .cache/markup/py.json
 `--key` prints one line and renders nothing. The key changes when bslib,
 shiny, htmltools, or py-shiny versions change, when the sample file's
 bytes change, or when the renderer's own logic version is bumped. The R
-script loads `pkg-r` with `pkgload::load_all()` when the package is not
-installed, so it works from a plain checkout.
+script always loads `pkg-r` from the checkout with `pkgload::load_all()`,
+never an installed copy, so `pkgload` must be installed.
 
 pkg-js's `tests/global-setup.ts` calls `--key` on every test run, compares
 it against the cached file, and only re-renders when it differs.

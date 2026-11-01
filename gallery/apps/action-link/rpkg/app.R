@@ -13,7 +13,12 @@ ui <- page_react(
 
 server <- function(input, output, session) {
   host_input(output, "go", actionLink("go", "Clear all filters"))
-  output$count <- renderText(paste("Clicked", input$go, "times"))
+  # The hosted button has no value until it binds, so wait for it instead of
+  # showing "Clicked times" with no number.
+  output$count <- renderText({
+    req(!is.null(input$go))
+    paste("Clicked", input$go, "times")
+  })
 }
 
 shinyApp(ui, server)

@@ -8,13 +8,12 @@
 // the ordering entirely.
 window.addEventListener("load", function () {
   const { React, ReactDOM } = window.shinyreact;
-  const { Card, CardHeader, CardBody, HostedInput, PageFillable, TextOutput } = window.bslibReact;
+  const { Card, CardHeader, CardBody, PageFillable, SliderInput, TextOutput } = window.bslibReact;
 
   const h = React.createElement;
 
-  // A two-handle sliderInput() is still SliderInput's own underlying
-  // mechanism (HostedInput with zero widget-specific props); no separate
-  // "range" component exists or is needed.
+  // A two-handle sliderInput() is hosted by SliderInput like any other
+  // slider; no separate "range" component is needed.
   function App() {
     return h(
       PageFillable,
@@ -23,7 +22,7 @@ window.addEventListener("load", function () {
         Card,
         null,
         h(CardHeader, null, "Slider range"),
-        h(CardBody, null, h(HostedInput, { id: "range_ui" }), h(TextOutput, { id: "chosen" })),
+        h(CardBody, null, h(SliderInput, { id: "range_ui" }), h(TextOutput, { id: "chosen" })),
       ),
     );
   }

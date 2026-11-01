@@ -8,6 +8,24 @@ test_that("host_input() renders the widget under output[[id + suffix]]", {
   })
 })
 
+test_that("host_input() keeps rendering while hidden", {
+  # testServer()'s mock session does not store output options, so record
+  # the call instead.
+  seen <- NULL
+  local_mocked_bindings(
+    outputOptions = function(x, name, ...) {
+      seen <<- c(list(name = name), list(...))
+    },
+    .package = "shiny"
+  )
+  server <- function(input, output, session) {
+    host_input(output, "bins", shiny::sliderInput("bins", "Bins", 1, 50, 30))
+  }
+  shiny::testServer(server, {
+    expect_identical(seen, list(name = "bins_ui", suspendWhenHidden = FALSE))
+  })
+})
+
 test_that("host_input() returns the output name invisibly", {
   server <- function(input, output, session) {
     name <- host_input(

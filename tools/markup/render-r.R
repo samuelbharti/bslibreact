@@ -28,42 +28,34 @@
 
 args <- commandArgs(trailingOnly = TRUE)
 
-if (requireNamespace("bslibreact", quietly = TRUE)) {
-  library(bslibreact)
-} else {
-  if (!requireNamespace("pkgload", quietly = TRUE)) {
-    cat(
-      "bslibreact is not installed and pkgload is not available to load it from source.\n",
-      "Install pkgload (install.packages(\"pkgload\")) or install bslibreact itself.\n",
-      file = stderr()
-    )
-    quit(status = 1)
-  }
-  # This script lives at tools/markup/render-r.R, two levels below the
-  # repository root; pkg-r sits alongside tools/ at that same root.
-  root <- normalizePath(
-    file.path(
-      dirname(sub(
-        "^--file=",
-        "",
-        grep("^--file=", commandArgs(trailingOnly = FALSE), value = TRUE)
-      )),
-      "..",
-      ".."
-    ),
+# Always the checkout's pkg-r, never an installed bslibreact: a sample just
+# added to pkg-r/R/catalog-samples.R must show up in the next render, and
+# an older installed copy would silently hide it.
+if (!requireNamespace("pkgload", quietly = TRUE)) {
+  cat(
+    "this script needs the 'pkgload' package installed.\n",
+    file = stderr()
+  )
+  quit(status = 1)
+}
+# This script lives at tools/markup/render-r.R, two levels below the
+# repository root; pkg-r sits alongside tools/ at that same root.
+script_file <- sub(
+  "^--file=",
+  "",
+  grep("^--file=", commandArgs(trailingOnly = FALSE), value = TRUE)
+)
+# commandArgs() has no --file= when the script is sourced, so fall back to
+# a path relative to the working directory, the repository root.
+pkg_dir <- if (length(script_file) == 1) {
+  normalizePath(
+    file.path(dirname(script_file), "..", "..", "pkg-r"),
     winslash = "/"
   )
-  pkg_dir <- file.path(root, "pkg-r")
-  if (!file.exists(file.path(pkg_dir, "DESCRIPTION"))) {
-    # Fall back to a path relative to the current working directory, for
-    # the case where this script is invoked in some other way than
-    # `Rscript tools/markup/render-r.R` from the repo root (commandArgs()
-    # cannot always recover --file= reliably, for example when the script
-    # is sourced rather than run directly).
-    pkg_dir <- "pkg-r"
-  }
-  pkgload::load_all(pkg_dir, quiet = TRUE)
+} else {
+  "pkg-r"
 }
+pkgload::load_all(pkg_dir, quiet = TRUE)
 
 for (pkg in c("cli", "jsonlite")) {
   if (!requireNamespace(pkg, quietly = TRUE)) {
@@ -264,20 +256,14 @@ for (pkg in c("cli", "jsonlite")) {
 
 # Starts one background Shiny app that answers every "page"-kind sample as
 # a function of a query string (?sample=<name>). The background process
-# loads bslibreact with library() when it is installed, and falls back to
-# pkgload::load_all() against this same checkout otherwise, so this works
-# equally before and after the package is installed.
+# loads the same checkout with pkgload::load_all().
 .start_markup_server <- function(theme, pkg_dir, timeout = 60) {
   port <- httpuv::randomPort()
   log <- tempfile(fileext = ".log")
 
   proc <- callr::r_bg(
     function(port, pkg_dir, theme) {
-      if (requireNamespace("bslibreact", quietly = TRUE)) {
-        library(bslibreact)
-      } else {
-        pkgload::load_all(pkg_dir, quiet = TRUE)
-      }
+      pkgload::load_all(pkg_dir, quiet = TRUE)
       shiny::shinyOptions(bootstrapTheme = theme)
       ui <- function(req) {
         qs <- shiny::parseQueryString(req$QUERY_STRING)
@@ -332,6 +318,7 @@ for (pkg in c("cli", "jsonlite")) {
 
 .render_markup_catalog <- function(
   path,
+  pkg_dir,
   components = NULL,
   served = c("auto", "never", "always"),
   theme = bslib::bs_theme(version = 5),
@@ -386,7 +373,6 @@ for (pkg in c("cli", "jsonlite")) {
         "starting a background app to serve {n_page} page sample{?s}"
       )
     }
-    pkg_dir <- system.file(package = "bslibreact")
     server <- .start_markup_server(theme, pkg_dir)
     on.exit(
       if (
@@ -466,7 +452,7 @@ if (length(out_flag) == 1 && out_flag < length(args)) {
   out_path <- args[out_flag + 1]
   result <- tryCatch(
     {
-      .render_markup_catalog(path = out_path)
+      .render_markup_catalog(path = out_path, pkg_dir = pkg_dir)
       TRUE
     },
     error = function(e) {
