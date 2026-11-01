@@ -175,7 +175,7 @@ EXAMPLES <- list(
     "datatable",
     "outputs",
     "DataTable",
-    "Dedicated component: TableOutput (hosts DT::DTOutput())."
+    "Dedicated component: DTOutput (hosts DT::DTOutput())."
   ),
   gallery_example(
     "table-reactable",
@@ -187,7 +187,7 @@ EXAMPLES <- list(
     "image",
     "outputs",
     "Image",
-    "Dedicated component: ImageOutput (hosts shiny::imageOutput())."
+    "shinyreact's own ImageOutput, which the kit re-exports: it draws its own <img> for renderImage()."
   ),
   gallery_example(
     "text-output",

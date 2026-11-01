@@ -1,4 +1,4 @@
-import { Card, CardHeader, CardBody, PageFillable, TableOutput } from "bslib-react";
+import { Card, CardHeader, CardBody, PageFillable, DTOutput } from "bslib-react";
 
 export default function App() {
   return (
@@ -6,7 +6,7 @@ export default function App() {
       <Card>
         <CardHeader>DataTable</CardHeader>
         <CardBody>
-          <TableOutput id="table" />
+          <DTOutput id="table" />
         </CardBody>
       </Card>
     </PageFillable>

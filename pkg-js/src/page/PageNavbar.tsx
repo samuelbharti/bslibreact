@@ -1,6 +1,7 @@
 import { useLayoutEffect, useRef, type ReactNode } from "react";
 import { cx } from "../cx";
 import { LayoutSidebar } from "../layout/Sidebar";
+import { NavbarFillableContext } from "../nav/navbarFillable";
 import { usePageBody } from "./usePageBody";
 
 type Props = {
@@ -140,7 +141,7 @@ export function PageNavbar({
 
   const tabContent = (
     <div className={cx("tab-content", fillable && "html-fill-item html-fill-container")}>
-      {children}
+      <NavbarFillableContext.Provider value={fillable}>{children}</NavbarFillableContext.Provider>
     </div>
   );
 

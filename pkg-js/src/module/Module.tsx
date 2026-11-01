@@ -25,6 +25,12 @@ export function Module({ namespace, children }: ModuleProps) {
 // Build the wire id a hosted input or output uses: "<ns>-<id>" inside a
 // Module, or the bare id at the top level. Matches Shiny's own ns()
 // (single hyphen, matching moduleServer's default).
+//
+// Every id a kit component puts on the page goes through this, element
+// ids included: kit outputs pass the result to ShinyOutput with
+// namespace={null} so ShinyOutput does not prefix it a second time. That
+// keeps one source of truth, so an output's id, its plot click id and its
+// data attributes always agree.
 export function useNs(id: string): string {
   const namespace = useContext(NamespaceContext);
   return namespace ? `${namespace}-${id}` : id;

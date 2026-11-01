@@ -1,11 +1,11 @@
 import { ShinyOutput } from "../shinyreact";
+import { cx } from "../cx";
 import { useNs } from "../module/Module";
 
 type Props = {
   id: string;
-  /** The widget's own binding class, e.g. "igvShiny", "plotly", "r3dmol".
-   *  Copy it from the widget's own *Output() function; it is not
-   *  guessable and differs per widget. */
+  /** The widget's own binding class, e.g. "plotly" or "leaflet". Copy it
+   *  from the widget's own *Output() function; it differs per widget. */
   widgetClass: string;
   height?: string;
   width?: string;
@@ -13,14 +13,12 @@ type Props = {
 };
 
 /**
- * A generic htmlwidget output. Markup pinned against the `htmlwidget_output`
- * catalog sample (`htmlwidgets::shinyWidgetOutput()`, the same generic
- * shape igvShiny and every other plain htmlwidget share) and `DTOutput` (DT):
- * both are a bare div carrying "<widget> html-widget html-widget-output
- * shiny-report-size html-fill-item" plus an explicit size. Reuse this for
- * any htmlwidget the parent renders unchanged (igvShiny, plotly, r3dmol,
- * reactable, ...) rather than reimplementing the widget in React - the
- * TableOutput component is the DT-specific case of the same shape.
+ * A generic htmlwidget output (plotly, leaflet, and any other widget whose
+ * *Output() is htmlwidgets::shinyWidgetOutput()). Markup pinned against
+ * the `htmlwidget_output` catalog sample: a div carrying
+ * "<widget> html-widget html-widget-output shiny-report-size
+ * html-fill-item" plus an explicit size. DTOutput and ReactableOutput are
+ * the two widgets whose markup differs enough to need their own component.
  */
 export function WidgetOutput({
   id,
@@ -29,17 +27,14 @@ export function WidgetOutput({
   width = "100%",
   className,
 }: Props) {
-  const fullId = useNs(id);
   return (
     <ShinyOutput
-      id={fullId}
+      id={useNs(id)}
       namespace={null}
-      className={[
+      className={cx(
         `${widgetClass} html-widget html-widget-output shiny-report-size html-fill-item`,
         className,
-      ]
-        .filter(Boolean)
-        .join(" ")}
+      )}
       style={{ width, height }}
     />
   );

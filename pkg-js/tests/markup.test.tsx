@@ -21,7 +21,7 @@ import { PageNavbar } from "../src/page/PageNavbar";
 import { Tooltip } from "../src/tooltip/Tooltip";
 import { PlotOutput } from "../src/outputs/PlotOutput";
 import { TextOutput, VerbatimTextOutput } from "../src/outputs/TextOutput";
-import { TableOutput } from "../src/outputs/TableOutput";
+import { DTOutput } from "../src/outputs/DTOutput";
 import { ReactableOutput } from "../src/outputs/ReactableOutput";
 import { WidgetOutput } from "../src/outputs/WidgetOutput";
 import { UiOutput } from "../src/outputs/UiOutput";
@@ -585,12 +585,12 @@ describeCatalog("r", "Output components", () => {
     );
   });
 
-  it("TableOutput matches DT::DTOutput(fill = TRUE)", () => {
-    expect(renderShape(<TableOutput id="x" />, "#x")).toEqual(catalogShape("DTOutput", "#x"));
+  it("DTOutput matches DT::DTOutput(fill = TRUE)", () => {
+    expect(renderShape(<DTOutput id="x" />, "#x")).toEqual(catalogShape("DTOutput", "#x"));
   });
 
-  it("TableOutput with fill = false matches DT::DTOutput(fill = FALSE)", () => {
-    expect(renderShape(<TableOutput id="x" fill={false} />, "#x")).toEqual(
+  it("DTOutput with fill = false matches DT::DTOutput(fill = FALSE)", () => {
+    expect(renderShape(<DTOutput id="x" fill={false} />, "#x")).toEqual(
       catalogShape("DTOutput_no_fill", "#x"),
     );
   });
@@ -652,6 +652,49 @@ describe("HostedInput", () => {
     );
     expect(container.querySelector("#mod-lfc_ui")).not.toBeNull();
     expect(container.querySelector("#lfc_ui")).toBeNull();
+  });
+});
+
+describe("Outputs inside a Module", () => {
+  it("namespace the element id and the plot's click input id", () => {
+    const { container } = render(
+      <Module namespace="volcano">
+        <PlotOutput id="plot" click="click" />
+      </Module>,
+    );
+    const el = container.querySelector("#volcano-plot");
+    expect(el).not.toBeNull();
+    expect(el!.getAttribute("data-click-id")).toBe("volcano-click");
+  });
+
+  it("namespace reactable's data attribute the same way as its id", () => {
+    const { container } = render(
+      <Module namespace="m">
+        <ReactableOutput id="tbl" />
+      </Module>,
+    );
+    expect(container.querySelector("#m-tbl")!.getAttribute("data-reactable-output")).toBe("m-tbl");
+  });
+});
+
+describe("TabPane inside PageNavbar", () => {
+  it("defaults fillable to the PageNavbar's own setting", () => {
+    for (const fillable of [true, false]) {
+      const { container, unmount } = render(
+        <PageNavbar
+          title="Demo"
+          fillable={fillable}
+          tabStrip={<NavbarTabStrip id="nav" panels={panels} />}
+        >
+          <TabPane navId="nav" value="Browse" active>
+            x
+          </TabPane>
+        </PageNavbar>,
+      );
+      const pane = container.querySelector(".tab-pane")!;
+      expect(pane.classList.contains("html-fill-item")).toBe(fillable);
+      unmount();
+    }
   });
 });
 

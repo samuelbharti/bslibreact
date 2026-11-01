@@ -1,5 +1,5 @@
-import type { CSSProperties } from "react";
 import { ShinyOutput } from "../shinyreact";
+import { cx } from "../cx";
 import { useNs } from "../module/Module";
 
 type Props = {
@@ -8,37 +8,27 @@ type Props = {
   height?: string;
   className?: string;
   /** shiny::plotOutput(click = ns("click")): the input id nearPoints()
-   *  reads on the server. Pass a bare id ("click"); it is namespaced the
-   *  same way `id` is. */
+   *  reads on the server. Pass a bare id ("click"); inside a <Module> it
+   *  is namespaced the same way `id` is. */
   click?: string;
 };
 
 /**
- * Hosts a server-side shiny::renderPlot() the same way the parent app's
- * plotOutput() would: the exact class shiny-plot-output, so sizing,
- * validate()/need() error messages, and the busy spinner all match. Markup
- * pinned against catalog samples `plotOutput` and `plotOutput_click`
- * (shiny 1.14.0).
- *
- * shinyreact's ImageOutput is the documented alternative, but it renders a
- * different element shape, so plotOutput's own binding is used here
- * instead, hosted through shinyreact's ShinyOutput.
+ * Hosts a server-side shiny::renderPlot() with plotOutput()'s own
+ * shiny-plot-output binding, so sizing, validate()/need() messages, and
+ * the busy spinner all match a classic app. Markup pinned against the
+ * `plotOutput` and `plotOutput_click` catalog samples. (shinyreact's
+ * ImageOutput, which the kit also re-exports, renders a different
+ * element shape.)
  */
 export function PlotOutput({ id, width = "100%", height = "400px", className, click }: Props) {
-  const fullId = useNs(id);
   const fullClickId = useNs(click ?? "");
-  const style: CSSProperties = { width, height };
   return (
     <ShinyOutput
-      id={fullId}
-      // The kit's own <Module> already qualified fullId (e.g. "heat-plot").
-      // ShinyOutput would otherwise apply the enclosing
-      // ShinyModuleProvider's namespace a second time, doubling the
-      // prefix ("heat-heat-plot"). namespace={null} opts out, matching
-      // the rule shinyreact's own ImageOutput follows for the same reason.
+      id={useNs(id)}
       namespace={null}
-      className={["shiny-plot-output html-fill-item", className].filter(Boolean).join(" ")}
-      style={style}
+      className={cx("shiny-plot-output html-fill-item", className)}
+      style={{ width, height }}
       data-click-id={click ? fullClickId : undefined}
       data-click-clip={click ? "TRUE" : undefined}
     />
