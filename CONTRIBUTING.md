@@ -39,7 +39,7 @@ git status --porcelain
 ```
 
 `git status --porcelain` must come back empty. `www/ui.js` in each example
-and each gallery react app is committed build output; CI fails a PR that
+and each gallery vite app is committed build output; CI fails a PR that
 leaves one stale.
 
 ## Adding a component

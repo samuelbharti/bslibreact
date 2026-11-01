@@ -181,7 +181,7 @@ EXAMPLES <- list(
     "table-reactable",
     "outputs",
     "Table (reactable)",
-    "Dedicated component: ReactableOutput (hosts reactable::reactableOutput()). A real gotcha found here: reactable ships React itself through reactR under a dependency also named \"react\", which collided with page_react()'s own \"react\" dependency; fixed by renaming reactR's copy and loading it first."
+    "Dedicated component: ReactableOutput (hosts reactable::reactableOutput()). A gotcha found here: page_react() names the app's client dependency after its folder, and reactable's React dependency is named \"react\", so a client folder named react hid it. The gallery's client folders are named vite for that reason."
   ),
   gallery_example(
     "image",

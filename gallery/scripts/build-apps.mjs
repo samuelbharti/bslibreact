@@ -1,4 +1,4 @@
-// Builds every gallery example's react/src/ui.tsx into react/www/ui.js,
+// Builds every gallery example's vite/src/ui.tsx into vite/www/ui.js,
 // one Vite build per example, all sharing this package's own
 // node_modules (no per-example package.json). Mirrors the IIFE config in
 // examples/01-hello/vite.config.ts: React and ReactDOM externalized to
@@ -16,16 +16,16 @@ const appsDir = join(galleryDir, "apps");
 const slugs = readdirSync(appsDir, { withFileTypes: true })
   .filter((d) => d.isDirectory())
   .map((d) => d.name)
-  .filter((slug) => existsSync(join(appsDir, slug, "react", "src", "ui.tsx")));
+  .filter((slug) => existsSync(join(appsDir, slug, "vite", "src", "ui.tsx")));
 
 if (slugs.length === 0) {
-  console.error("[gallery] no apps/*/react/src/ui.tsx found, nothing to build");
+  console.error("[gallery] no apps/*/vite/src/ui.tsx found, nothing to build");
   process.exit(1);
 }
 
 for (const slug of slugs) {
-  const appDir = join(appsDir, slug, "react");
-  console.log(`[gallery] building ${slug}/react`);
+  const appDir = join(appsDir, slug, "vite");
+  console.log(`[gallery] building ${slug}/vite`);
   await build({
     root: galleryDir,
     configFile: false,

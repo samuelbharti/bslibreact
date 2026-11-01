@@ -1,6 +1,6 @@
 name: Check bundles
 
-# The example apps and the gallery's react apps each commit a built
+# The example apps and the gallery's vite apps each commit a built
 # www/ui.js, and each of those bundles a copy of bslib-react. So a change in
 # pkg-js can make them stale as surely as a change in their own src/ can,
 # which is why pkg-js is in the paths below too.
@@ -91,7 +91,7 @@ jobs:
       - name: Fail if a committed bundle is stale
         if: ${{ !cancelled() && steps.bundles.outcome == 'success' }}
         run: |
-          changed=$(git status --porcelain -- 'examples/*/www/*' 'gallery/apps/*/react/www/*')
+          changed=$(git status --porcelain -- 'examples/*/www/*' 'gallery/apps/*/vite/www/*')
           if [ -n "$changed" ]; then
             echo "These bundles differ from a fresh build:"
             echo "$changed"
