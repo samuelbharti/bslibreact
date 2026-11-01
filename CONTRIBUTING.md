@@ -28,16 +28,19 @@ prek run --all-files
 make check
 ```
 
-If the change touches the component kit or `page_deps()`, also run:
+If the change touches the component kit, `page_deps()`, a JS dependency,
+or the client of an example or a gallery app, also run:
 
 ```
+npm ci
 make update-dist
-make examples
+make bundles
 git status --porcelain
 ```
 
-Both must come back empty. `www/ui.js` in each example is committed build
-output; CI fails a PR that leaves it stale.
+`git status --porcelain` must come back empty. `www/ui.js` in each example
+and each gallery react app is committed build output; CI fails a PR that
+leaves one stale.
 
 ## Adding a component
 

@@ -153,17 +153,17 @@ markup-force:  ## Re-render both markup catalogs even if the cache looks fresh
 	rm -rf .cache/markup
 	$(MAKE) markup
 
-.PHONY: examples
-examples:  ## Build every example app's client bundle
-	cd examples/01-hello && npm install && npm run build
-	cd examples/volcano-plot && npm install && npm run build
-
-.PHONY: gallery-apps
-gallery-apps:  ## [gallery] Build every example's react/www/ui.js client bundle
-	cd gallery && npm install && npm run build
+# What CI's check-bundles.yaml runs after `npm ci`. If that check fails,
+# run `npm ci` first (so node_modules match the lockfile CI builds with),
+# then this, and commit the result.
+.PHONY: bundles
+bundles:  ## Rebuild every committed www/ui.js (examples and gallery) from the current pkg-js
+	cd $(PATH_PKG_JS) && npm run build:npm
+	npm run build --workspace examples
+	npm run build --workspace gallery
 
 .PHONY: gallery
-gallery: gallery-apps  ## [gallery] Build the react client bundles, then run the gallery Shiny app
+gallery: bundles  ## [gallery] Build the client bundles, then run the gallery Shiny app
 	$(RSCRIPT) -e "shiny::runApp('gallery')"
 
 .PHONY: version-check

@@ -1,0 +1,101 @@
+name: Check bundles
+
+# The example apps and the gallery's react apps each commit a built
+# www/ui.js, and each of those bundles a copy of bslib-react. So a change in
+# pkg-js can make them stale as surely as a change in their own src/ can,
+# which is why pkg-js is in the paths below too.
+on:
+  push:
+    branches: [main]
+    paths: &bundle-inputs
+      - "gallery/**"
+      - "examples/**"
+      - "pkg-js/src/**"
+      - "pkg-js/package.json"
+      - "pkg-js/tsconfig*.json"
+      - "pkg-js/vite.config.npm.ts"
+      - "package.json"
+      - "package-lock.json"
+      - "Makefile"
+      - ".nvmrc"
+      - ".gitattributes"
+      - ".github/workflows/check-bundles.yaml"
+  pull_request:
+    paths: *bundle-inputs
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      # Every gallery app and the shell itself must at least parse. This
+      # catches a broken app.R without installing shiny or booting 126
+      # processes, which a runtime check of this gallery would need.
+      - name: Parse every gallery R file
+        run: |
+          Rscript -e '
+            files <- list.files("gallery", pattern = "[.]R$", recursive = TRUE, full.names = TRUE)
+            bad <- character()
+            for (f in files) {
+              ok <- tryCatch({ parse(f); TRUE }, error = function(e) { message(f, ": ", conditionMessage(e)); FALSE })
+              if (!ok) bad <- c(bad, f)
+            }
+            cat(length(files), "R files parsed\n")
+            if (length(bad)) { cat("failed:", length(bad), "\n"); quit(status = 1) }
+          '
+
+      # The no-build variant is hand-written JavaScript, so nothing else
+      # would notice a syntax error in it before someone opened the page.
+      - name: Syntax-check the hand-written rpkg clients
+        run: |
+          shopt -s nullglob
+          count=0
+          for f in gallery/apps/*/rpkg/www/ui.js; do
+            node --check "$f"
+            count=$((count + 1))
+          done
+          echo "$count rpkg clients checked"
+
+      # The examples and the gallery are npm workspaces, so the lockfile
+      # lives at the root and `npm ci` has to run there.
+      - name: Install
+        run: make js-setup-ci
+
+      - name: Rebuild every committed bundle
+        id: bundles
+        run: make bundles
+
+      - name: Typecheck the gallery
+        run: npm run typecheck --workspace gallery
+
+      # `git status`, not `git diff`, so a new build output nobody committed
+      # (a ui.css, say) fails too. The pathspecs end in `*` on purpose: a
+      # wildcard pathspec has to match the whole file path, so one ending in
+      # `www/` matches nothing and the check would always pass. Runs even
+      # when the typecheck above failed, so one CI round reports both.
+      - name: Fail if a committed bundle is stale
+        if: ${{ !cancelled() && steps.bundles.outcome == 'success' }}
+        run: |
+          changed=$(git status --porcelain -- 'examples/*/www/*' 'gallery/apps/*/react/www/*')
+          if [ -n "$changed" ]; then
+            echo "These bundles differ from a fresh build:"
+            echo "$changed"
+            echo "Run 'npm ci' and 'make bundles', then commit the result."
+            exit 1
+          fi
+          echo "every committed bundle matches its source"
