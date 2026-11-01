@@ -1,19 +1,12 @@
 # Cross-package version drift guard, like shinyreact's own test suite.
-# Skips outside a full checkout of this repository, and until pkg-js and
-# the root pyproject.toml actually exist: both are built by sibling agents
-# working in parallel on this same repository, and may not exist yet.
-# Once they do, this activates automatically with no further changes
-# needed here.
+# Skips outside a full checkout of this repository (R CMD check, an
+# installed package), where pkg-js and the root pyproject.toml are absent.
 test_that("this package's version matches pkg-js and the root pyproject.toml", {
   pkg_js_path <- testthat::test_path("..", "..", "..", "pkg-js", "package.json")
   pyproject_path <- testthat::test_path("..", "..", "..", "pyproject.toml")
   skip_if_not(
-    file.exists(pkg_js_path),
-    "pkg-js/package.json does not exist yet"
-  )
-  skip_if_not(
-    file.exists(pyproject_path),
-    "the root pyproject.toml does not exist yet"
+    file.exists(pkg_js_path) && file.exists(pyproject_path),
+    "pkg-js/package.json or pyproject.toml is missing (not a repository checkout)"
   )
 
   r_version <- as.character(utils::packageVersion("bslibreact"))

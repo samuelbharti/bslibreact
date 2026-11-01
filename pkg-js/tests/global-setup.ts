@@ -21,19 +21,14 @@ import type { TestProject } from "vitest/node";
  * once, before any worker starts, so there is exactly one render pass per
  * language per `vitest run`, and every worker just reads the result.
  *
- * Why this must not throw by default: pkg-r and pkg-py are sibling
- * packages in this repo, built separately (see the root Makefile's r-* and
- * py-* targets). A `pkg-js` checkout can exist, and its own tests are
- * expected to run cleanly, before either sibling's renderer
- * (`tools/markup/render-r.R`, `tools/markup/render_py.py`) has been
- * written at all. Every state below short of "ready" is therefore treated
- * as "skip the tests that need this language, loudly, but do not fail the
- * suite" - UNLESS BSLIB_REACT_REQUIRE_CATALOG=1 is set, which is what CI
- * sets once both renderers are expected to actually exist, so a real
- * regression there cannot hide behind a quiet skip.
+ * Why this does not throw by default: a machine with no R or no uv should
+ * still run pkg-js's own tests. Every state short of "ready" skips the
+ * tests that need that language, loudly, unless
+ * BSLIB_REACT_REQUIRE_CATALOG=1 is set, which CI sets so a broken renderer
+ * fails there and cannot hide behind a quiet skip.
  */
 
-export type CatalogState = "ready" | "missing-tool" | "renderer-missing" | "renderer-error";
+export type CatalogState = "ready" | "missing-tool" | "renderer-error";
 
 export type CatalogLangStatus = {
   state: CatalogState;
@@ -75,12 +70,16 @@ const RENDER_R_SCRIPT = join(REPO_ROOT, "tools", "markup", "render-r.R");
 const RENDER_PY_SCRIPT = join(REPO_ROOT, "tools", "markup", "render_py.py");
 
 function run(command: string, args: string[]): SpawnSyncReturns<string> {
-  // shell: true so Windows resolves Rscript.exe / uv.exe (and any .cmd
-  // shim a version manager installs) off PATH the same way a person typing
-  // the command at a prompt would. Without it, spawnSync on Windows often
-  // reports ENOENT for a tool that is genuinely installed, because it will
-  // not consult PATHEXT itself the way cmd.exe does.
-  return spawnSync(command, args, { cwd: REPO_ROOT, shell: true, encoding: "utf8" });
+  const options = { cwd: REPO_ROOT, encoding: "utf8" } as const;
+  const direct = spawnSync(command, args, options);
+  const notFound = (direct.error as NodeJS.ErrnoException | undefined)?.code === "ENOENT";
+  if (process.platform !== "win32" || !notFound) return direct;
+  // Windows finds only .exe and .com files on its own. A version manager's
+  // .bat or .cmd shim (rig installs Rscript.bat) needs cmd.exe: one quoted
+  // command string, so paths with spaces stay whole and Node does not warn
+  // about an args array with shell: true (DEP0190).
+  const line = [command, ...args].map((part) => `"${part}"`).join(" ");
+  return spawnSync(line, { ...options, shell: true });
 }
 
 function toolOnPath(command: string): { ok: boolean; detail?: string } {
@@ -161,18 +160,10 @@ function resolveR(): CatalogLangStatus {
     };
   }
 
-  if (!existsSync(RENDER_R_SCRIPT)) {
-    return {
-      state: "renderer-missing",
-      path: cachePath,
-      detail: `tools/markup/render-r.R is missing (looked at ${RENDER_R_SCRIPT}).`,
-    };
-  }
-
   const keyResult = run(RSCRIPT, [RENDER_R_SCRIPT, "--key"]);
   if (keyResult.error || keyResult.status !== 0) {
     return {
-      state: "renderer-missing",
+      state: "renderer-error",
       path: cachePath,
       detail: describeFailure(`${RSCRIPT} tools/markup/render-r.R --key`, keyResult),
     };
@@ -196,18 +187,10 @@ function resolvePy(): CatalogLangStatus {
     };
   }
 
-  if (!existsSync(RENDER_PY_SCRIPT)) {
-    return {
-      state: "renderer-missing",
-      path: cachePath,
-      detail: `tools/markup/render_py.py is missing (looked at ${RENDER_PY_SCRIPT}).`,
-    };
-  }
-
   const keyResult = run(UV, ["run", "python", RENDER_PY_SCRIPT, "--key"]);
   if (keyResult.error || keyResult.status !== 0) {
     return {
-      state: "renderer-missing",
+      state: "renderer-error",
       path: cachePath,
       detail: describeFailure(`${UV} run python tools/markup/render_py.py --key`, keyResult),
     };
@@ -221,12 +204,10 @@ function resolvePy(): CatalogLangStatus {
 
 const STATE_EXPLAIN: Record<Exclude<CatalogState, "ready">, string> = {
   "missing-tool": "the interpreter itself is not installed, or not on PATH",
-  "renderer-missing": "the catalog renderer is not available yet",
-  "renderer-error": "the renderer ran, but rendering the catalog failed",
+  "renderer-error": "the catalog renderer failed",
 };
 
 function warnBanner(lang: Lang, status: CatalogLangStatus): void {
-  const pkg = lang === "r" ? "pkg-r" : "pkg-py";
   const state = status.state;
   if (state === "ready") return;
   // Printing is the whole job of this function.
@@ -237,12 +218,8 @@ function warnBanner(lang: Lang, status: CatalogLangStatus): void {
       `[bslib-react] markup catalog for "${lang}" is not ready: ${state}.`,
       `  ${STATE_EXPLAIN[state]}.`,
       status.detail ? `  ${status.detail}` : undefined,
-      `  Every test that reads the "${lang}" catalog (describeCatalog("${lang}", ...),`,
-      "  and tests/parity.test.ts once both languages are involved) will SKIP, not",
-      `  fail, until ${pkg} and its renderer are in place and a render has produced`,
-      `  ${status.path}.`,
-      "  Set BSLIB_REACT_REQUIRE_CATALOG=1 to turn this into a hard failure instead -",
-      "  CI does this, so a real regression cannot hide behind a quiet skip.",
+      `  Every test that reads the "${lang}" catalog is SKIPPED this run.`,
+      "  Set BSLIB_REACT_REQUIRE_CATALOG=1 to make this a failure instead; CI does.",
       "",
     ]
       .filter((line): line is string => line !== undefined)
