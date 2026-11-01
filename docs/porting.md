@@ -23,7 +23,7 @@ the right way, not from copying the look afterward:
 
 ## Steps
 
-bslib-react ships no port-checking tools: no triage, no dependency diff,
+bslibreact ships no port-checking tools: no triage, no dependency diff,
 no screenshot helper. The checks below are manual, done against the
 parent app running in one browser tab and the port running in another.
 That is deliberate: a check run once per port does not justify a permanent
@@ -69,12 +69,12 @@ runtime or CI dependency (see
 ## When the kit lacks a component
 
 The port does not block on this. Host the piece whole through `UiOutput`
-today, open an issue or a pull request against bslib-react, and switch the
+today, open an issue or a pull request against bslibreact, and switch the
 port to the new component once it lands. Adding the component itself, in
 this package's own repository, has no fixture file to update:
 
 1. Add a sample call with the same name to `pkg-r/R/catalog-samples.R` and
-   `pkg-py/src/bslib_react/_catalog.py`.
+   `pkg-py/src/bslibreact/_catalog.py`.
 2. Run `make markup`.
 3. Read the rendered shape in `.cache/markup/r.json`.
 4. Write the TSX component against that shape, and note in its doc
@@ -97,7 +97,7 @@ regeneration rewrote a random id. Deleting `.cache/` and running
 | Whole page washed out, fonts or spacing wrong | Compare `<head>` dependencies by hand | No Bootstrap at all: `page_react()` was given no `theme`. Or a stylesheet only the parent loads. |
 | A hosted select shows Loading forever, outputs stay empty | Browser console | A JS error before Shiny connected. Usually a library clash. |
 | An icon renders as nothing | Compare `<head>` dependencies by hand | Font Awesome only on the parent. Add an `icon()` call, or the icon library's dependency helper, to the app's extra `page_deps()` arguments. |
-| A hosted `reactR`-based widget (`reactable` and others built the same way) throws `Cannot read properties of undefined (reading 'useLayoutEffect')` and never renders | Browser console, compare `<head>` dependencies by hand | The app's folder is named `react`. `page_react()` names the app's client dependency after its folder, Shiny loads one dependency per name, and reactR ships React as `"react"`. Never name an app folder after a dependency the page loads (`react`, `shinyreact`, `bslib-react`, a widget package). |
+| A hosted `reactR`-based widget (`reactable` and others built the same way) throws `Cannot read properties of undefined (reading 'useLayoutEffect')` and never renders | Browser console, compare `<head>` dependencies by hand | The app's folder is named `react`. `page_react()` names the app's client dependency after its folder, Shiny loads one dependency per name, and reactR ships React as `"react"`. Never name an app folder after a dependency the page loads (`react`, `shinyreact`, `bslibreact`, a widget package). |
 | A card or plot clips, the page does not fill | View source, check classes | `page_fillable()` sets `html { height: 100% }`, `page_navbar(fillable = )` is per panel, `layout_columns()` fills by default, `uiOutput(fill = )` matters. |
 | An output never updates but the parent's does | Browser devtools, `window.Shiny.shinyapp.$bindings` | Namespace. Top level outputs never sit inside `<Module>`. Kit components pass `namespace={null}` when they read `window.Shiny` directly. |
 | A slider or select moves but `input$x` never changes server side | Browser devtools, `window.Shiny.shinyapp.$inputValues` | The output holding it needs `renderUI()`/`@render.ui`, not a plain `ShinyOutput`. Only `renderUI`'s own client binding calls `initializeInputs()`. Or two elements share an id: check the `_ui` suffix on the output name is actually different from the widget's own input id. |
@@ -143,5 +143,5 @@ named `"react"`, so in an app whose folder was called `react`, reactable's
 React never loaded. Found while building this repository's gallery, whose
 client folders were named `react/` then (they are `vite/` now). The same
 goes for any dependency name: do not name an app folder after something
-the page loads, such as `react`, `shinyreact`, `bslib-react`, or a widget
+the page loads, such as `react`, `shinyreact`, `bslibreact`, or a widget
 package like `leaflet`.

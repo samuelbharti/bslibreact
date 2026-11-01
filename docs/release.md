@@ -27,7 +27,7 @@ npm provenance and r-universe both expect a public repository. Do this
 before tagging, once, before the first release:
 
 ```
-gh repo edit samuelbharti/bslib-react --visibility public --accept-visibility-change-consequences
+gh repo edit samuelbharti/bslibreact --visibility public --accept-visibility-change-consequences
 ```
 
 ## Tag
@@ -61,7 +61,7 @@ the `NODE_AUTH_TOKEN` line from the workflow, and delete the secret.
 ## PyPI
 
 Register a pending trusted publisher on pypi.org for the project
-`bslib-react`, workflow `release-py.yml`, environment `pypi`, before the
+`bslibreact`, workflow `release-py.yml`, environment `pypi`, before the
 project exists there; PyPI allows this. The GitHub release then publishes
 through
 `pypa/gh-action-pypi-publish` with no token stored anywhere. If the
@@ -80,7 +80,7 @@ checklist from `pkg-r/`.
 ## GitHub release
 
 ```
-gh release create v0.1.0 --generate-notes --title "bslib-react 0.1.0"
+gh release create v0.1.0 --generate-notes --title "bslibreact 0.1.0"
 ```
 
 Publishing it starts `release-js.yml` and `release-py.yml`. One release

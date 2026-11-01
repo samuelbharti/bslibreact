@@ -28,7 +28,7 @@ the mental model all naming one number.
 
 The vendored JS bundle always matches the release it ships in, so its
 version is read from the package's own version at runtime
-(`pkg-r/R/dep.R`, `pkg-py/src/bslib_react/_dep.py`), not kept as a second
+(`pkg-r/R/dep.R`, `pkg-py/src/bslibreact/_dep.py`), not kept as a second
 constant.
 
 ## Consequences

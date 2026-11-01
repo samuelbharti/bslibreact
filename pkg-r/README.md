@@ -7,9 +7,9 @@ An R package for building [shinyreact](https://posit-dev.github.io/shinyreact/)
 apps that look like [bslib](https://rstudio.github.io/bslib/) apps: it
 gives a React client the same CSS and JavaScript a bslib page would
 attach on its own, and hosts server-rendered widgets for that client to
-display. The matching React components live in the `bslib-react` npm
+display. The matching React components live in the `bslibreact` npm
 package. See the
-[root README](https://github.com/samuelbharti/bslib-react#readme) for the
+[root README](https://github.com/samuelbharti/bslibreact#readme) for the
 full picture across all three language packages.
 
 ## Install
@@ -20,7 +20,7 @@ install.packages("bslibreact", repos = "https://samuelbharti.r-universe.dev")
 
 # From source, from this repository:
 # install.packages("pak")
-pak::pak("samuelbharti/bslib-react/pkg-r")
+pak::pak("samuelbharti/bslibreact/pkg-r")
 ```
 
 ## Example
@@ -43,10 +43,10 @@ shinyApp(ui, server)
 ```
 
 The client reads the hosted slider with `<ShinyOutput id="bins_ui" />` (or
-the `HostedInput` component from the `bslib-react` npm package), and reads
+the `HostedInput` component from the `bslibreact` npm package), and reads
 its value the usual way, from `input$bins`. A client with no build step
-also attaches `bslib_react_dep()`, the vendored bundle it reads as
-`window.bslibReact`.
+also attaches `bslibreact_dep()`, the vendored bundle it reads as
+`window.bslibreact`.
 
 ## Starting a new app or porting one
 
@@ -55,8 +55,8 @@ See the root repository's `docs/build.md` for a new app and
 
 ## Learn more
 
-* Root [README](https://github.com/samuelbharti/bslib-react#readme)
-* [docs/markup-catalog.md](https://github.com/samuelbharti/bslib-react/blob/main/docs/markup-catalog.md):
+* Root [README](https://github.com/samuelbharti/bslibreact#readme)
+* [docs/markup-catalog.md](https://github.com/samuelbharti/bslibreact/blob/main/docs/markup-catalog.md):
   the JSON contract the repository's markup catalog renderer produces
-* [docs/decisions/](https://github.com/samuelbharti/bslib-react/tree/main/docs/decisions):
+* [docs/decisions/](https://github.com/samuelbharti/bslibreact/tree/main/docs/decisions):
   why this package is built the way it is

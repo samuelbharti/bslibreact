@@ -7,7 +7,7 @@ as its own local process)
 ## Context
 
 `gallery/` compares 42 components built three ways: classic bslib and
-Shiny, bslib-react installed from npm, and bslib-react taken from the R
+Shiny, bslibreact installed from npm, and bslibreact taken from the R
 package's vendored bundle. Locally the shell launches each variant as its
 own background R process and shows it in an iframe, so browsing the whole
 gallery would mean 126 processes. No host will run that, which leaves the

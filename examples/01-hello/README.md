@@ -1,7 +1,7 @@
-# Hello bslib-react
+# Hello bslibreact
 
 The smallest complete app built with
-[bslib-react](https://github.com/samuelbharti/bslib-react): a themed
+[bslibreact](https://github.com/samuelbharti/bslibreact): a themed
 sidebar, one hosted slider, one hosted plot, and a value box reading the
 slider's value back as plain text. The user interface is a React client
 (`src/`, built to `www/ui.js`); `app.R` and `app.py` hold only reactive

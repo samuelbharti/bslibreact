@@ -5,7 +5,7 @@ significance metric choice, a label toggle, and a label count) drive a
 server-rendered volcano plot of a synthetic differential expression
 result set, alongside three value boxes reading the same status counts
 the plot colours by. Built with
-[bslib-react](https://github.com/samuelbharti/bslib-react). The user
+[bslibreact](https://github.com/samuelbharti/bslibreact). The user
 interface is a React client (`src/`, built to `www/ui.js`); `app.R` and
 `app.py` hold only reactive computation and the plot rendering.
 

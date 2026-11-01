@@ -1,4 +1,4 @@
-# bslib-react
+# bslibreact
 
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 
@@ -18,19 +18,19 @@ while the shape of the three packages settles.
 npm:
 
 ```
-npm install bslib-react @posit-dev/shinyreact react react-dom
+npm install bslibreact @posit-dev/shinyreact react react-dom
 ```
 
 R:
 
 ```r
-pak::pak("samuelbharti/bslib-react/pkg-r")
+pak::pak("samuelbharti/bslibreact/pkg-r")
 ```
 
 Python:
 
 ```
-uv add bslib-react
+uv add bslibreact
 ```
 
 ## A worked example
@@ -61,7 +61,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from shiny import App, render, ui
 from shinyreact import page_react
-from bslib_react import page_deps, host_input
+from bslibreact import page_deps, host_input
 
 app_theme = ui.Theme()
 app_ui = page_react(page_deps(app_theme), title="Demo", theme=app_theme)
@@ -82,7 +82,7 @@ app = App(app_ui, server)
 Client (`src/App.tsx`):
 
 ```tsx
-import { PageSidebar, SliderInput, PlotOutput } from "bslib-react";
+import { PageSidebar, SliderInput, PlotOutput } from "bslibreact";
 
 export default function App() {
   return (
@@ -94,7 +94,7 @@ export default function App() {
 ```
 
 This client is built with Vite, which bundles the kit into `ui.js`. A
-client with no build step also attaches `bslib_react_dep()`, the prebuilt
+client with no build step also attaches `bslibreact_dep()`, the prebuilt
 bundle; see `docs/build.md`.
 
 See `examples/01-hello` for the full runnable version of this app, in both
@@ -157,7 +157,7 @@ this kit once bslib ships it.
 `gallery/` is a side by side gallery matching
 [shiny.posit.co/r/components](https://shiny.posit.co/r/components/): a
 sidebar lists every example, and picking one shows it large, switchable
-between classic bslib + Shiny and bslib-react + shinyreact, with a button
+between classic bslib + Shiny and bslibreact + shinyreact, with a button
 to compare the code. It's a real Shiny app (`Rscript -e
 "shiny::runApp('gallery')"`), meant for Posit Connect Cloud eventually.
 R only for now. See `gallery/README.md`; not deployed publicly yet.
