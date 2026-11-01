@@ -2,11 +2,11 @@
 name: bslib-react-port
 description: |
   Port a Shiny app (R or Python) to the shinyreact ui.tsx pattern using the
-  bslib-react component kit, and check the port against its parent at fixed
+  bslibreact component kit, and check the port against its parent at fixed
   points. Use when the user asks to port, convert, or migrate a Shiny app
   that uses bslib, when a port looks wrong next to its parent (wrong widget
   colors, a gray or washed-out page, a select stuck on Loading, a card that
-  clips, an output that never updates), or when bslib-react needs a new
+  clips, an output that never updates), or when bslibreact needs a new
   component. Sits on top of the shinyreact-convert-app skill and this
   package's docs/porting.md, which holds the rules and the symptom table.
   It adds the checkpoints that come from building this kit.
@@ -14,7 +14,7 @@ license: MIT
 compatibility: claude-code
 metadata:
   version: "2.0.0"
-  repo: samuelbharti/bslib-react
+  repo: samuelbharti/bslibreact
 ---
 
 # Porting with parity checks
@@ -25,8 +25,8 @@ for plain values, no Tailwind, no shadcn, no react-bootstrap, no em dashes,
 plain writing. This skill adds the order of work and the checks. The
 general phases come from the `shinyreact-convert-app` skill.
 
-bslib-react ships only `page_deps()`, `host_input()`, and
-`bslib_react_dep()` at runtime. There is no built-in triage, dependency
+bslibreact ships only `page_deps()`, `host_input()`, and
+`bslibreact_dep()` at runtime. There is no built-in triage, dependency
 diff, or screenshot tool: those checks below are manual, done with the
 browser's own devtools and a plain side by side comparison against the
 running parent app. That is deliberate (see
@@ -84,7 +84,7 @@ per port does not justify a permanent runtime or CI dependency.
 There is no fixture file to add. Instead:
 
 1. Add a sample call with the same name to `pkg-r/R/catalog-samples.R` and
-   `pkg-py/src/bslib_react/_catalog.py` in this repository, not the app
+   `pkg-py/src/bslibreact/_catalog.py` in this repository, not the app
    you are porting.
 2. Run `make markup`.
 3. Read the rendered shape in `.cache/markup/r.json`.
@@ -99,7 +99,7 @@ you are porting, and switch to the new component once it lands.
 ## Symptom table
 
 The full table is in this repository's `docs/porting.md`, under "Checks"
-(https://github.com/samuelbharti/bslib-react/blob/main/docs/porting.md). Use it at
+(https://github.com/samuelbharti/bslibreact/blob/main/docs/porting.md). Use it at
 checkpoint 2, and whenever the port looks different from its parent.
 
 ## Rules that bit previous ports
