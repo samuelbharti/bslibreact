@@ -501,7 +501,7 @@
     quote(bslib::layout_sidebar(
       sidebar = bslib::sidebar(
         width = 420,
-        class = "glb-build-sidebar",
+        class = "my-sidebar",
         htmltools::div("a")
       ),
       htmltools::div("main")

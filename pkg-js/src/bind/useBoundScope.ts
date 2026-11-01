@@ -19,7 +19,8 @@ import { useShinyInitialized } from "../shinyreact";
  * `scope(target)` gives the element to bind over. Shiny's find() is
  * descendants-only, so a bound element needs an ancestor as its scope (the
  * tab strip passes its parent). Cleanup unbinds `target`, the element
- * captured when the effect ran, and everything inside it.
+ * captured when the effect ran, and everything inside it; content that
+ * stays mounted after `enabled` turns off binds again only on remount.
  *
  * Returns true at once, binding nothing, when `enabled` is false or the
  * page has no window.Shiny (the markup tests render without one).
@@ -35,6 +36,14 @@ export function useBoundScope(
   const hasShiny = typeof window !== "undefined" && Boolean(window.Shiny);
   const active = enabled && hasShiny;
 
+  // When the hook turns off, forget the old bind during this render, so that
+  // turning it back on withholds content from its very first commit.
+  const [wasActive, setWasActive] = useState(active);
+  if (active !== wasActive) {
+    setWasActive(active);
+    if (!active) setBound(false);
+  }
+
   useEffect(() => {
     if (!active || !initialized) return;
     const el = target.current;
@@ -42,14 +51,24 @@ export function useBoundScope(
     if (!el || !Shiny) return;
 
     let cancelled = false;
-    // Withhold content again if this re-binds (`enabled` turned back on).
-    setBound(false);
     const sc = scope(el) ?? el;
-    Shiny.initializeInputs(sc);
-    // bindAll() is typed Promise<void> | void.
-    void Promise.resolve(Shiny.bindAll(sc)).then(() => {
+    // If binding fails, show the content anyway (a hidden page helps no
+    // one) and report the error. bindAll() is typed Promise<void> | void,
+    // and either call can also throw synchronously.
+    const done = () => {
       if (!cancelled) setBound(true);
-    });
+    };
+    const fail = (error: unknown) => {
+      done();
+      // eslint-disable-next-line no-console
+      console.error("bslib-react: binding to Shiny failed", error);
+    };
+    try {
+      Shiny.initializeInputs(sc);
+      void Promise.resolve(Shiny.bindAll(sc)).then(done, fail);
+    } catch (error) {
+      fail(error);
+    }
 
     return () => {
       cancelled = true;

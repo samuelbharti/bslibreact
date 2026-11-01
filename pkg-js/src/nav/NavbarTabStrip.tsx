@@ -8,7 +8,8 @@ export type NavPanelDef = {
   label: string;
   /** nav_panel(icon = icon("...")): a Font Awesome class such as
    *  "fa-chart-column", rendered as `<i class="fas <name> fa-fw">` before
-   *  the label, as in the `page_navbar_icon` catalog sample. */
+   *  the label, as in the `page_navbar_icon` catalog sample. Pass the style
+   *  too ("far fa-compass") when shiny::icon() picks one other than solid. */
   icon?: string;
 };
 
@@ -22,6 +23,8 @@ export type NavPanelDef = {
  */
 export type NavDropdownDef = {
   label: string;
+  /** nav_menu(icon = ...), shown before the label on the toggle. */
+  icon?: string;
   dropdown: readonly NavPanelDef[];
 };
 
@@ -97,6 +100,7 @@ export function NavbarTabStrip({ id, panels, children }: Props) {
                   data-value={p.value}
                   className={cx("dropdown-item", active && "active")}
                 >
+                  <PanelIcon icon={p.icon} />
                   {p.label}
                 </a>
               </li>
@@ -111,6 +115,7 @@ export function NavbarTabStrip({ id, panels, children }: Props) {
                 data-bs-toggle="dropdown"
                 data-value={entry.label}
               >
+                <PanelIcon icon={entry.icon} />
                 {entry.label}
                 <b className="caret" />
               </a>
@@ -129,13 +134,7 @@ export function NavbarTabStrip({ id, panels, children }: Props) {
               data-value={entry.value}
               className={cx("nav-link", active && "active")}
             >
-              {entry.icon && (
-                <i
-                  className={`fas ${entry.icon} fa-fw`}
-                  role="presentation"
-                  aria-label={`${entry.icon.replace(/^fa-/, "")} icon`}
-                />
-              )}
+              <PanelIcon icon={entry.icon} />
               {entry.label}
             </a>
           </li>
@@ -143,6 +142,21 @@ export function NavbarTabStrip({ id, panels, children }: Props) {
       })}
       {childrenReady && children}
     </ul>
+  );
+}
+
+// shiny::icon()'s <i>, for a tab, a dropdown toggle or a dropdown item.
+// "fa-book" means solid ("fas fa-book"); "far fa-compass" keeps its style.
+function PanelIcon({ icon }: { icon?: string }) {
+  if (!icon) return null;
+  const classes = /^fa[a-z]? /.test(icon) ? icon : `fas ${icon}`;
+  const name = classes.split(" ").find((c) => c.startsWith("fa-")) ?? icon;
+  return (
+    <i
+      className={`${classes} fa-fw`}
+      role="presentation"
+      aria-label={`${name.replace(/^fa-/, "")} icon`}
+    />
   );
 }
 

@@ -3,118 +3,23 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { NavbarTabStrip, NavItem } from "../src/nav/NavbarTabStrip";
 import { LayoutSidebar } from "../src/layout/Sidebar";
 import { ShinyOutput } from "../src/shinyreact";
+import { createFakeShiny } from "./fake-shiny";
 
 /**
- * The bind defect (see useBoundScope.ts's own file comment for the full
- * "why"): NavbarTabStrip and LayoutSidebar used to call
- * Shiny.initializeInputs()/bindAll() directly, on a scope that could also
- * contain a hosted ShinyOutput mounting in the same commit. shiny.js's own
- * bindOutputs() checks `.shiny-bound-output` synchronously, then marks it
- * only after an internal await, so two overlapping scans both see the same
- * element "unbound" and both register it - Shiny's "Duplicate output IDs"
- * warning, once per extra registration. This file proves the fix
- * (useBoundScope withholding hosted content until its own manual bind has
- * settled) actually closes that window.
- *
- * The fake window.Shiny below reproduces that specific hazard shape - a
- * synchronous candidate scan followed by an async mark - rather than just
- * counting calls, because a call counter alone cannot tell "one call bound
- * two elements" apart from "two calls each (wrongly) bound the same
- * element once".
- *
- * ORDERING CONSTRAINT, READ BEFORE ADDING A TEST ABOVE THE FIRST ONE:
- * @posit-dev/shinyreact's useShinyInitialized() is backed by a page-wide
- * singleton store (lifecycle-store.ts) with no per-test reset exported for
- * consumers to use: `initialized` is a module-level boolean that, once
- * true, stays true for every later test in this FILE (vitest gives each
- * test FILE a fresh module registry, but tests within one file share it).
- * The very first test below relies on `initialized` still being false at
- * mount, which is only true if nothing earlier in this file has already
- * given the store a window.Shiny to observe. Every test AFTER it is
- * written to be correct either way (see each test's own comment), so it is
- * only ever safe to ADD tests below the first one, never above it.
+ * useBoundScope keeps hosted content out of a scope until its own manual
+ * bindAll() has settled, so the hosted output's own bind pass and the
+ * manual one never scan the same element at once, which Shiny reports as
+ * "Duplicate output IDs". The fake Shiny in fake-shiny.ts reproduces that
+ * race. bind-late-init.test.tsx covers Shiny initializing after mount, and
+ * bind-no-shiny.test.tsx a page with no Shiny.
  */
 
 afterEach(() => {
   delete (window as { Shiny?: unknown }).Shiny;
+  vi.restoreAllMocks();
 });
 
 const panels = [{ value: "one", label: "One" }];
-
-/** Matches every element kind this kit's hand-written bind scopes register:
- *  a hosted output's own wrapper (.shiny-html-output), the tab strip's own
- *  <ul> (ul.shiny-tab-input), and a sidebar with an id (.bslib-sidebar-input). */
-const BINDABLE_SELECTOR = ".shiny-html-output, ul.shiny-tab-input, .bslib-sidebar-input";
-
-function createFakeShiny() {
-  const bound = new Set<Element>();
-  const calls: { scope: Element; unboundOutputsSeen: Element[] }[] = [];
-
-  const bindAll = vi.fn((scope: Element) => {
-    // The synchronous phase: capture what's unbound right now, exactly
-    // like shiny.js's own bindOutputs() does before its first await.
-    const candidates = Array.from(scope.querySelectorAll<Element>(BINDABLE_SELECTOR)).filter(
-      (el) => !bound.has(el),
-    );
-    // Only .shiny-html-output candidates count as "hosted outputs" for the
-    // race this reproduces (the tab <ul> and a sidebar's <aside> are hosted
-    // INPUTS - bound through the same pass, but a different bug: the
-    // descendants-only find(), not the concurrent-mount race).
-    const unboundOutputsSeen = candidates.filter((el) =>
-      el.classList.contains("shiny-html-output"),
-    );
-    calls.push({ scope, unboundOutputsSeen });
-
-    // The async phase: mark everything actually bound only after a real
-    // await, the exact gap that lets two overlapping calls both see the
-    // same element as unbound.
-    return Promise.resolve().then(() => {
-      for (const el of candidates) bound.add(el);
-    });
-  });
-
-  const unbindAll = vi.fn((scope: Element) => {
-    bound.delete(scope);
-  });
-
-  return {
-    Shiny: { initializeInputs: vi.fn(), bindAll, unbindAll, initializedPromise: Promise.resolve() },
-    bound,
-    calls,
-  };
-}
-
-describe("useBoundScope: Shiny initializes after mount", () => {
-  // MUST stay the first test in this file - see the file-level comment.
-  it("delays binding, and withholds children, until initializedPromise resolves", async () => {
-    let resolveInit: () => void = () => {};
-    const initializedPromise = new Promise<void>((resolve) => {
-      resolveInit = resolve;
-    });
-    const { Shiny, calls } = createFakeShiny();
-    (window as unknown as { Shiny: unknown }).Shiny = { ...Shiny, initializedPromise };
-
-    const { container } = render(
-      <NavbarTabStrip id="nav" panels={panels}>
-        <NavItem>
-          <span data-testid="marker">extra</span>
-        </NavItem>
-      </NavbarTabStrip>,
-    );
-
-    // Shiny exists, but has not initialized yet: nothing bound, marker
-    // withheld.
-    expect(container.querySelector('[data-testid="marker"]')).toBeNull();
-    expect(calls).toHaveLength(0);
-
-    resolveInit();
-
-    await waitFor(() => {
-      expect(container.querySelector('[data-testid="marker"]')).not.toBeNull();
-    });
-    expect(calls.length).toBeGreaterThan(0);
-  });
-});
 
 describe("useBoundScope: NavbarTabStrip with hosted outputs among its extra children", () => {
   let bound: Set<Element>;
@@ -230,5 +135,83 @@ describe("useBoundScope: LayoutSidebar", () => {
     expect(container.querySelector('[data-testid="main-content"]')).not.toBeNull();
     expect(Shiny.bindAll).not.toHaveBeenCalled();
     expect(Shiny.initializeInputs).not.toHaveBeenCalled();
+  });
+});
+
+describe("useBoundScope: failure and re-binding", () => {
+  it("shows the content and reports the error when bindAll() fails", async () => {
+    const { Shiny } = createFakeShiny();
+    (window as unknown as { Shiny: unknown }).Shiny = {
+      ...Shiny,
+      bindAll: vi.fn(() => Promise.reject(new Error("boom"))),
+    };
+    const error = vi.spyOn(console, "error").mockImplementation(() => {});
+
+    const { container } = render(
+      <LayoutSidebar id="s" sidebar={<div data-testid="side" />}>
+        <div />
+      </LayoutSidebar>,
+    );
+
+    await waitFor(() => {
+      expect(container.querySelector('[data-testid="side"]')).not.toBeNull();
+    });
+    expect(error).toHaveBeenCalled();
+  });
+
+  it("shows the content and reports the error when initializeInputs() throws", async () => {
+    const { Shiny } = createFakeShiny();
+    (window as unknown as { Shiny: unknown }).Shiny = {
+      ...Shiny,
+      initializeInputs: vi.fn(() => {
+        throw new Error("boom");
+      }),
+    };
+    const error = vi.spyOn(console, "error").mockImplementation(() => {});
+
+    const { container } = render(
+      <LayoutSidebar id="s" sidebar={<div data-testid="side" />}>
+        <div />
+      </LayoutSidebar>,
+    );
+
+    await waitFor(() => {
+      expect(container.querySelector('[data-testid="side"]')).not.toBeNull();
+    });
+    expect(error).toHaveBeenCalled();
+  });
+
+  it("withholds the content again while it re-binds", async () => {
+    const { Shiny } = createFakeShiny();
+    (window as unknown as { Shiny: unknown }).Shiny = Shiny;
+    const ui = (id?: string) => (
+      <LayoutSidebar id={id} sidebar={<div data-testid="side" />}>
+        <div />
+      </LayoutSidebar>
+    );
+
+    const { container, rerender } = render(ui("s"));
+    await waitFor(() => {
+      expect(container.querySelector('[data-testid="side"]')).not.toBeNull();
+    });
+
+    // Record whether the withheld content is in the page when the manual
+    // bind starts: it must not be, from the first commit of the re-bind.
+    const seen: boolean[] = [];
+    const bindAll = Shiny.bindAll;
+    (window as unknown as { Shiny: typeof Shiny }).Shiny = {
+      ...Shiny,
+      bindAll: vi.fn((scope: Element) => {
+        seen.push(scope.querySelector('[data-testid="side"]') !== null);
+        return bindAll(scope);
+      }),
+    };
+
+    rerender(ui(undefined));
+    rerender(ui("s"));
+    await waitFor(() => {
+      expect(container.querySelector('[data-testid="side"]')).not.toBeNull();
+    });
+    expect(seen).toEqual([false]);
   });
 });

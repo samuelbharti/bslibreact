@@ -9,7 +9,7 @@ hosts one server-rendered widget for the client to display.
 import matplotlib.pyplot as plt
 import numpy as np
 from bslib_react import host_input, page_deps
-from shiny import App, render, req, ui
+from shiny import App, render, ui
 from shinyreact import page_react
 
 # The stock theme, matching R's bs_theme(version = 5). page_react() attaches
@@ -34,19 +34,19 @@ def server(input, output, session):
     # Level H: a hosted plot. The client reads this with
     # <PlotOutput id="plot" />.
     #
-    # req(input.bins()): the slider is hosted, so it does not exist in the
-    # initial page HTML the way a plain ui.input_slider() would. Shiny only
-    # learns input.bins() after the client round-trips the widget's dynamic
-    # UI and binds it, which happens after this reactive's first flush.
-    # req() holds the output blank until that value actually arrives,
-    # instead of erroring on an empty bins= argument on session start.
+    # The slider is hosted, so input.bins() has no value until the client
+    # has bound it. Reading it before then raises py-shiny's silent
+    # exception, so the plot stays blank until the value arrives; no req()
+    # is needed.
     @render.plot
     def plot():
-        req(input.bins())
+        # Read the input first: if it is not bound yet, nothing is drawn and
+        # no figure is left open.
+        bins = input.bins()
         fig, ax = plt.subplots()
         ax.hist(
             np.random.normal(size=500),
-            bins=input.bins(),
+            bins=bins,
             color="#447099",
             edgecolor="white",
         )
@@ -55,10 +55,9 @@ def server(input, output, session):
 
     # Level R: a plain value, read by the client with useShinyOutputValue()
     # rather than hosted, since it is only ever a number formatted as text.
-    # Same req() reasoning as plot() above.
+    # Waits for the slider the same way plot() does.
     @render.text
     def bins_count():
-        req(input.bins())
         return str(input.bins())
 
 

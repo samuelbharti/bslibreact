@@ -326,7 +326,7 @@ SAMPLES: tuple[Sample, ...] = (
         "tag",
         "layout",
         'ui.layout_sidebar(ui.sidebar(ui.div("a"), width=420, '
-        'class_="glb-build-sidebar"), ui.div("main"))',
+        'class_="my-sidebar"), ui.div("main"))',
     ),
     # `page_navbar_dropdown` replaces the old hand-corrected fixture: a
     # live render needs no correction for a shape `as.character()` could not

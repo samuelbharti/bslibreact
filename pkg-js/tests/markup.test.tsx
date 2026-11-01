@@ -400,7 +400,7 @@ describeCatalog("r", "LayoutSidebar", () => {
 
   it("sidebar(class = ...) lands on the <aside>, not the layout div", () => {
     const { container } = render(
-      <LayoutSidebar sidebarWidth={420} sidebarClassName="glb-build-sidebar" sidebar={<div>a</div>}>
+      <LayoutSidebar sidebarWidth={420} sidebarClassName="my-sidebar" sidebar={<div>a</div>}>
         <div>main</div>
       </LayoutSidebar>,
     );
@@ -688,6 +688,58 @@ describe("Outputs inside a Module", () => {
       </Module>,
     );
     expect(container.querySelector("#m-tbl")!.getAttribute("data-reactable-output")).toBe("m-tbl");
+  });
+});
+
+describe("Card, NavbarTabStrip and PageNavbar details", () => {
+  it("Card namespaces its id inside a Module, since the id makes it an input", () => {
+    const { container } = render(
+      <Module namespace="m">
+        <Card id="c">
+          <CardBody>x</CardBody>
+        </Card>
+      </Module>,
+    );
+    expect(container.querySelector(".card")!.id).toBe("m-c");
+  });
+
+  it("NavbarTabStrip shows a dropdown toggle's and item's icons, as nav_menu() does", () => {
+    // bslib renders <i class="fas fa-book fa-fw"> before "Docs" on the toggle,
+    // and shiny::icon("compass") picks the regular style: "far fa-compass".
+    const { container } = render(
+      <NavbarTabStrip
+        id="nav"
+        panels={[
+          {
+            label: "Docs",
+            icon: "fa-book",
+            dropdown: [{ value: "g", label: "Guide", icon: "far fa-compass" }],
+          },
+        ]}
+      />,
+    );
+    const toggleIcon = container.querySelector(".dropdown-toggle > i")!;
+    expect(Array.from(toggleIcon.classList).sort()).toEqual(["fa-book", "fa-fw", "fas"]);
+    const itemIcon = container.querySelector(".dropdown-item > i")!;
+    expect(Array.from(itemIcon.classList).sort()).toEqual(["fa-compass", "fa-fw", "far"]);
+    expect(itemIcon.getAttribute("aria-label")).toBe("compass icon");
+  });
+
+  it("PageNavbar clears its background when bg goes away", () => {
+    const strip = <NavbarTabStrip id="nav" panels={panels} />;
+    const { container, rerender } = render(
+      <PageNavbar title="Demo" bg="#123456" tabStrip={strip}>
+        {null}
+      </PageNavbar>,
+    );
+    const nav = container.querySelector("nav")!;
+    expect(nav.style.getPropertyValue("background-color")).not.toBe("");
+    rerender(
+      <PageNavbar title="Demo" tabStrip={strip}>
+        {null}
+      </PageNavbar>,
+    );
+    expect(nav.style.getPropertyValue("background-color")).toBe("");
   });
 });
 
