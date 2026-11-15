@@ -37,16 +37,26 @@ Set the new version in every file `tools/check_versions.py` lists
 `npm install` in place of editing them), then confirm they agree with
 `make version-check`.
 
+`main` is protected, so the version bump goes through a pull request
+like any other change:
+
 ```
+git switch -c chore/release-0.1.0
 git add -A
 git commit -m "chore: release 0.1.0"
-git tag v0.1.0
-git push --no-verify origin main v0.1.0
+git push -u origin chore/release-0.1.0
+gh pr create --fill
 ```
 
-Pushing is the owner's own action; the repository's pre-push hook blocks
-an accidental push otherwise. `--no-verify` here is intentional, not a way
-around a failing check, since the checks already ran locally above.
+Once the PR's checks pass and it is merged, tag the merge commit on
+`main` and push the tag:
+
+```
+git switch main
+git pull
+git tag v0.1.0
+git push origin v0.1.0
+```
 
 ## npm
 
