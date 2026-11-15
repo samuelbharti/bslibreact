@@ -1,3 +1,10 @@
+# bslibreact (development version)
+
+* The vendored bundle's `PageFillable` no longer defaults `padding` and `gap`
+  to 12px, matching `bslib::page_fillable()`. A client with no build step
+  that reads it from `window.bslibreact` gets the theme's own spacing unless
+  it passes both.
+
 # bslibreact 0.1.0
 
 First release. The package is experimental: the three functions below are

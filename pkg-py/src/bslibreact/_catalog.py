@@ -283,6 +283,12 @@ SAMPLES: tuple[Sample, ...] = (
         'ui.page_fillable(ui.tags.h2("Title"), padding=8, gap=4)',
     ),
     _s(
+        "page_fillable_default",
+        "page",
+        "page",
+        'ui.page_fillable(ui.tags.h2("Title"))',
+    ),
+    _s(
         "layout_columns_fill",
         "tag",
         "layout",

@@ -694,6 +694,18 @@
       htmltools::tags$h2("Title")
     ))
   ),
+  # No padding or gap: bslib then writes no inline style on <body>, and the
+  # theme's own spacing applies. The sample above pins the style the two
+  # arguments produce, so the default needs a sample of its own.
+  .sample(
+    "page_fillable_default",
+    "page",
+    "page",
+    "bslib",
+    quote(bslib::page_fillable(
+      htmltools::tags$h2("Title")
+    ))
+  ),
   .sample(
     "page_navbar",
     "page",

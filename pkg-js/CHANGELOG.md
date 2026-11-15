@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+- `PageFillable` no longer defaults `padding` and `gap` to 12px. Like
+  `bslib::page_fillable()`, it sets an inline style only for the ones it is
+  given, so a plain `<PageFillable>` now gets the theme's own spacing. Pass
+  `padding={12} gap={12}` to keep the old spacing.
+
 ## 0.1.0
 
 First release. Experimental: component props may still change.

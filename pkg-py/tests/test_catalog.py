@@ -43,6 +43,7 @@ EXPECTED_NAMES = {
     "uiOutput",
     "uiOutput_fill",
     "page_fillable",
+    "page_fillable_default",
     "layout_columns_fill",
     "page_navbar",
     "page_navbar_icon",
