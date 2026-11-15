@@ -1,7 +1,33 @@
-url: https://samuelbharti.github.io/bslibreact/
+url: https://www.samuelbharti.com/bslibreact/r
 
 template:
   bootstrap: 5
+  light-switch: true
+
+home:
+  title: bslibreact
+  description: >
+    Give a shinyreact page the CSS and JavaScript a bslib page would attach,
+    and host server-rendered Shiny widgets inside a React client.
+
+navbar:
+  structure:
+    left: [reference, news]
+    right: [search, hub, python, javascript, github, lightswitch]
+  components:
+    hub:
+      text: All docs
+      href: https://www.samuelbharti.com/bslibreact/
+    python:
+      text: Python docs
+      href: https://www.samuelbharti.com/bslibreact/py/
+    javascript:
+      text: JavaScript docs
+      href: https://www.samuelbharti.com/bslibreact/js/
+    github:
+      icon: fab fa-github
+      href: https://github.com/samuelbharti/bslibreact
+      aria-label: GitHub
 
 reference:
 - title: Page dependencies

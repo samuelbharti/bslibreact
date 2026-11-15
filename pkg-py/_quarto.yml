@@ -6,11 +6,26 @@ project:
     - reference/
 
 website:
-  title: "bslibreact"
+  title: "bslibreact (Python)"
+  site-url: https://www.samuelbharti.com/bslibreact/py/
+  repo-url: https://github.com/samuelbharti/bslibreact
   navbar:
     left:
       - text: Reference
         href: reference/index.qmd
+    right:
+      - text: All docs
+        href: https://www.samuelbharti.com/bslibreact/
+      - text: R docs
+        href: https://www.samuelbharti.com/bslibreact/r/
+      - text: JavaScript docs
+        href: https://www.samuelbharti.com/bslibreact/js/
+      - icon: github
+        href: https://github.com/samuelbharti/bslibreact
+        aria-label: GitHub
+
+filters:
+  - badges.lua
 
 quartodoc:
   package: bslibreact

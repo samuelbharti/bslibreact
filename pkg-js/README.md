@@ -13,6 +13,9 @@ The kit does not invent its own design language. Every component reproduces
 one specific bslib call, and is tested against the exact HTML the installed
 bslib actually renders (see `../docs/markup-catalog.md` at the repo root).
 
+The [documentation](https://www.samuelbharti.com/bslibreact/) covers this
+package and its R and Python server halves.
+
 ## Install
 
 ```

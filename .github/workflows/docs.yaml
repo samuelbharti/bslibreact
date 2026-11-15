@@ -1,0 +1,173 @@
+name: Docs
+
+# Build the documentation site and publish it to GitHub Pages:
+#
+#   /     docs-hub/index.html, the landing page
+#   /r/   pkgdown site for pkg-r
+#   /py/  quartodoc site for pkg-py
+#   /js/  TypeDoc site for pkg-js
+#
+# A pull request builds all three, so a broken site fails before merge. Only
+# a push to main (or a manual run) deploys.
+
+on:
+  push:
+    branches: [main]
+    paths: &docs-inputs
+      - "pkg-r/**"
+      - "pkg-py/**"
+      - "pkg-js/**"
+      - "docs-hub/**"
+      - "pyproject.toml"
+      - "uv.lock"
+      - "package.json"
+      - "package-lock.json"
+      - ".nvmrc"
+      - ".github/workflows/docs.yaml"
+  pull_request:
+    paths: *docs-inputs
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# A newer push cancels an older pull request build, but never a deploy on
+# main that is already running, which could leave Pages half updated.
+concurrency:
+  group: docs-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+jobs:
+  build-r:
+    name: build-r
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: r-lib/actions/setup-pandoc@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05 # v2
+
+      - uses: r-lib/actions/setup-r@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05 # v2
+        with:
+          use-public-rspm: true
+
+      - uses: r-lib/actions/setup-r-dependencies@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05 # v2
+        with:
+          extra-packages: any::pkgdown, local::.
+          needs: website
+          working-directory: pkg-r
+
+      - name: Build pkgdown site
+        run: pkgdown::build_site_github_pages(new_process = FALSE, install = FALSE)
+        shell: Rscript {0}
+        working-directory: pkg-r
+
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: site-r
+          path: pkg-r/docs
+          if-no-files-found: error
+
+  build-py:
+    name: build-py
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+
+      - uses: quarto-dev/quarto-actions/setup@8a96df13519ee81fd526f2dfca5962811136661b # v2.2.0
+
+      # quartodoc imports bslibreact to read its docstrings, so the project
+      # itself is installed along with the docs group.
+      - run: uv sync --group docs
+
+      - name: Build quartodoc site
+        working-directory: pkg-py
+        run: |
+          uv run --group docs quartodoc build
+          uv run --group docs quarto render
+
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: site-py
+          path: pkg-py/docs
+          if-no-files-found: error
+
+  build-js:
+    name: build-js
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      # pkg-js is an npm workspace, so dependencies install from the root.
+      - run: npm ci
+
+      # TypeDoc builds the reference from the TypeScript types, with the
+      # package README as the front page. typedoc.json turns warnings into
+      # errors, so an exported type that points at an unexported one fails
+      # here instead of shipping as a dead link.
+      - name: Build TypeDoc site
+        working-directory: pkg-js
+        run: npm run docs
+
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: site-js
+          path: pkg-js/docs
+          if-no-files-found: error
+
+  deploy:
+    name: deploy
+    needs: [build-r, build-py, build-js]
+    if: >
+      github.ref == 'refs/heads/main'
+      && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Assemble the combined site
+        run: |
+          mkdir -p _site
+          cp docs-hub/index.html _site/index.html
+          touch _site/.nojekyll
+
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: site-r
+          path: _site/r
+
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: site-py
+          path: _site/py
+
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: site-js
+          path: _site/js
+
+      - uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
+
+      - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: _site
+
+      - name: Deploy to GitHub Pages
+        id: deploy
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1

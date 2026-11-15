@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>bslibreact</title>
+    <meta name="description" content="React components that reproduce bslib and Shiny markup, class for class, for shinyreact's ui.tsx pattern. One npm package for the client, R and Python packages for the server." />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="bslibreact" />
+    <meta property="og:description" content="bslib's own markup as React components, with server helpers for R and Python." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --bg: #f6f8fa;
+        --panel: #ffffff;
+        --ink: #10202c;
+        --body: #34434f;
+        --muted: #62717d;
+        --line: #d4dde4;
+        --line-strong: #b8c5cf;
+        --accent: #007bc2;
+        --accent-deep: #005f96;
+        --on-accent: #ffffff;
+        --radius: 4px;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #0d1419;
+          --panel: #121c23;
+          --ink: #e8f0f5;
+          --body: #adbbc5;
+          --muted: #7e909c;
+          --line: #22313b;
+          --line-strong: #32444f;
+          --accent: #4fb3e8;
+          --accent-deep: #7cc8f0;
+          --on-accent: #0d1419;
+        }
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0; background: var(--bg); color: var(--body);
+        font-family: "Source Sans 3", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        line-height: 1.6; -webkit-font-smoothing: antialiased;
+      }
+      a { color: var(--accent); }
+      .mono, code, pre { font-family: "JetBrains Mono", SFMono-Regular, Menlo, Consolas, monospace; }
+
+      .nav { border-bottom: 1px solid var(--line); background: var(--panel); }
+      .nav-inner, .page, .site-foot-inner { max-width: 980px; margin: 0 auto; padding-left: 1.4rem; padding-right: 1.4rem; }
+      .nav-inner { padding-top: .8rem; padding-bottom: .8rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+      .brand { color: var(--ink); font-weight: 700; text-decoration: none; }
+      .nav-links { display: flex; gap: 1.5rem; font-size: .95rem; flex-wrap: wrap; }
+      .nav-links a { color: var(--muted); text-decoration: none; }
+      .nav-links a:hover { color: var(--accent); }
+
+      .page { padding-top: 3rem; padding-bottom: 4rem; }
+      .eyebrow { font-family: "JetBrains Mono", monospace; font-size: .74rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); margin: 0; }
+
+      .hero { padding-bottom: 2.75rem; border-bottom: 1px solid var(--line); }
+      h1 { margin: .9rem 0 0; font-family: "Bricolage Grotesque", "Source Sans 3", sans-serif; color: var(--ink);
+        font-size: clamp(2.7rem, 7vw, 4rem); line-height: .98; letter-spacing: -.035em; font-weight: 800; }
+      .tagline { margin: 1rem 0 0; color: var(--ink); font-size: clamp(1.1rem, 2vw, 1.3rem); font-weight: 600; }
+      .lead { margin: .85rem 0 0; color: var(--muted); font-size: 1.02rem; max-width: 62ch; }
+      .cta { display: flex; gap: .7rem; margin-top: 1.6rem; flex-wrap: wrap; }
+      .btn { display: inline-flex; align-items: center; gap: .4rem; padding: .6rem 1.15rem; border-radius: var(--radius);
+        font-weight: 600; text-decoration: none; font-size: .96rem; border: 1px solid transparent; }
+      .btn-primary { background: var(--accent); color: var(--on-accent); }
+      .btn-primary:hover { background: var(--accent-deep); }
+      .btn-ghost { border-color: var(--line-strong); color: var(--ink); }
+      .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+      .sec { margin-top: 3.25rem; }
+      .sec-h { margin: .5rem 0 0; font-family: "Bricolage Grotesque", sans-serif; color: var(--ink); font-size: 1.5rem; font-weight: 700; letter-spacing: -.015em; }
+      .sec-sub { margin: .35rem 0 1.35rem; color: var(--muted); max-width: 70ch; }
+
+      .doors { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+      @media (max-width: 860px) { .doors { grid-template-columns: 1fr 1fr; } }
+      @media (max-width: 620px) { .doors { grid-template-columns: 1fr; } }
+      a.door { display: flex; flex-direction: column; padding: 1.5rem 1.6rem; border: 1px solid var(--line); border-radius: var(--radius);
+        background: var(--panel); text-decoration: none; color: inherit; }
+      a.door:hover { border-color: var(--accent); }
+      a.door .lang { font-family: "JetBrains Mono", monospace; font-size: .74rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+      a.door h3 { margin: .3rem 0 .3rem; font-size: 1.25rem; color: var(--ink); letter-spacing: -.01em; }
+      a.door p { margin: 0 0 1rem; color: var(--muted); font-size: .97rem; flex-grow: 1; }
+      a.door .install { font-family: "JetBrains Mono", monospace; font-size: .82rem; color: var(--ink);
+        background: var(--bg); border: 1px solid var(--line); border-radius: var(--radius); padding: .45rem .65rem;
+        display: inline-block; max-width: 100%; overflow-wrap: break-word; }
+      a.door .go { margin-top: 1rem; color: var(--accent); font-weight: 600; font-size: .93rem; }
+      a.door:hover .go { text-decoration: underline; }
+
+      .code-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+      @media (max-width: 760px) { .code-pair { grid-template-columns: 1fr; } }
+      .code-panel { border: 1px solid var(--line); border-radius: var(--radius); background: var(--panel); min-width: 0; }
+      .code-panel .label { display: block; padding: .55rem .9rem; border-bottom: 1px solid var(--line);
+        font-family: "JetBrains Mono", monospace; font-size: .74rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+      .code-panel pre { margin: 0; padding: .9rem; overflow-x: auto; font-size: .82rem; line-height: 1.55; color: var(--ink); }
+
+      .guides { display: grid; grid-template-columns: repeat(2, 1fr); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+      @media (max-width: 620px) { .guides { grid-template-columns: 1fr; } }
+      a.guide { display: block; padding: 1.1rem 1.25rem; background: var(--panel); text-decoration: none; border-top: 1px solid var(--line); }
+      a.guide:nth-child(-n+2) { border-top: 0; }
+      a.guide:nth-child(even) { border-left: 1px solid var(--line); }
+      @media (max-width: 620px) {
+        a.guide:nth-child(2) { border-top: 1px solid var(--line); }
+        a.guide:nth-child(even) { border-left: 0; }
+      }
+      a.guide b { display: block; color: var(--ink); font-size: 1rem; margin-bottom: .15rem; }
+      a.guide span { color: var(--muted); font-size: .92rem; }
+      a.guide:hover b { color: var(--accent); }
+
+      .site-foot { border-top: 1px solid var(--line); color: var(--muted); font-size: .9rem; margin-top: 3.5rem; }
+      .site-foot-inner { padding-top: 1.4rem; padding-bottom: 2.25rem; display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+      .site-foot a { color: var(--accent); font-weight: 600; text-decoration: none; }
+      .site-foot .links { display: flex; gap: 1.2rem; flex-wrap: wrap; }
+    </style>
+  </head>
+  <body>
+    <nav class="nav">
+      <div class="nav-inner">
+        <a class="brand" href="https://www.samuelbharti.com/">Samuel Bharti</a>
+        <div class="nav-links">
+          <a href="r/">R package</a>
+          <a href="py/">Python package</a>
+          <a href="js/">JavaScript package</a>
+          <a href="https://github.com/samuelbharti/bslibreact">GitHub</a>
+        </div>
+      </div>
+    </nav>
+
+    <main class="page">
+      <section class="hero">
+        <p class="eyebrow">R, Python, and JavaScript · one version</p>
+        <h1>bslibreact</h1>
+        <p class="tagline">bslib's own markup, class for class, as React components.</p>
+        <p class="lead">
+          bslibreact is a component kit for <a href="https://github.com/posit-dev/shinyreact">shinyreact</a>'s
+          ui.tsx pattern, where an R or Python Shiny server does the reactive work and a React client
+          owns the page. Each component reproduces the HTML that one bslib or Shiny call renders, and
+          its tests compare against what the installed bslib emits, so a ported app looks like the
+          bslib original.
+        </p>
+        <div class="cta">
+          <a class="btn btn-primary" href="r/">R docs &rarr;</a>
+          <a class="btn btn-ghost" href="py/">Python docs &rarr;</a>
+          <a class="btn btn-ghost" href="js/">JavaScript docs &rarr;</a>
+          <a class="btn btn-ghost" href="https://github.com/samuelbharti/bslibreact">GitHub &rarr;</a>
+        </div>
+      </section>
+
+      <section class="sec">
+        <p class="eyebrow">Three packages</p>
+        <h2 class="sec-h">A server package and a client package</h2>
+        <p class="sec-sub">
+          The React components ship in the npm package. The R and Python packages are the server half:
+          they attach the CSS and JavaScript a bslib page would, and host Shiny's own widgets inside
+          the React page.
+        </p>
+        <div class="doors">
+          <a class="door" href="r/">
+            <span class="lang">R</span>
+            <h3>The R package</h3>
+            <p><code>page_deps()</code>, <code>host_input()</code> and <code>bslibreact_dep()</code> for a Shiny server in R. Function reference and changelog, built with pkgdown.</p>
+            <span class="install mono">pak::pak(<wbr>"samuelbharti/<wbr>bslibreact/pkg-r")</span>
+            <div class="go">R docs &rarr;</div>
+          </a>
+          <a class="door" href="py/">
+            <span class="lang">Python</span>
+            <h3>The Python package</h3>
+            <p>The same three helpers for a Shiny server in Python. API reference, built with quartodoc.</p>
+            <span class="install mono">pip install bslibreact</span>
+            <div class="go">Python docs &rarr;</div>
+          </a>
+          <a class="door" href="js/">
+            <span class="lang">JavaScript</span>
+            <h3>The JavaScript package</h3>
+            <p>The React components: page shells, cards, sidebars, navbars, inputs and outputs. API reference from the TypeScript types, with the README as the guide.</p>
+            <span class="install mono">npm install bslibreact</span>
+            <div class="go">JavaScript docs &rarr;</div>
+          </a>
+        </div>
+      </section>
+
+      <section class="sec">
+        <p class="eyebrow">How it fits together</p>
+        <h2 class="sec-h">A Shiny server, a React client</h2>
+        <p class="sec-sub">
+          The server hosts a real Shiny slider and renders a plot. The client lays out the page with
+          bslib's sidebar markup and shows both.
+        </p>
+        <div class="code-pair">
+          <div class="code-panel">
+            <span class="label">Server · R</span>
+<pre>library(shiny)
+library(bslib)
+library(shinyreact)
+library(bslibreact)
+
+app_theme &lt;- bs_theme(version = 5)
+ui &lt;- page_react(
+  page_deps(app_theme),
+  title = "Demo",
+  theme = app_theme
+)
+
+server &lt;- function(input, output, session) {
+  host_input(output, "bins",
+    sliderInput("bins", "Bins", 1, 50, 30))
+  output$plot &lt;- renderPlot(
+    hist(rnorm(500), breaks = req(input$bins)))
+}
+
+shinyApp(ui, server)</pre>
+          </div>
+          <div class="code-panel">
+            <span class="label">Client · src/App.tsx</span>
+<pre>import {
+  PageSidebar,
+  SliderInput,
+  PlotOutput,
+} from "bslibreact";
+
+export default function App() {
+  return (
+    &lt;PageSidebar
+      title="Demo"
+      sidebar={&lt;SliderInput id="bins_ui" /&gt;}
+    &gt;
+      &lt;PlotOutput id="plot" /&gt;
+    &lt;/PageSidebar&gt;
+  );
+}</pre>
+          </div>
+        </div>
+      </section>
+
+      <section class="sec">
+        <p class="eyebrow">Guides</p>
+        <h2 class="sec-h">Building and porting</h2>
+        <p class="sec-sub">These guides cover all three packages and live in the repository.</p>
+        <div class="guides">
+          <a class="guide" href="https://github.com/samuelbharti/bslibreact/blob/main/docs/build.md">
+            <b>Build a new app</b><span>Set up a shinyreact app with this kit, in R or Python.</span>
+          </a>
+          <a class="guide" href="https://github.com/samuelbharti/bslibreact/blob/main/docs/porting.md">
+            <b>Port an existing Shiny app</b><span>Move a bslib app to the ui.tsx pattern, and fix what goes wrong.</span>
+          </a>
+          <a class="guide" href="https://github.com/samuelbharti/bslibreact/blob/main/docs/markup.md">
+            <b>Component map</b><span>Each R call, its Python call, and the matching TSX component.</span>
+          </a>
+          <a class="guide" href="https://github.com/samuelbharti/bslibreact/tree/main/docs/decisions">
+            <b>Design decisions</b><span>Why the repository is shaped the way it is.</span>
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-foot">
+      <div class="site-foot-inner">
+        <span>&copy; 2026 Samuel Bharti · MIT licensed</span>
+        <span class="links">
+          <a href="https://www.samuelbharti.com/">Website</a>
+          <a href="https://github.com/samuelbharti/bslibreact">GitHub</a>
+          <a href="https://doi.org/10.5281/zenodo.24244323">DOI</a>
+          <a href="https://orcid.org/0000-0003-4190-7058">ORCID</a>
+        </span>
+      </div>
+    </footer>
+  </body>
+</html>

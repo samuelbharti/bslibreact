@@ -55,6 +55,8 @@ See the root repository's `docs/build.md` for a new app and
 
 ## Learn more
 
+* [Documentation](https://www.samuelbharti.com/bslibreact/) for all
+  three packages: R, Python and JavaScript
 * Root [README](https://github.com/samuelbharti/bslibreact#readme)
 * [docs/markup-catalog.md](https://github.com/samuelbharti/bslibreact/blob/main/docs/markup-catalog.md):
   the JSON format the repository's markup catalog renderer produces
