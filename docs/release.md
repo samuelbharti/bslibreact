@@ -72,13 +72,11 @@ git push origin v0.1.0
 
 ## npm
 
-`release-js.yml` publishes when a GitHub release is published. The very
-first publish of a new package name cannot use trusted publishing, since
-npm has no package to attach the trust relationship to yet, so that one
-run reads a short-lived `NPM_TOKEN` repository secret (see the note at
-the top of the workflow). After it succeeds, configure trusted
-publishing on npmjs.com for this repository and `release-js.yml`, remove
-the `NODE_AUTH_TOKEN` line from the workflow, and delete the secret.
+`release-js.yml` publishes when a GitHub release is published, through
+npm trusted publishing. The trusted publisher on npmjs.com names this
+repository and `release-js.yml`, so no npm token is stored anywhere. Only
+0.1.0 went out with a short-lived token, since npm cannot attach a
+trusted publisher to a package that does not exist yet.
 
 ## PyPI
 
