@@ -98,6 +98,19 @@
         font-family: "JetBrains Mono", monospace; font-size: .74rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
       .code-panel pre { margin: 0; padding: .9rem; overflow-x: auto; font-size: .82rem; line-height: 1.55; color: var(--ink); }
 
+      .shots { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+      @media (max-width: 860px) { .shots { grid-template-columns: 1fr; } }
+      .shot { border: 1px solid var(--line); border-radius: var(--radius); background: var(--panel); overflow: hidden;
+        display: flex; flex-direction: column; }
+      .shot img { display: block; width: 100%; aspect-ratio: 16 / 10; object-fit: cover; object-position: top left;
+        border-bottom: 1px solid var(--line); background: #fff; }
+      .shot-body { padding: 1.1rem 1.25rem 1.25rem; display: flex; flex-direction: column; flex-grow: 1; }
+      .shot h3 { margin: 0 0 .3rem; font-size: 1.1rem; color: var(--ink); }
+      .shot p { margin: 0 0 .9rem; color: var(--muted); font-size: .95rem; flex-grow: 1; }
+      .shot .links { display: flex; gap: 1rem; font-weight: 600; font-size: .93rem; }
+      .shot .links a { text-decoration: none; }
+      .shot .links a:hover { text-decoration: underline; }
+
       .guides { display: grid; grid-template-columns: repeat(2, 1fr); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
       @media (max-width: 620px) { .guides { grid-template-columns: 1fr; } }
       a.guide { display: block; padding: 1.1rem 1.25rem; background: var(--panel); text-decoration: none; border-top: 1px solid var(--line); }
@@ -237,10 +250,53 @@ export default function App() {
       </section>
 
       <section class="sec">
+        <p class="eyebrow">Examples</p>
+        <h2 class="sec-h">Start from a working app</h2>
+        <p class="sec-sub">Each article walks through an app from the repository, in R or in Python.</p>
+        <div class="shots">
+          <div class="shot">
+            <img src="assets/hello.png" alt="The hello app: a sidebar with a slider, a value box and a histogram." loading="lazy" />
+            <div class="shot-body">
+              <h3>Get started</h3>
+              <p>Build the smallest complete app step by step: one hosted slider, a value box and a plot.</p>
+              <div class="links">
+                <a href="r/articles/get-started.html">In R &rarr;</a>
+                <a href="py/get-started.html">In Python &rarr;</a>
+              </div>
+            </div>
+          </div>
+          <div class="shot">
+            <img src="assets/volcano.png" alt="The volcano plot app: controls in a sidebar, three value boxes and a volcano plot in a card." loading="lazy" />
+            <div class="shot-body">
+              <h3>Volcano plot</h3>
+              <p>A small analysis app with five hosted inputs, value boxes, a Shiny module and a brand theme.</p>
+              <div class="links">
+                <a href="r/articles/volcano-plot.html">In R &rarr;</a>
+                <a href="py/volcano-plot.html">In Python &rarr;</a>
+              </div>
+            </div>
+          </div>
+          <div class="shot">
+            <img src="assets/gallery-slider.png" alt="The component gallery: the same slider example in three columns, with source code below each." loading="lazy" />
+            <div class="shot-body">
+              <h3>Component gallery</h3>
+              <p>42 components, each shown next to the bslib original, with the source of every version.</p>
+              <div class="links">
+                <a href="r/articles/gallery.html">Read the article &rarr;</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="sec">
         <p class="eyebrow">Guides</p>
         <h2 class="sec-h">Building and porting</h2>
-        <p class="sec-sub">These guides cover all three packages and live in the repository.</p>
+        <p class="sec-sub">Guides for the parts that all three packages share.</p>
         <div class="guides">
+          <a class="guide" href="js/documents/Building_the_client.html">
+            <b>Build the client</b><span>The React half of an app: the files, the Vite build, hosted widgets and modules.</span>
+          </a>
           <a class="guide" href="https://github.com/samuelbharti/bslibreact/blob/main/docs/build.md">
             <b>Build a new app</b><span>Set up a shinyreact app with this kit, in R or Python.</span>
           </a>
@@ -249,9 +305,6 @@ export default function App() {
           </a>
           <a class="guide" href="https://github.com/samuelbharti/bslibreact/blob/main/docs/markup.md">
             <b>Component map</b><span>Each R call, its Python call, and the matching TSX component.</span>
-          </a>
-          <a class="guide" href="https://github.com/samuelbharti/bslibreact/tree/main/docs/decisions">
-            <b>Design decisions</b><span>Why the repository is shaped the way it is.</span>
           </a>
         </div>
       </section>
