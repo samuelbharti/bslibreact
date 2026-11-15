@@ -69,6 +69,7 @@ const REQUIRED_SAMPLES = [
   "details_summary",
   "helpText_hr",
   "page_fillable",
+  "page_fillable_default",
   "page_navbar",
   "page_navbar_icon",
   "page_navbar_sidebar",

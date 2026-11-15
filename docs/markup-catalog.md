@@ -123,7 +123,7 @@ Names added for coverage this kit did not have before: `page_navbar_not_fillable
 `card_height`, `card_no_fill`, `tooltip`, `popover`, `value_box`,
 `uiOutput_inline`, `input_dark_mode`, `input_switch`, `input_task_button`,
 `accordion`, `navset_card_tab`, `navset_pill`, `checkboxGroupInput`,
-`dateInput`, `dateRangeInput`, `icon`.
+`dateInput`, `dateRangeInput`, `icon`, `page_fillable_default`.
 
 Each package's tests hold a literal list of its names (pkg-r's and
 pkg-py's catalog tests, and pkg-js's `catalog-spec.test.ts` for the names

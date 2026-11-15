@@ -8,16 +8,17 @@ type Props = {
 };
 
 /**
- * bslib::page_fillable(). Markup pinned against the `page_fillable` catalog
- * sample (bslib 0.12.0): the same body fill classes as page_sidebar, minus
- * bslib-page-sidebar, with padding/gap from the call's own arguments
- * instead of the default 0.
+ * bslib::page_fillable(). Markup pinned against the `page_fillable` and
+ * `page_fillable_default` catalog samples (bslib 0.12.0): the same body
+ * fill classes as page_sidebar, minus bslib-page-sidebar. `padding` and
+ * `gap` are in pixels. Like bslib, each one sets an inline style only when
+ * it is given; left out, the theme's own spacing applies.
  */
-export function PageFillable({ padding = 12, gap = 12, children }: Props) {
-  usePageBody("bslib-page-fill bslib-gap-spacing bslib-flow-mobile html-fill-container", {
-    padding: `${padding}px`,
-    gap: `${gap}px`,
-  });
+export function PageFillable({ padding, gap, children }: Props) {
+  const style: Record<string, string> = {};
+  if (padding !== undefined) style.padding = `${padding}px`;
+  if (gap !== undefined) style.gap = `${gap}px`;
+  usePageBody("bslib-page-fill bslib-gap-spacing bslib-flow-mobile html-fill-container", style);
 
   return <>{children}</>;
 }

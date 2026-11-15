@@ -444,6 +444,11 @@ describeCatalog("r", "PageFillable, PageSidebar and PageNavbar", () => {
     expect(shapeOf(document.body)).toEqual(catalogShape("page_fillable", "body"));
   });
 
+  it("PageFillable with no padding or gap leaves <body> unstyled, as page_fillable() does", () => {
+    render(<PageFillable>{"hi"}</PageFillable>);
+    expect(shapeOf(document.body)).toEqual(catalogShape("page_fillable_default", "body"));
+  });
+
   it("PageSidebar sets page_sidebar()'s <body> classes and style", () => {
     render(
       <PageSidebar title="Demo" sidebar={<div />}>

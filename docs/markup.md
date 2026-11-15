@@ -29,7 +29,7 @@ the widget's HTML comes from the server at runtime, not from TSX.
 | `reactable::reactableOutput()` | (no equivalent) | `ReactableOutput` | `reactableOutput` |
 | any other htmlwidget's `*Output()` | `shinywidgets` equivalents | `WidgetOutput` with `widgetClass` | `htmlwidget_output` |
 | `shiny::uiOutput()` / `renderUI()` | `ui.output_ui()` / `@render.ui` | `UiOutput` | `uiOutput`, `uiOutput_fill`, `uiOutput_inline` |
-| `bslib::page_fillable()` | `ui.page_fillable()` | `PageFillable` | `page_fillable` |
+| `bslib::page_fillable()` | `ui.page_fillable()` | `PageFillable` | `page_fillable`, `page_fillable_default` |
 | `bslib::card()` | `ui.card()` | `Card`, `CardHeader`, `CardBody` | `card_full_screen`, `card_footer`, `card_id`, `card_height`, `card_no_fill` |
 | `bslib::tooltip()` | `ui.tooltip()` | `Tooltip` | `tooltip` |
 | `bslib::popover()` | `ui.popover()` | not yet built | `popover` |
