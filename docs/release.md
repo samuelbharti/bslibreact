@@ -54,7 +54,7 @@ like any other change:
 
 ```
 git switch -c chore/release-0.1.0
-git add -A
+git add -u
 git commit -m "chore: release 0.1.0"
 git push -u origin chore/release-0.1.0
 gh pr create --fill

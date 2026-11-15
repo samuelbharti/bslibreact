@@ -126,8 +126,8 @@ Names added for coverage this kit did not have before: `page_navbar_not_fillable
 `dateInput`, `dateRangeInput`, `icon`.
 
 Each package's tests hold a literal list of its names (pkg-r's and
-pkg-py's catalog tests, and pkg-js's spec test for the names both
-catalogs share), and the spec test also checks the two catalogs hold
+pkg-py's catalog tests, and pkg-js's `catalog-spec.test.ts` for the names
+both catalogs share), and that test also checks the two catalogs hold
 the same names, R-only samples aside. Renaming or dropping a sample is a
 deliberate edit, not something that happens by accident.
 

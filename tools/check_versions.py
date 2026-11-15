@@ -46,6 +46,9 @@ SOURCES = (
     # The key is indented in package.json, so the anchor allows leading
     # whitespace instead of binding to the start of the line.
     ("pkg-js/package.json", r'^\s*"version":\s*"([^"]+)"'),
+    # Zenodo builds each release's record from CITATION.cff, so a stale version
+    # there ends up in every citation of that release.
+    ("CITATION.cff", r"^version:\s*(\S+)"),
 )
 
 # package-lock.json gets a JSON read, not a line match: pkg-js is a workspace, so
