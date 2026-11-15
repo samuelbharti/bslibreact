@@ -3,6 +3,15 @@
   "entryPoints": ["src/index.ts"],
   "tsconfig": "./tsconfig.npm.json",
   "out": "docs",
-  "name": "bslibreact",
-  "intentionallyNotExported": ["Props", "CardProps", "ModuleProps"]
+  "name": "bslibreact (JavaScript)",
+  "includeVersion": true,
+  "hideGenerator": true,
+  "treatWarningsAsErrors": true,
+  "intentionallyNotExported": ["Props", "CardProps", "ModuleProps"],
+  "navigationLinks": {
+    "All docs": "https://www.samuelbharti.com/bslibreact/",
+    "R docs": "https://www.samuelbharti.com/bslibreact/r/",
+    "Python docs": "https://www.samuelbharti.com/bslibreact/py/",
+    "GitHub": "https://github.com/samuelbharti/bslibreact"
+  }
 }
