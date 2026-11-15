@@ -1,6 +1,7 @@
 # bslibreact
 
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+[![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.24244323-1682D4)](https://doi.org/10.5281/zenodo.24244323)
 
 React components that reproduce [bslib](https://rstudio.github.io/bslib/)
 and [Shiny](https://shiny.posit.co/)'s own markup, class for class, for
