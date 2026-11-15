@@ -11,6 +11,11 @@ authors:
     given-names: Samuel
     orcid: "https://orcid.org/0000-0003-4190-7058"
 version: 0.1.0
+doi: 10.5281/zenodo.24244323
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.24244324
+    description: Version 0.1.0
 license: MIT
 repository-code: "https://github.com/samuelbharti/bslibreact"
 keywords:
