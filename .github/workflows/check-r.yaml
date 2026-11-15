@@ -23,13 +23,13 @@ jobs:
     permissions:
       contents: write
       pull-requests: read
-    uses: rstudio/shiny-workflows/.github/workflows/routine.yaml@46349e2cc2ec4e10ddb6afbb0d2d289bc82a27c6 # v1
+    uses: rstudio/shiny-workflows/.github/workflows/routine.yaml@04cc985a3fa999d9ba2169553fff46356f5d4f3b # v1
     with:
       working-directory: pkg-r
       format-r-code: true
       check-js: false
 
   R-CMD-check:
-    uses: rstudio/shiny-workflows/.github/workflows/R-CMD-check.yaml@46349e2cc2ec4e10ddb6afbb0d2d289bc82a27c6 # v1
+    uses: rstudio/shiny-workflows/.github/workflows/R-CMD-check.yaml@04cc985a3fa999d9ba2169553fff46356f5d4f3b # v1
     with:
       working-directory: pkg-r
