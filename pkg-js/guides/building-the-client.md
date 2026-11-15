@@ -16,19 +16,32 @@ started articles build a whole app from the same example.
 The example app `examples/01-hello` in the repository is the starting point
 for a new client. Its client is three files:
 
-| File | Role |
-| --- | --- |
-| `src/App.tsx` | The page, written with bslibreact components. |
-| `src/ui.tsx` | Mounts `App` on the page. It is the same in every app. |
+| File             | Role                                                             |
+| ---------------- | ---------------------------------------------------------------- |
+| `src/App.tsx`    | The page, written with bslibreact components.                    |
+| `src/ui.tsx`     | Mounts `App` on the page. It is the same in every app.           |
 | `vite.config.ts` | Builds `src/` into `www/ui.js`, the one script the server sends. |
 
 ## Install
 
+Start from the example's `package.json`. It lists `bslibreact`,
+`@posit-dev/shinyreact` and the build tools: Vite, its React plugin and
+TypeScript. Then run:
+
 ```
-npm install bslibreact @posit-dev/shinyreact react react-dom
+npm install
 ```
 
-`react` and `react-dom` are peer dependencies, version 19.
+To add the kit to a client that already has a build, install the two
+packages by name:
+
+```
+npm install bslibreact @posit-dev/shinyreact
+```
+
+`react` and `react-dom`, version 19, are peer dependencies. The example keeps
+them as development dependencies, because the build leaves React out of the
+bundle.
 
 ## One copy of React
 
@@ -108,8 +121,9 @@ different id. Outputs work the same way without the suffix:
 
 ## Plain values as React state
 
-A value that is only data, such as a count shown in a value box, does not
-need a hosted widget. Read it as React state:
+`<TextOutput id="count" />` shows the server's text on the page as it is.
+When the client needs a value as data, for example to decide what to render,
+read it as React state:
 
 ```tsx
 import { useShinyOutputValue } from "bslibreact";
@@ -117,8 +131,8 @@ import { useShinyOutputValue } from "bslibreact";
 const status = useShinyOutputValue<string>("status");
 ```
 
-Host a widget by default, and read a plain value this way only when it is
-data and not an interactive control.
+Host a widget by default, and read a value this way only when it is data and
+not an interactive control.
 
 ## Shiny modules
 

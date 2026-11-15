@@ -24,6 +24,9 @@ pip install bslibreact shinyreact pandas matplotlib brand_yml
 shiny run bslibreact/examples/volcano-plot/app.py
 ```
 
+`brand_yml` is needed because the app reads its theme from the `_brand.yml`
+file in the folder.
+
 ## The page
 
 `src/App.tsx` lays out the whole page. Each component stands for one call:
@@ -120,6 +123,9 @@ called as `volcano_server("volcano", ...)`, so its output id on the page is
 `volcano-plot`. On the client, `<Module namespace="volcano">` adds the same
 prefix to every id inside it, so `<PlotOutput id="plot" />` displays
 `volcano-plot`.
+
+The `click` prop on the plot serves the R server, which maps a click to the
+nearest gene. The Python server does not read it.
 
 ## Value boxes that read text
 

@@ -164,11 +164,14 @@ npm run build
 
 ## 6. Run the app
 
+In R, run the app by the path of its folder:
+
 ```{r}
-shiny::runApp(".")
+shiny::runApp("myapp")
 ```
 
-The browser opens the page in the screenshot above. Move the slider, and the
+Give the full path if R's working directory is not the folder that holds
+`myapp`. The browser opens the page in the screenshot above. Move the slider, and the
 value box and the histogram both update.
 
 ## Next steps

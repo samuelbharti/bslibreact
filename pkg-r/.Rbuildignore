@@ -5,4 +5,4 @@
 ^LICENSE\.md$
 ^cran-comments\.md$
 ^README\.Rmd$
-^vignettes$
+^vignettes/articles$

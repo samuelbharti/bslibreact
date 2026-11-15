@@ -32,6 +32,9 @@ pak::pak("samuelbharti/bslibreact/pkg-r")
 shiny::runApp("bslibreact/examples/volcano-plot")
 ```
 
+Give the full path if R's working directory is not the folder that holds the
+clone.
+
 ## The page
 
 `src/App.tsx` lays out the whole page. Each component stands for one bslib

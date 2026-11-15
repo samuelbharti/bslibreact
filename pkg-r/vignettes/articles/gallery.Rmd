@@ -9,9 +9,9 @@ description: >
 knitr::opts_chunk$set(eval = FALSE)
 ```
 
-The repository includes a gallery app that shows 42 components, each one
-three ways, side by side, with its full source underneath. It is the
-quickest way to see that a bslibreact component looks and behaves like the
+The repository includes a gallery app with more than 40 examples. It shows
+each component three ways, side by side, with the full source underneath. It
+is the quickest way to see that a bslibreact component looks and behaves like the
 bslib original, and to copy the code for one.
 
 ![The gallery showing the slider example: the same slider and histogram in
@@ -33,8 +33,10 @@ differ in one line: the page of the third also attaches `bslibreact_dep()`, the
 prebuilt bundle.
 
 The examples follow the layout of the [Shiny component
-gallery](https://shiny.posit.co/r/components/): 25 inputs, 12 outputs, and 5
-messages such as modals, tooltips and notifications.
+gallery](https://shiny.posit.co/r/components/): inputs, outputs, and messages
+such as modals, tooltips and notifications. One example, the submit button,
+has only the bslib version, because `submitButton()` cannot work as a hosted
+widget.
 
 ![The gallery showing the value box example: the same value box in all
 three
@@ -57,6 +59,9 @@ install.packages(c(
 pak::pak("samuelbharti/bslibreact/pkg-r")
 shiny::runApp("bslibreact/gallery")
 ```
+
+Give the full path if R's working directory is not the folder that holds the
+clone.
 
 Pick an example in the sidebar. The gallery starts that example's three apps
 in the background, which takes a second or two the first time, and keeps the
