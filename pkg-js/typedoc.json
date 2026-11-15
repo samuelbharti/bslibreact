@@ -7,6 +7,22 @@
   "includeVersion": true,
   "hideGenerator": true,
   "treatWarningsAsErrors": true,
+  "projectDocuments": ["guides/building-the-client.md"],
+  "highlightLanguages": [
+    "bash",
+    "console",
+    "css",
+    "html",
+    "javascript",
+    "json",
+    "jsonc",
+    "json5",
+    "yaml",
+    "tsx",
+    "typescript",
+    "r",
+    "python"
+  ],
   "intentionallyNotExported": ["Props", "CardProps", "ModuleProps"],
   "navigationLinks": {
     "All docs": "https://www.samuelbharti.com/bslibreact/",

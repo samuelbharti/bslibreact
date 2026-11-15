@@ -3,6 +3,8 @@ project:
   output-dir: docs
   render:
     - index.qmd
+    - get-started.qmd
+    - volcano-plot.qmd
     - reference/
 
 website:
@@ -11,6 +13,10 @@ website:
   repo-url: https://github.com/samuelbharti/bslibreact
   navbar:
     left:
+      - text: Get started
+        href: get-started.qmd
+      - text: Volcano plot example
+        href: volcano-plot.qmd
       - text: Reference
         href: reference/index.qmd
     right:
