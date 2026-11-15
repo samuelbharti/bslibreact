@@ -1,8 +1,8 @@
 """The markup catalog: sample UI calls and the live shiny markup they produce.
 
-This is the Python half of the contract in ``docs/markup-catalog.md``. bslib
+This is the Python half of the spec in ``docs/markup-catalog.md``. bslib
 (and py-shiny) are the ground truth for what bslibreact's React components
-should render: rather than commit HTML fixtures that go stale the moment
+should render: instead of committing HTML fixtures that go stale the moment
 shiny's markup changes, this module holds a catalog of *calls* -- Python
 source text -- that get evaluated against whatever version of ``shiny`` is
 actually installed, by :func:`catalog_eval`. ``tools/markup/render_py.py``

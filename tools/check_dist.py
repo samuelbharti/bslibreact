@@ -22,7 +22,7 @@ import zipfile
 from pathlib import Path
 
 # The vendored bundle, and the size below which it is certainly a stub or an
-# empty placeholder rather than a real build. A floor, not an exact size, so a
+# empty placeholder and not a real build. A floor, not an exact size, so a
 # component added to pkg-js does not break the release.
 BUNDLE = "bslibreact/www/bslibreact.js"
 MIN_BUNDLE_BYTES = 5_000

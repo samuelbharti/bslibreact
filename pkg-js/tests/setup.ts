@@ -10,7 +10,7 @@ import { afterEach } from "vitest";
 // sr()), so this installs the REAL @posit-dev/shinyreact package there,
 // exactly the way a served page's shinyreact.js dependency would, plus the
 // React/ReactDOM instances the real package's own IIFE bundle also attaches
-// (see shinyreact's own src/global.ts). Using the real package rather than a
+// (see shinyreact's own src/global.ts). Using the real package instead of a
 // hand-rolled stub means the bind tests exercise ShinyOutput's actual
 // dedup-on-concurrent-mount logic, not a guess at what it does.
 window.shinyreact = { ...shinyreact, React, ReactDOM };

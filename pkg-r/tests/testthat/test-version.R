@@ -14,7 +14,7 @@ test_that("this package's version matches pkg-js and the root pyproject.toml", {
   js_pkg <- jsonlite::fromJSON(pkg_js_path)
   expect_identical(js_pkg$version, r_version)
 
-  # A simple regex read of `version = "x.y.z"` rather than a full TOML
+  # A simple regex read of `version = "x.y.z"` instead of a full TOML
   # parser: this package does not otherwise need a TOML dependency, and a
   # top-level `[project]` version field is a simple, stable enough shape
   # to read this way.

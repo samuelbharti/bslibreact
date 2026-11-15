@@ -3,7 +3,7 @@
 // gitignored and only exists after a build, so a tarball built from a fresh
 // checkout without one installs cleanly and then fails to resolve for every
 // user. npm does not allow replacing a published version, which is why this is
-// a check of its own rather than something noticed later.
+// a check of its own instead of something noticed later.
 import { execFileSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
@@ -11,8 +11,8 @@ import { fileURLToPath } from "node:url";
 const pkg = JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8"));
 
 // Every path the package's own "exports" and "types" point at has to be in the
-// tarball, read from package.json rather than restated here so the two cannot
-// drift apart.
+// tarball, read from package.json, not restated here, so the two cannot
+// drift out of step.
 const required = new Set();
 for (const entry of Object.values(pkg.exports ?? {})) {
   for (const target of Object.values(entry)) {
@@ -27,7 +27,7 @@ required.add("README.md");
 const forbidden = [/^tests\//, /^\.github\//, /^docs\//, /^coverage\//, /\.test\.tsx?$/];
 
 // npm pack is the authoritative answer to "what would ship", so this asks it
-// rather than reimplementing the "files" globbing. On Windows npm is a .cmd,
+// instead of reimplementing the "files" globbing. On Windows npm is a .cmd,
 // which node refuses to spawn without a shell (EINVAL, from the 2024 fix for
 // argument injection through batch files), so that platform gets shell: true
 // and the DEP0190 warning that comes with it. Every argument here is a

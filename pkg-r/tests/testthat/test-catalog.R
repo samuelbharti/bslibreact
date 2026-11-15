@@ -1,7 +1,7 @@
 # The frozen name list from docs/markup-catalog.md's "Sample names"
 # section, copied here literally (not computed from the catalog) so that
 # renaming, adding, or dropping a sample in R/catalog-samples.R is caught
-# by this test, on purpose, rather than silently passing because the test
+# by this test, on purpose, instead of silently passing because the test
 # recomputed its expectation from the same source it is meant to check.
 #
 # This package's own catalog ships only "tag" and "page" samples; the

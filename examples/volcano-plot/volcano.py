@@ -4,7 +4,7 @@ The Python twin of R/_shared/volcano-data.R, R/_shared/palettes.R, and
 R/plot-volcano.R. Kept as one file, since Python does not split a data
 layer from a package-provided colour palette the way this example's R
 side inherited from a larger app family; the docstrings below are the same
-contract either language implements.
+spec either language implements.
 """
 
 from __future__ import annotations
@@ -91,7 +91,7 @@ def plot_volcano(
 ):
     """matplotlib renderer for the volcano plot.
 
-    Labels use a plain offset annotation rather than a label-repulsion
+    Labels use a plain offset annotation instead of a label-repulsion
     algorithm (R's ggrepel::geom_text_repel()): a deliberate simplification
     for this example, not a missing feature of bslibreact itself. Labels
     can overlap at high label_top_n values as a result.

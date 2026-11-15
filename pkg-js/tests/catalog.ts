@@ -52,7 +52,7 @@ export type Shape = {
   attrs: Record<string, string>;
   /** Present only when the element carries a style attribute at all: a
    *  sorted list of "prop:value" (or "prop:value !important") strings,
-   *  read back through the parsed CSSStyleDeclaration rather than compared
+   *  read back through the parsed CSSStyleDeclaration, not compared
    *  as a literal string, so declaration order and incidental whitespace
    *  never fail a test that does not care about either. */
   style?: string[];
@@ -133,7 +133,7 @@ const catalogCache = new Map<Lang, Catalog>();
  *  run (every test in every file reads the same object, not a fresh
  *  JSON.parse per call). Throws a clear error if the catalog is not
  *  "ready" - callers should check catalogLangs() / describeCatalog() first
- *  rather than reaching here on a language that might not be available. */
+ *  instead of reaching here on a language that might not be available. */
 export function loadCatalog(lang: Lang): Catalog {
   const cached = catalogCache.get(lang);
   if (cached) return cached;
@@ -185,7 +185,7 @@ export function catalogDoc(name: string, lang: Lang = "r"): Document {
  *  and (when present) a sorted list of inline style declarations. Mirrors
  *  the old fixture.ts's shapeOf(), plus the style comparison the fixture
  *  version never needed (see docs/markup-catalog.md's own note on why
- *  `style` is compared as a parsed, sorted list rather than a literal
+ *  `style` is compared as a parsed, sorted list instead of a literal
  *  string). */
 export function shapeOf(el: Element | null): Shape | null {
   if (!el) return null;
@@ -260,8 +260,8 @@ export function renderShape(ui: ReactElement, selector: string): Shape | null {
  * title, when `lang`'s catalog is not ready. Every markup test in this
  * package that reads the catalog is wrapped in this instead of a bare
  * `describe`, so a `vitest run` with no R or Python installed reports
- * "SKIPPED: NavbarTabStrip (skipped: r catalog is missing-tool)" rather
- * than a wall of throws from `sample()`/`loadCatalog()`.
+ * "SKIPPED: NavbarTabStrip (skipped: r catalog is missing-tool)" instead
+ * of a wall of throws from `sample()`/`loadCatalog()`.
  */
 export function describeCatalog(lang: Lang, name: string, fn: () => void): void {
   const ready = catalogLangs().includes(lang);

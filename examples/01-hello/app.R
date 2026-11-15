@@ -48,7 +48,7 @@ server <- function(input, output, session) {
   })
 
   # Level R: a plain value, read by the client with useShinyOutputValue()
-  # rather than hosted, since it is only ever a number formatted as text.
+  # and not hosted, since it is only ever a number formatted as text.
   # Same req() reasoning as output$plot above.
   output$bins_count <- renderText({
     req(input$bins)

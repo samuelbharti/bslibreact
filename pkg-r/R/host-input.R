@@ -25,7 +25,7 @@
 #' `$("#foo")` lookups, and every downstream consumer of that id become
 #' ambiguous, silently addressing whichever one the browser happens to
 #' return first. `check_no_id_collision()` (an internal helper) catches
-#' this at render time with a message naming the id involved, rather than
+#' this at render time with a message naming the id involved, instead of
 #' leaving it to surface later as an input or output that mysteriously
 #' never updates.
 #'

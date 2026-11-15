@@ -31,7 +31,7 @@ import { Module } from "../src/module/Module";
 
 /**
  * The kit's markup, checked against the HTML bslib actually emits, rendered
- * live from an installed bslib rather than read from a committed fixture -
+ * live from an installed bslib, not read from a committed fixture -
  * see tests/catalog.ts for what that comparison does and does not cover,
  * and docs/decisions/0001-no-fixtures-live-ground-truth.md at the repo root
  * for why. Every describe block below is wrapped in describeCatalog(), which
@@ -166,7 +166,7 @@ describeCatalog("r", "TabPane", () => {
   });
 
   it("renders a fillable pane's classes matching a fillable page_navbar", () => {
-    // catalogClasses rather than catalogShape: this sample's pane also
+    // catalogClasses, not catalogShape: this sample's pane also
     // carries a data-icon-class attribute from its own nav_panel(icon=),
     // which TabPane has no equivalent prop for and does not need one -
     // only the class list is compared here for that reason.
@@ -645,8 +645,8 @@ describeCatalog("r", "HelpText", () => {
 
 // HostedInput has no markup of its own to pin against the catalog (see
 // docs/markup.md): the widget's HTML comes from the parent app's own R call at
-// runtime, not from this component. What IS worth a fixed assertion is the
-// wrapper contract every hosted widget depends on: a shiny-html-output div
+// runtime, not from this component. What a fixed assertion CAN check is the
+// wrapper shape every hosted widget depends on: a shiny-html-output div
 // (or span/etc via ShinyOutput's own tagName) carrying the id the parent's
 // own `output$<id>_ui <- renderUI(...)` answers, with namespacing handled
 // through Module the same way every other hosted piece in this kit is.
@@ -798,8 +798,8 @@ describe("NavbarTabStrip and TabPane with a Module", () => {
 
 /** The head_inline_css entry every page_*() sample carries: bslib's own
  *  `tags$head(tags$style("html { height: 100%; }"))`, injected by
- *  usePageBody() the same way. Reads it off any "page" kind sample rather
- *  than hard-coding the string twice. */
+ *  usePageBody() the same way. Reads it off any "page" kind sample instead
+ *  of hard-coding the string twice. */
 function sampleHeadCss(name: string): string | undefined {
   return sample(name, "r").head_inline_css[0];
 }

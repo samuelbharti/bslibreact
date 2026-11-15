@@ -14,7 +14,7 @@
 # (getElementById, a CSS id selector, Shiny's own input/output registries)
 # becomes ambiguous, and only one of the two elements is ever addressed.
 # This check catches the mistake at render time, with a message that says
-# exactly which id collided, rather than leaving it to show up later as a
+# exactly which id collided, instead of leaving it to show up later as a
 # widget that silently never updates.
 #
 # The walk is over the plain list structure of an htmltools tag: a

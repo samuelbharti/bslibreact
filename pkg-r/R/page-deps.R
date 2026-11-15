@@ -1,7 +1,7 @@
 # One entry per dependency name, keeping the highest version, in the order
 # the names were first seen. numeric_version() is strict about what it will
 # parse and these versions come from whatever upstream set them, so an
-# unparsable one falls back to first-seen rather than erroring.
+# unparsable one falls back to first-seen instead of erroring.
 dedupe_by_name <- function(deps) {
   if (length(deps) < 2) {
     return(deps)
@@ -16,7 +16,7 @@ dedupe_by_name <- function(deps) {
           strict = FALSE
         )
       )
-      # max()/== rather than which.max(), which cannot coerce a
+      # max()/== instead of which.max(), which cannot coerce a
       # numeric_version on R older than 4.6. Same for any(is.na())
       # instead of anyNA(), which does not dispatch on one.
       if (any(is.na(v))) idx[[1]] else idx[[which(v == max(v))[[1]]]]

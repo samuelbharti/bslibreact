@@ -2,7 +2,7 @@
 #
 # All arguments after `id` are reactives, so the module composes cleanly:
 # pass app-level inputs in, get the prepared data back out. Kept as a real
-# module (rather than inlined into app.R's server) because this is the
+# module (not inlined into app.R's server) because this is the
 # shape a larger app reuses it in; a smaller example could inline it.
 
 volcano_ui <- function(id) {
