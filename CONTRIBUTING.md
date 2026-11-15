@@ -55,7 +55,7 @@ There are no HTML fixtures to update. Instead:
    and compares its shape against the catalog sample.
 6. Add a row to `docs/markup.md`.
 
-See `docs/markup-catalog.md` for the full contract, and
+See `docs/markup-catalog.md` for the full spec, and
 `docs/decisions/0001-no-fixtures-live-ground-truth.md` for why this is the
 design.
 

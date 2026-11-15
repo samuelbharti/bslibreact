@@ -36,7 +36,7 @@ mechanism).
 
 Plain text, value boxes, `conditionalPanel`-style show/hide, and small
 `renderUI()` blocks that only format data are the cases where real React
-state is worth it. This kit calls the first style Level H, for hosted, and
+state is the better fit. This kit calls the first style Level H, for hosted, and
 the second Level R, for React.
 
 No Tailwind, no shadcn, no react-bootstrap. This kit exists because those
@@ -49,6 +49,6 @@ extra styling at all.
 The kit does not need to be a state management library, and most of its
 surface (`pkg-js/src/inputs/`) carries no version risk from a bslib
 release, because it renders no bslib markup itself. A component with a
-real reason to bind its own scope should use `useBoundScope()` rather than
+real reason to bind its own scope should use `useBoundScope()` instead of
 calling `Shiny.bindAll()` directly, so its bind pass cannot race
 `ShinyOutput`'s own deduplicated bind.

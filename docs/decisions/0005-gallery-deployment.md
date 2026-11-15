@@ -96,6 +96,6 @@ app the union of every component's dependencies. Calling `pkg::fn()`
 instead of `library(pkg)` keeps a namespace unloaded until the requested
 component needs it, which holds a cold start near plain shiny and bslib.
 
-Publishing `bslibreact` to r-universe remains worth doing on its own
+Publishing `bslibreact` to r-universe remains useful on its own
 merits, and it would reopen the shinylive route if a fully static gallery
 ever becomes more valuable than a fast one.

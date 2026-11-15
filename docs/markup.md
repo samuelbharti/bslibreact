@@ -4,8 +4,8 @@ Two different things live in this kit, and they are tested differently.
 
 Layout, page shell, and output components reproduce bslib's or shiny's own
 markup in TSX. Each one is pinned against a sample in the markup catalog,
-rendered live from an installed bslib and py-shiny rather than committed
-as a fixture. See `docs/markup-catalog.md` for how that works and
+rendered live from an installed bslib and py-shiny, with no committed
+fixture. See `docs/markup-catalog.md` for how that works and
 `docs/decisions/0001-no-fixtures-live-ground-truth.md` for why.
 
 Input widgets (`SliderInput`, `SelectInput`, and the rest under

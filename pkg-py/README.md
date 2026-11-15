@@ -47,5 +47,5 @@ id your `<SliderInput id="bins_ui" />` element should read.
 
 See the [root README](https://github.com/samuelbharti/bslibreact#readme) for
 the full picture across R, Python and JS, and `docs/` in the repository for
-the porting guide and the markup catalog contract this package's catalog
+the porting guide and the markup catalog spec this package's catalog
 renderer implements.

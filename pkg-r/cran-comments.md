@@ -15,4 +15,4 @@ itself.
 0 errors | 0 warnings | 1 note
 
 * "Found the following files/directories: ''NULL''" appears on Windows
-  only and comes from the check tooling rather than this package.
+  only and comes from the check tooling, not from this package.

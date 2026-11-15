@@ -54,7 +54,7 @@ Everything else moves out of the shipped packages:
   a manual, side by side comparison against a running parent app instead:
   browser devtools for the dependency and console checks, a plain
   screenshot by eye for the visual one. This is a check run once per
-  port, not a runtime or CI dependency worth carrying permanently.
+  port, not a runtime or CI dependency to carry permanently.
 - App scaffolding is gone. `docs/build.md` points at copying
   `examples/01-hello` instead of a `create_app()` call.
 
