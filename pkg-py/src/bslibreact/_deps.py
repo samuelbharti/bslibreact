@@ -31,6 +31,16 @@ if TYPE_CHECKING:
 # bslibreact needs, not the baseline every shiny page already has.
 _ALWAYS_EXCLUDED = frozenset({"bootstrap", "jquery"})
 
+# py-shiny no longer names its Bootstrap stylesheet "bootstrap": the
+# dependency is named after the page's theme, "shiny-theme-<name>" (plus
+# "shiny-theme-<name>-fonts" for a brand theme). It is the same baseline, and
+# it is excluded for the same reason. The catalog's page_navbar samples carry
+# the stock one, "shiny-theme-shiny". Handed back next to a page with a
+# different theme (a _brand.yml one, say), the two names do not de-duplicate,
+# both stylesheets load, and the stock one, coming later, overrides the
+# page's own.
+_THEME_PREFIX = "shiny-theme-"
+
 
 def _validate_theme(theme: object) -> None:
     """Raise ``TypeError`` unless ``theme`` is one of the accepted shapes, so a
@@ -63,7 +73,8 @@ def page_deps(
     the same sample calls the catalog renderer uses for ``bslibreact
     markup`` -- and reading back whichever :class:`~htmltools.HTMLDependency`
     objects that markup pulled in, minus the ones every shiny page already
-    attaches on its own (``bootstrap``, ``jquery``).
+    attaches on its own: ``bootstrap``, ``jquery``, and the theme stylesheet
+    (``shiny-theme-*``), which the page's own ``theme=`` supplies.
 
     Args:
         theme: The page's theme: ``None``, a ``str``/``Path`` to a
@@ -100,4 +111,11 @@ def page_deps(
     samples = catalog_eval(names)
     rendered = TagList(*samples, *extra).tagify()
     deps = rendered.get_dependencies()
-    return TagList(*(dep for dep in deps if dep.name not in _ALWAYS_EXCLUDED))
+    return TagList(
+        *(
+            dep
+            for dep in deps
+            if dep.name not in _ALWAYS_EXCLUDED
+            and not dep.name.startswith(_THEME_PREFIX)
+        )
+    )
