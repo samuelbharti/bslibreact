@@ -2,7 +2,7 @@
 
 The ui.tsx pattern puts the client in charge of markup, but a handful of
 widgets (a color picker, a fancy date range control, anything a team already
-has a battle-tested ``renderUI`` for) are not worth rebuilding in React right
+has a battle-tested ``renderUI`` for) do not need a React rebuild right
 away. ``host_input()`` is the escape hatch: it registers an ordinary
 ``@render.ui`` output on the server, and hands back the output id your React
 component should mount at (conventionally via a `<SliderInput id="bins_ui"
@@ -23,7 +23,7 @@ if TYPE_CHECKING:
 class _OutputsLike(Protocol):
     """The one sliver of ``shiny.session.Outputs`` that ``host_input()`` needs.
 
-    A structural type rather than importing ``Outputs`` itself: the real
+    A structural type, not an import of ``Outputs`` itself: the real
     class and a test double both satisfy this without either one needing to
     inherit from the other, and it documents exactly what ``host_input()``
     depends on.
@@ -31,7 +31,7 @@ class _OutputsLike(Protocol):
     The real ``Outputs.__call__`` is overloaded: called with a bare renderer
     it registers immediately, called with only keyword arguments (as
     ``host_input()`` always does) it returns a decorator instead. Modelling
-    only that second shape here, rather than merging both into one signature
+    only that second shape here, instead of merging both into one signature
     with an optional positional ``renderer``, is what lets a real
     ``Outputs`` instance satisfy this Protocol structurally -- a flattened
     signature does not match an overloaded one under strict type checking.
@@ -53,7 +53,7 @@ def _check_no_id_collision(tag: "TagChild", name: str) -> None:
     nested lists as it is iterated) looking for an ``id`` attribute equal to
     ``name``. A collision means the widget's own markup would fight with the
     output wrapper Shiny binds to for the same DOM id, so it is caught here
-    rather than left to produce a confusing duplicate-id bug in the browser.
+    instead of being left to produce a confusing duplicate-id bug in the browser.
     """
     if isinstance(tag, Tag):
         if tag.attrs.get("id") == name:

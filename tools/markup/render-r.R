@@ -11,7 +11,7 @@
 # full catalog to that path and exits 0, or exits non-zero with a message
 # on stderr if rendering fails.
 #
-# This script is deliberately self-contained rather than a thin wrapper
+# This script is deliberately self-contained instead of a thin wrapper
 # around an exported pkg-r function: pkg-r ships only page_deps(),
 # host_input(), and bslibreact_dep(), so that an app installing it gets
 # no browser-automation or third-party-widget dependencies it does not
@@ -20,7 +20,7 @@
 # An app that depends on bslibreact never needs them.
 #
 # Reaches into pkg-r's unexported internals (bslibreact:::.catalog_samples,
-# bslibreact:::.sample, bslibreact:::catalog_eval) rather than duplicating
+# bslibreact:::.sample, bslibreact:::catalog_eval) instead of duplicating
 # the "tag" and "page" sample list, so this script and the package can
 # never drift on what those samples are.
 

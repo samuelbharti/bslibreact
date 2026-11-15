@@ -30,7 +30,7 @@ test_that("a customized theme produces resolvable Sass-compiled dependencies", {
   # (confirmed directly: only a theme that actually differs from the
   # default forces a real Sass compile). A customized color is enough to
   # force a real compile, landing in a fresh, absolute temp path this test
-  # can confirm exists. Scoped to one sample rather than the full default
+  # can confirm exists. Scoped to one sample instead of the full default
   # catalog for the same reason: many components in one render can attach
   # more than one bslib-component-css entry, only some of which the theme
   # actually forced a recompile for.

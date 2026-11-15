@@ -104,15 +104,15 @@ languages, and `docs/build.md` for building a new app from scratch.
 
 Every input widget in this kit (`SliderInput`, `SelectInput`, and so on)
 hosts the server's own widget markup through `renderUI()` or
-`host_input()` rather than rebuilding it in React, so each one keeps the
+`host_input()` instead of rebuilding it in React, so each one keeps the
 behaviour Shiny already gives it: ionRangeSlider's skin, selectize's
 dropdown, the datepicker. Plain text, value boxes, and small formatting
-blocks are the cases worth making real React state instead, since
+blocks are the cases to build as real React state, since
 round-tripping to the server to format a number buys nothing.
 
 This repository calls those two styles Level H, for hosted, and Level R,
-for React. The shorthand runs through the source and the guides, so it is
-worth knowing before reading either. See
+for React. The shorthand runs through the source and the guides, so it helps
+to know it before reading either. See
 `docs/decisions/0003-hosted-widgets.md` for where the line is drawn and
 why, and `docs/build.md` for the recipe.
 

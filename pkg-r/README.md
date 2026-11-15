@@ -57,6 +57,6 @@ See the root repository's `docs/build.md` for a new app and
 
 * Root [README](https://github.com/samuelbharti/bslibreact#readme)
 * [docs/markup-catalog.md](https://github.com/samuelbharti/bslibreact/blob/main/docs/markup-catalog.md):
-  the JSON contract the repository's markup catalog renderer produces
+  the JSON format the repository's markup catalog renderer produces
 * [docs/decisions/](https://github.com/samuelbharti/bslibreact/tree/main/docs/decisions):
   why this package is built the way it is

@@ -1,5 +1,5 @@
 # Read access to the sample list in catalog-samples.R. See
-# docs/markup-catalog.md for the contract these feed into: the repository's
+# docs/markup-catalog.md for the spec these feed into: the repository's
 # markup catalog renderer (tools/markup/render-r.R), a dev-only script
 # outside this package, is the writer.
 
@@ -27,12 +27,12 @@ catalog_names <- function(kind = c("tag", "page", "extra")) {
 # the same order as `names` (not catalog order). `env` is where each call
 # is evaluated; the default, baseenv(), is enough because every call in
 # catalog-samples.R is fully qualified and closes over no free variables of
-# its own, and using the base environment rather than the caller's global
+# its own, and using the base environment instead of the caller's global
 # environment keeps a sample's evaluation from accidentally picking up an
 # unrelated object of the same name (an "x" left lying around in .GlobalEnv,
 # say) that happens to be in scope.
 #
-# An unknown name is a programming error, so it aborts rather than
+# An unknown name is a programming error, so it aborts instead of
 # silently returning NULL: page_deps(components=) relies on this to name
 # the bad component in its own error.
 catalog_eval <- function(names, env = baseenv()) {

@@ -30,6 +30,18 @@ before tagging, once, before the first release:
 gh repo edit samuelbharti/bslibreact --visibility public --accept-visibility-change-consequences
 ```
 
+## Zenodo
+
+Zenodo archives each GitHub release and gives it a DOI. Switch the
+repository on at <https://zenodo.org/account/settings/github/> after it
+is public and before the first release, since Zenodo only archives
+releases made after the switch is on. The record's metadata comes from
+`CITATION.cff`.
+
+After the first release, put the concept DOI (the one that covers every
+version) in `CITATION.cff` under `doi:`, and add one `identifiers:` entry
+per released version from then on.
+
 ## Tag
 
 Set the new version in every file `tools/check_versions.py` lists
@@ -37,16 +49,26 @@ Set the new version in every file `tools/check_versions.py` lists
 `npm install` in place of editing them), then confirm they agree with
 `make version-check`.
 
+`main` is protected, so the version bump goes through a pull request
+like any other change:
+
 ```
-git add -A
+git switch -c chore/release-0.1.0
+git add -u
 git commit -m "chore: release 0.1.0"
-git tag v0.1.0
-git push --no-verify origin main v0.1.0
+git push -u origin chore/release-0.1.0
+gh pr create --fill
 ```
 
-Pushing is the owner's own action; the repository's pre-push hook blocks
-an accidental push otherwise. `--no-verify` here is intentional, not a way
-around a failing check, since the checks already ran locally above.
+Once the PR's checks pass and it is merged, tag the merge commit on
+`main` and push the tag:
+
+```
+git switch main
+git pull
+git tag v0.1.0
+git push origin v0.1.0
+```
 
 ## npm
 

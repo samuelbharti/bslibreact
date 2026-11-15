@@ -18,7 +18,7 @@ First release. Experimental: component props may still change.
   `docs/markup-catalog.md` at the repo root.
 - Dropped `NativeInput`, `escape.ts`, and `inputs/types.ts` (`toChoices`):
   unused across every app that depended on this kit.
-- `useBoundScope` unbinds the element it bound rather than whatever the
+- `useBoundScope` unbinds the element it bound instead of whatever the
   ref points at during cleanup, so a node React swaps out does not leave
   its Shiny bindings behind.
 - `NavbarTabStrip` builds its tab links from the raw `id`, the same way

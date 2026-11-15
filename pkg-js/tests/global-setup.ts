@@ -106,7 +106,7 @@ function readCachedKey(cachePath: string): string | undefined {
     // A cache file that exists but will not parse (truncated by a killed
     // render, hand-edited, from a schema this reader predates) is exactly
     // as unusable as a missing one: treat it as "no cached key", which
-    // forces a fresh render below rather than crashing this setup.
+    // forces a fresh render below instead of crashing this setup.
     return undefined;
   }
 }

@@ -54,7 +54,7 @@ def server(input, output, session):
         return fig
 
     # Level R: a plain value, read by the client with useShinyOutputValue()
-    # rather than hosted, since it is only ever a number formatted as text.
+    # and not hosted, since it is only ever a number formatted as text.
     # Waits for the slider the same way plot() does.
     @render.text
     def bins_count():

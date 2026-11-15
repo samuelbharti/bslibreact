@@ -61,7 +61,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     permissions:
-      # A job-level permissions block replaces the defaults rather than adding
+      # A job-level permissions block replaces the defaults instead of adding
       # to them, so id-token is all this job gets. It needs nothing else: the
       # artifact comes from the build job, not from a checkout.
       id-token: write

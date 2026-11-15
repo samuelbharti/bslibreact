@@ -11,7 +11,7 @@ import {
  * The smallest complete bslibreact app: a themed sidebar holding one
  * hosted slider, a hosted plot reading that slider's value, and a value
  * box reading the same value back as plain text (Level R: it is only ever
- * a number formatted as a string, so it is not worth hosting).
+ * a number formatted as a string, so there is no reason to host it).
  */
 export default function App() {
   const ready = useShinyInitialized();

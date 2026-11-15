@@ -351,8 +351,8 @@ ui <- page_sidebar(
   ),
   theme = bs_theme(version = 5),
   # Not fillable: the code panels below each demo are as tall as the files
-  # they show, so the main column flows and the page scrolls once, rather
-  # than every panel getting its own nested scrollbar.
+  # they show, so the main column flows and the page scrolls once, instead
+  # of every panel getting its own nested scrollbar.
   fillable = FALSE,
   sidebar = sidebar(width = 210, nav_list()),
   tags$head(

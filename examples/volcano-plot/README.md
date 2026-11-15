@@ -13,7 +13,7 @@ This example also shows a `_brand.yml` file in use: the page's colours and
 typography come from it, through `bs_theme(brand = TRUE)` in R and
 `ui.Theme.from_brand()` in Python, and the plot's own status colours are
 read from a small palette helper (`R/_shared/palettes.R`,
-`volcano.py`'s `STATUS_COLOURS`) rather than hard-coded into the chart
+`volcano.py`'s `STATUS_COLOURS`), not hard-coded into the chart
 itself.
 
 ## Run it

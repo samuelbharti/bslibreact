@@ -44,11 +44,14 @@ SOURCES = (
     ("pkg-js/CHANGELOG.md", r"^##\s+(\d\S*)"),
     ("pkg-py/CHANGELOG.md", r"^##\s+(\d\S*)"),
     # The key is indented in package.json, so the anchor allows leading
-    # whitespace rather than binding to the start of the line.
+    # whitespace instead of binding to the start of the line.
     ("pkg-js/package.json", r'^\s*"version":\s*"([^"]+)"'),
+    # Zenodo builds each release's record from CITATION.cff, so a stale version
+    # there ends up in every citation of that release.
+    ("CITATION.cff", r"^version:\s*(\S+)"),
 )
 
-# package-lock.json is JSON rather than a line match: pkg-js is a workspace, so
+# package-lock.json gets a JSON read, not a line match: pkg-js is a workspace, so
 # the version that matters is the one recorded for that workspace, not the root
 # object's. It drifts exactly as uv.lock does, when package.json is bumped
 # without `npm install`.

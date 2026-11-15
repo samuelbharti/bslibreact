@@ -1,6 +1,6 @@
 # The markup catalog's sample list: one entry for every bslib or shiny call
 # whose rendered HTML the JavaScript package's tests are pinned against. See
-# docs/markup-catalog.md for the contract this list has to satisfy (the
+# docs/markup-catalog.md for the spec this list has to satisfy (the
 # exact JSON shape, the render rules per `kind`, and the frozen name list
 # that `test-catalog.R` copies verbatim so a rename here is a deliberate,
 # visible change, not an accident).
@@ -17,7 +17,7 @@
 # exactly the source text that appears in the JSON's "call" field: readable
 # R code a person can paste into a console, not a dump of an evaluated
 # object. Do not `library()` anything here and do not shorten a call to its
-# unqualified name; the fully qualified form is part of the contract.
+# unqualified name; the fully qualified form is part of the spec.
 #
 # A "kind: page" sample is a page shell (a `bslib::page_*()` call). Its
 # rendered html is the page's own `<body>` tag, so a page component's body
@@ -329,7 +329,7 @@
   ),
   # plotOutput with a click handler.
   # click= adds a data-* attribute the plain plotOutput sample does not
-  # have, which is why this is its own sample rather than a variant note.
+  # have, which is why this is its own sample instead of a variant note.
   .sample(
     "plotOutput_click",
     "tag",
@@ -346,7 +346,7 @@
     quote(shiny::uiOutput("x", fill = TRUE))
   ),
   # Added for coverage: uiOutput(inline = TRUE), used by page_navbar's own
-  # nav_item(uiOutput(..., inline = TRUE)) sample below, and worth pinning
+  # nav_item(uiOutput(..., inline = TRUE)) sample below, and pinned
   # on its own since inline changes the wrapper element from <div> to
   # <span>.
   .sample(

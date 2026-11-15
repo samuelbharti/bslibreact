@@ -1,8 +1,7 @@
 # Contributing
 
-I am the only one working on this repo right now. These notes are for me
-and for an agent working alongside me, more than for outside contributors,
-though outside contributions are welcome.
+Issues and pull requests are welcome. Below are the setup steps and the
+checks every PR has to pass.
 
 ## Setup
 
@@ -56,7 +55,7 @@ There are no HTML fixtures to update. Instead:
    and compares its shape against the catalog sample.
 6. Add a row to `docs/markup.md`.
 
-See `docs/markup-catalog.md` for the full contract, and
+See `docs/markup-catalog.md` for the full spec, and
 `docs/decisions/0001-no-fixtures-live-ground-truth.md` for why this is the
 design.
 

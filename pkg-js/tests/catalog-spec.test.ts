@@ -105,7 +105,7 @@ const VALID_GROUPS = new Set([
 // real names are a mix of bslib's own snake_case ("page_navbar") and R/
 // shiny's historically camelCase function names ("selectInput",
 // "DTOutput"), and the catalog intentionally keeps each sample named after
-// the call it renders rather than normalising that away.
+// the call it renders instead of normalising that away.
 const VALID_NAME = /^[a-z][a-z0-9_]*$/i;
 
 const EXPECTED_VERSION_KEYS: Record<Lang, string[]> = {
@@ -113,7 +113,7 @@ const EXPECTED_VERSION_KEYS: Record<Lang, string[]> = {
   py: ["shiny", "htmltools", "bslib_vendored", "runtime"],
 };
 
-describe.each(catalogLangs())("catalog contract: %s", (lang: Lang) => {
+describe.each(catalogLangs())("catalog spec: %s", (lang: Lang) => {
   it("has schema 2", () => {
     expect(loadCatalog(lang).schema).toBe(2);
   });
@@ -183,7 +183,7 @@ describe.each(catalogLangs())("catalog contract: %s", (lang: Lang) => {
 
 const bothReady = catalogLangs().includes("r") && catalogLangs().includes("py");
 
-describe.skipIf(!bothReady)("catalog contract: R and Python", () => {
+describe.skipIf(!bothReady)("catalog spec: R and Python", () => {
   it("hold the same sample names, R-only samples aside", () => {
     const r = Object.keys(loadCatalog("r").samples).filter((name) => !R_ONLY.has(name));
     const py = Object.keys(loadCatalog("py").samples);

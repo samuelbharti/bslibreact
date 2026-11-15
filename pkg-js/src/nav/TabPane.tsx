@@ -24,7 +24,7 @@ const fillableStyle = { "--bslib-navbar-margin": "0" } as CSSProperties;
  * id NavbarTabStrip was given, so this pane's id matches that tab's href
  * fragment and Bootstrap's own tab.js (already loaded by the page's
  * Bootstrap bundle) can show and hide it. Stays mounted at all times,
- * hidden by Bootstrap's .active class toggle rather than unmounted, so a
+ * hidden by Bootstrap's .active class toggle, not unmounted, so a
  * hosted output on a hidden tab keeps the same suspend behavior it has on
  * the parent.
  *

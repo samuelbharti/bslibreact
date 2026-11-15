@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it using these metadata."
+type: software
+title: "bslibreact: React components that reproduce bslib and Shiny markup"
+abstract: >-
+  React components that reproduce bslib and Shiny's own markup, class for
+  class, for shinyreact's ui.tsx pattern, with server helpers for R and
+  Python.
+authors:
+  - family-names: Bharti
+    given-names: Samuel
+    orcid: "https://orcid.org/0000-0003-4190-7058"
+version: 0.1.0
+license: MIT
+repository-code: "https://github.com/samuelbharti/bslibreact"
+keywords:
+  - shiny
+  - bslib
+  - react
+  - shinyreact

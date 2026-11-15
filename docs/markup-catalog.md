@@ -1,8 +1,8 @@
-# The markup catalog contract
+# The markup catalog spec
 
-This is the contract the R and Python catalog renderers must produce, and
-that `pkg-js`'s test suite reads. All three packages code against this
-file; changing the contract means updating all three.
+This file specifies what the R and Python catalog renderers must produce,
+and what `pkg-js`'s test suite reads. All three packages code against this
+file; changing the spec means updating all three.
 
 Neither renderer ships inside the installed R or Python package: rendering
 the catalog needs things (third party widget packages for the R side's
@@ -97,7 +97,7 @@ checked against it; its `<head>` `<style>` blocks (bslib's
 **`kind: "extra"`.** Third party widgets: `DT::DTOutput()`,
 `reactable::reactableOutput()`, `shinycssloaders::withSpinner()`,
 `htmlwidgets::shinyWidgetOutput()`. Skipped with a `skipped` reason when
-the package is absent, rather than failing the whole render. Never
+the package is absent, instead of failing the whole render. Never
 included by default in `page_deps()`'s sampler; an app passes them
 explicitly as extra tags. R only: `pkg-r`'s own shipped catalog
 (`R/catalog-samples.R`) defines no `"extra"` samples, since none of these
@@ -126,8 +126,8 @@ Names added for coverage this kit did not have before: `page_navbar_not_fillable
 `dateInput`, `dateRangeInput`, `icon`.
 
 Each package's tests hold a literal list of its names (pkg-r's and
-pkg-py's catalog tests, and pkg-js's contract test for the names both
-catalogs share), and the contract test also checks the two catalogs hold
+pkg-py's catalog tests, and pkg-js's `catalog-spec.test.ts` for the names
+both catalogs share), and that test also checks the two catalogs hold
 the same names, R-only samples aside. Renaming or dropping a sample is a
 deliberate edit, not something that happens by accident.
 
@@ -151,6 +151,6 @@ volatile attributes (`id`, `for`, `href`, `data-target`, `data-bs-target`,
 `aria-controls`, `aria-labelledby`, `data-tabsetid`), treats
 `bsOptions="[]"` and `bsOptions="{}"` as equal (R emits the former for "no
 options", the TS default and py-shiny both use the latter), and compares
-inline `style` as a sorted list of declarations rather than a literal
+inline `style` as a sorted list of declarations instead of a literal
 string, so declaration order and whitespace differences do not fail a
 test.
