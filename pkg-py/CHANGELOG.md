@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- The vendored bundle's `PageFillable` no longer defaults `padding` and `gap`
+  to 12px, matching `ui.page_fillable()`. A client with no build step that
+  reads it from `window.bslibreact` gets the theme's own spacing unless it
+  passes both.
 - `page_deps()` no longer returns a theme stylesheet. py-shiny names it
   `shiny-theme-<name>`, so the `bootstrap` exclusion missed it, and a page
   with a `_brand.yml` theme loaded the stock stylesheet after its own, which

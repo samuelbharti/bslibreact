@@ -16,8 +16,9 @@ type Props = {
  */
 export function PageFillable({ padding, gap, children }: Props) {
   const style: Record<string, string> = {};
-  if (padding !== undefined) style.padding = `${padding}px`;
-  if (gap !== undefined) style.gap = `${gap}px`;
+  // != null: a plain JS client may pass null the way R passes NULL.
+  if (padding != null) style.padding = `${padding}px`;
+  if (gap != null) style.gap = `${gap}px`;
   usePageBody("bslib-page-fill bslib-gap-spacing bslib-flow-mobile html-fill-container", style);
 
   return <>{children}</>;
