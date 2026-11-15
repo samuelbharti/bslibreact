@@ -26,7 +26,8 @@ requires-python = ">=3.10"
 dependencies = ["shiny>=1.8.0", "htmltools>=0.7.0"]
 
 [project.urls]
-Homepage = "https://github.com/samuelbharti/bslibreact"
+Homepage = "https://www.samuelbharti.com/bslibreact/"
+Documentation = "https://www.samuelbharti.com/bslibreact/py/"
 Repository = "https://github.com/samuelbharti/bslibreact"
 Changelog = "https://github.com/samuelbharti/bslibreact/blob/main/pkg-py/CHANGELOG.md"
 Issues = "https://github.com/samuelbharti/bslibreact/issues"

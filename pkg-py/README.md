@@ -45,7 +45,8 @@ reads as `window.bslibreact`. `host_input()` mounts one server-rendered
 Shiny widget (here, a slider) inside a React page and hands back the output
 id your `<SliderInput id="bins_ui" />` element should read.
 
-See the [root README](https://github.com/samuelbharti/bslibreact#readme) for
+The [documentation](https://www.samuelbharti.com/bslibreact/) covers all
+three packages. See the [root README](https://github.com/samuelbharti/bslibreact#readme) for
 the full picture across R, Python and JS, and `docs/` in the repository for
 the porting guide and the markup catalog spec this package's catalog
 renderer implements.

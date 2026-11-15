@@ -165,6 +165,8 @@ R only for now. See `gallery/README.md`; not deployed publicly yet.
 
 ## Learn more
 
+- [Documentation](https://www.samuelbharti.com/bslibreact/): the
+  landing page, with the R, Python and JavaScript reference sites.
 - `docs/build.md`: build a new app with this kit, in R or Python.
 - `docs/porting.md`: port an existing Shiny app to the ui.tsx pattern.
 - `docs/markup.md`: the full R call, Python call, and TSX component map.
