@@ -431,6 +431,35 @@ describeCatalog("r", "LayoutSidebar", () => {
   });
 });
 
+// These need no catalog sample, so they run with no R or Python installed.
+describe("PageFillable padding and gap", () => {
+  it("sets only the one it is given", () => {
+    render(<PageFillable padding={8}>{"hi"}</PageFillable>);
+    expect(document.body.style.padding).toBe("8px");
+    expect(document.body.style.gap).toBe("");
+  });
+
+  it("passes a CSS length string through as it is", () => {
+    render(
+      <PageFillable padding="1rem 2rem" gap="0.5rem">
+        {"hi"}
+      </PageFillable>,
+    );
+    expect(document.body.style.padding).toBe("1rem 2rem");
+    expect(document.body.style.gap).toBe("0.5rem");
+  });
+
+  it("reads a string that holds only a number as pixels", () => {
+    render(<PageFillable padding="16">{"hi"}</PageFillable>);
+    expect(document.body.style.padding).toBe("16px");
+  });
+
+  it("joins an array of paddings, as R's vector does", () => {
+    render(<PageFillable padding={[0, 16]}>{"hi"}</PageFillable>);
+    expect(document.body.style.padding).toBe("0px 16px");
+  });
+});
+
 describeCatalog("r", "PageFillable, PageSidebar and PageNavbar", () => {
   // Each page component sets <body>'s classes and inline style the way the
   // matching bslib page function does, and injects the same
@@ -448,12 +477,6 @@ describeCatalog("r", "PageFillable, PageSidebar and PageNavbar", () => {
     render(<PageFillable>{"hi"}</PageFillable>);
     expect(shapeOf(document.body)).toEqual(catalogShape("page_fillable_default", "body"));
     expect(document.body.getAttribute("style")).toBeNull();
-  });
-
-  it("PageFillable sets only the one it is given", () => {
-    render(<PageFillable padding={8}>{"hi"}</PageFillable>);
-    expect(document.body.style.padding).toBe("8px");
-    expect(document.body.style.gap).toBe("");
   });
 
   it("PageSidebar sets page_sidebar()'s <body> classes and style", () => {

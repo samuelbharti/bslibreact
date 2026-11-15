@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- `PageFillable` accepts a CSS length string for `padding` and `gap`, such
+  as `"1rem"`, as `bslib::page_fillable()` does. `padding` also takes one to
+  four values, as a string (`"0 16px"`) or an array (`[0, 16]`). A number is
+  still pixels.
 - `PageFillable` no longer defaults `padding` and `gap` to 12px. Like
   `bslib::page_fillable()`, it sets an inline style only for the ones it is
   given, so a plain `<PageFillable>` now gets the theme's own spacing. Pass
