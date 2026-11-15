@@ -12,7 +12,7 @@ home:
 
 navbar:
   structure:
-    left: [intro, reference, news]
+    left: [reference, news]
     right: [search, hub, python, javascript, github, lightswitch]
   components:
     hub:

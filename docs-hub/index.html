@@ -22,6 +22,7 @@
         --line-strong: #b8c5cf;
         --accent: #007bc2;
         --accent-deep: #005f96;
+        --on-accent: #ffffff;
         --radius: 4px;
       }
       @media (prefers-color-scheme: dark) {
@@ -35,6 +36,7 @@
           --line-strong: #32444f;
           --accent: #4fb3e8;
           --accent-deep: #7cc8f0;
+          --on-accent: #0d1419;
         }
       }
       * { box-sizing: border-box; }
@@ -65,7 +67,7 @@
       .cta { display: flex; gap: .7rem; margin-top: 1.6rem; flex-wrap: wrap; }
       .btn { display: inline-flex; align-items: center; gap: .4rem; padding: .6rem 1.15rem; border-radius: var(--radius);
         font-weight: 600; text-decoration: none; font-size: .96rem; border: 1px solid transparent; }
-      .btn-primary { background: var(--accent); color: #fff; }
+      .btn-primary { background: var(--accent); color: var(--on-accent); }
       .btn-primary:hover { background: var(--accent-deep); }
       .btn-ghost { border-color: var(--line-strong); color: var(--ink); }
       .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }

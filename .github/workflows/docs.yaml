@@ -20,7 +20,9 @@ on:
       - "docs-hub/**"
       - "pyproject.toml"
       - "uv.lock"
+      - "package.json"
       - "package-lock.json"
+      - ".nvmrc"
       - ".github/workflows/docs.yaml"
   pull_request:
     paths: *docs-inputs
@@ -29,9 +31,11 @@ on:
 permissions:
   contents: read
 
+# A newer push cancels an older pull request build, but never a deploy on
+# main that is already running, which could leave Pages half updated.
 concurrency:
   group: docs-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 jobs:
   build-r:
@@ -124,8 +128,8 @@ jobs:
     name: deploy
     needs: [build-r, build-py, build-js]
     if: >
-      (github.event_name == 'push' && github.ref == 'refs/heads/main')
-      || github.event_name == 'workflow_dispatch'
+      github.ref == 'refs/heads/main'
+      && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
     runs-on: ubuntu-latest
     permissions:
       contents: read
