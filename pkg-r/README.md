@@ -15,8 +15,11 @@ full picture across all three language packages.
 ## Install
 
 ```r
-# From r-universe, once published:
-install.packages("bslibreact", repos = "https://samuelbharti.r-universe.dev")
+# From r-universe, which has binaries for Windows, macOS and Linux:
+install.packages(
+  "bslibreact",
+  repos = c("https://samuelbharti.r-universe.dev", "https://cloud.r-project.org")
+)
 
 # From source, from this repository:
 # install.packages("pak")
