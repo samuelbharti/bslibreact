@@ -30,6 +30,18 @@ before tagging, once, before the first release:
 gh repo edit samuelbharti/bslibreact --visibility public --accept-visibility-change-consequences
 ```
 
+## Zenodo
+
+Zenodo archives each GitHub release and gives it a DOI. Switch the
+repository on at <https://zenodo.org/account/settings/github/> after it
+is public and before the first release, since Zenodo only archives
+releases made after the switch is on. The record's metadata comes from
+`CITATION.cff`.
+
+After the first release, put the concept DOI (the one that covers every
+version) in `CITATION.cff` under `doi:`, and add one `identifiers:` entry
+per released version from then on.
+
 ## Tag
 
 Set the new version in every file `tools/check_versions.py` lists
