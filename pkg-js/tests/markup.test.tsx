@@ -456,6 +456,16 @@ describeCatalog("r", "PageFillable, PageSidebar and PageNavbar", () => {
     expect(document.body.style.gap).toBe("");
   });
 
+  it("PageFillable passes a CSS length string through as it is", () => {
+    render(
+      <PageFillable padding="0 1rem" gap="0.5rem">
+        {"hi"}
+      </PageFillable>,
+    );
+    expect(document.body.style.padding).toBe("0px 1rem");
+    expect(document.body.style.gap).toBe("0.5rem");
+  });
+
   it("PageSidebar sets page_sidebar()'s <body> classes and style", () => {
     render(
       <PageSidebar title="Demo" sidebar={<div />}>
