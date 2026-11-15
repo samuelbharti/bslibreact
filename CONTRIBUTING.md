@@ -1,8 +1,7 @@
 # Contributing
 
-I am the only one working on this repo right now. These notes are for me
-and for an agent working alongside me, more than for outside contributors,
-though outside contributions are welcome.
+Issues and pull requests are welcome. Below are the setup steps and the
+checks every PR has to pass.
 
 ## Setup
 
