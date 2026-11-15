@@ -31,11 +31,14 @@ if TYPE_CHECKING:
 # bslibreact needs, not the baseline every shiny page already has.
 _ALWAYS_EXCLUDED = frozenset({"bootstrap", "jquery"})
 
-# py-shiny names a theme's stylesheet dependency "shiny-theme-<name>". The
-# catalog sample renders under the stock theme, so it always carries
-# "shiny-theme-shiny". Next to a page that declares a different theme (a
-# _brand.yml one, say) the two names do not de-duplicate, both stylesheets
-# load, and the stock one, coming later, overrides the page's own.
+# py-shiny no longer names its Bootstrap stylesheet "bootstrap": the
+# dependency is named after the page's theme, "shiny-theme-<name>" (plus
+# "shiny-theme-<name>-fonts" for a brand theme). It is the same baseline, and
+# it is excluded for the same reason. The catalog's page_navbar samples carry
+# the stock one, "shiny-theme-shiny". Handed back next to a page with a
+# different theme (a _brand.yml one, say), the two names do not de-duplicate,
+# both stylesheets load, and the stock one, coming later, overrides the
+# page's own.
 _THEME_PREFIX = "shiny-theme-"
 
 
@@ -50,7 +53,9 @@ def _validate_theme(theme: object) -> None:
         return
     raise TypeError(
         "page_deps(theme=...) must be None, a str or Path to a _brand.yml, "
-        f"or a shiny.ui.Theme instance; got {type(theme).__name__}."
+        f"or a shiny.ui.Theme instance; got {type(theme).__name__}. "
+        "py-shiny resolves component CSS against whatever theme the page "
+        "itself declares, so this value is validated but otherwise unused."
     )
 
 
@@ -68,15 +73,15 @@ def page_deps(
     the same sample calls the catalog renderer uses for ``bslibreact
     markup`` -- and reading back whichever :class:`~htmltools.HTMLDependency`
     objects that markup pulled in, minus the ones every shiny page already
-    attaches on its own (``bootstrap``, ``jquery``).
+    attaches on its own: ``bootstrap``, ``jquery``, and the theme stylesheet
+    (``shiny-theme-*``), which the page's own ``theme=`` supplies.
 
     Args:
         theme: The page's theme: ``None``, a ``str``/``Path`` to a
-            ``_brand.yml``, or a :class:`shiny.ui.Theme`. py-shiny themes
-            component CSS from the page's own theme, so when a theme is
-            given the result carries no theme stylesheet of its own and the
-            page's ``theme=`` is the only one on the page. With ``None`` the
-            stock theme the catalog sample renders under stays in.
+            ``_brand.yml``, or a :class:`shiny.ui.Theme`. Validated but not
+            used yet (py-shiny themes component CSS from the page's own
+            theme); it keeps the call the same as R's ``page_deps()`` and
+            leaves room to use it later.
         *extra: Additional tags to render alongside the catalog sample --
             typically the actual inputs and outputs your page uses, so their
             dependencies are included too even if the catalog doesn't happen
@@ -111,6 +116,6 @@ def page_deps(
             dep
             for dep in deps
             if dep.name not in _ALWAYS_EXCLUDED
-            and not (theme is not None and dep.name.startswith(_THEME_PREFIX))
+            and not dep.name.startswith(_THEME_PREFIX)
         )
     )

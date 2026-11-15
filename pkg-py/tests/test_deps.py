@@ -1,5 +1,6 @@
 """``page_deps()``: the dependency list bslibreact's components need."""
 
+from pathlib import Path
 from typing import Sequence
 
 import pytest
@@ -54,17 +55,37 @@ def test_accepts_a_real_theme_instance_without_error() -> None:
     assert len(deps) > 0
 
 
-def test_a_given_theme_leaves_the_theme_stylesheet_to_the_page() -> None:
-    # The catalog sample renders under the stock theme. Handing that
-    # stylesheet back next to a page with its own theme would load both, and
-    # the stock one, coming later, would override the page's.
-    names = _names(page_deps(ui.Theme("shiny")))
-    assert not any(name.startswith("shiny-theme-") for name in names)
+def _theme_names(names: set[str]) -> set[str]:
+    return {name for name in names if name.startswith("shiny-theme-")}
 
 
-def test_no_theme_keeps_the_stock_theme_stylesheet() -> None:
-    names = _names(page_deps())
+def test_py_shiny_still_names_the_theme_stylesheet_shiny_theme() -> None:
+    # page_deps() finds the theme stylesheet by this name. If py-shiny renames
+    # it, this fails first and says why the tests below stopped meaning much.
+    page = ui.page_navbar(ui.nav_panel("A", "x"), theme=ui.Theme("shiny"))
+    names = _names(TagList(page).tagify().get_dependencies())
     assert "shiny-theme-shiny" in names
+
+
+def test_never_returns_a_theme_stylesheet() -> None:
+    # The catalog's page_navbar samples carry the stock theme. Handed back
+    # next to a page with its own theme, it would load after the page's
+    # stylesheet and override it, so it is left to the page's theme=.
+    assert not _theme_names(_names(page_deps()))
+    assert not _theme_names(_names(page_deps(ui.Theme("shiny"))))
+
+
+def test_a_brand_theme_page_gets_no_stock_stylesheet() -> None:
+    pytest.importorskip("brand_yml")
+    example = Path(__file__).parents[2] / "examples" / "volcano-plot"
+    brand = ui.Theme.from_brand(example)
+    assert not _theme_names(_names(page_deps(brand)))
+    assert not _theme_names(_names(page_deps(example / "_brand.yml")))
+
+
+def test_theme_stylesheets_in_extras_are_dropped_too() -> None:
+    page = ui.page_navbar(ui.nav_panel("A", "x"), theme=ui.Theme("shiny"))
+    assert not _theme_names(_names(page_deps(None, page, components=[])))
 
 
 def test_accepts_none_str_and_path_themes(tmp_path) -> None:
