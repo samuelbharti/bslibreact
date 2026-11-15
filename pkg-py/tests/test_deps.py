@@ -54,6 +54,19 @@ def test_accepts_a_real_theme_instance_without_error() -> None:
     assert len(deps) > 0
 
 
+def test_a_given_theme_leaves_the_theme_stylesheet_to_the_page() -> None:
+    # The catalog sample renders under the stock theme. Handing that
+    # stylesheet back next to a page with its own theme would load both, and
+    # the stock one, coming later, would override the page's.
+    names = _names(page_deps(ui.Theme("shiny")))
+    assert not any(name.startswith("shiny-theme-") for name in names)
+
+
+def test_no_theme_keeps_the_stock_theme_stylesheet() -> None:
+    names = _names(page_deps())
+    assert "shiny-theme-shiny" in names
+
+
 def test_accepts_none_str_and_path_themes(tmp_path) -> None:
     page_deps(None)
     page_deps(str(tmp_path / "_brand.yml"))

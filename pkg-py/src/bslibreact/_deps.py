@@ -31,6 +31,13 @@ if TYPE_CHECKING:
 # bslibreact needs, not the baseline every shiny page already has.
 _ALWAYS_EXCLUDED = frozenset({"bootstrap", "jquery"})
 
+# py-shiny names a theme's stylesheet dependency "shiny-theme-<name>". The
+# catalog sample renders under the stock theme, so it always carries
+# "shiny-theme-shiny". Next to a page that declares a different theme (a
+# _brand.yml one, say) the two names do not de-duplicate, both stylesheets
+# load, and the stock one, coming later, overrides the page's own.
+_THEME_PREFIX = "shiny-theme-"
+
 
 def _validate_theme(theme: object) -> None:
     """Raise ``TypeError`` unless ``theme`` is one of the accepted shapes, so a
@@ -43,9 +50,7 @@ def _validate_theme(theme: object) -> None:
         return
     raise TypeError(
         "page_deps(theme=...) must be None, a str or Path to a _brand.yml, "
-        f"or a shiny.ui.Theme instance; got {type(theme).__name__}. "
-        "py-shiny resolves component CSS against whatever theme the page "
-        "itself declares, so this value is validated but otherwise unused."
+        f"or a shiny.ui.Theme instance; got {type(theme).__name__}."
     )
 
 
@@ -67,10 +72,11 @@ def page_deps(
 
     Args:
         theme: The page's theme: ``None``, a ``str``/``Path`` to a
-            ``_brand.yml``, or a :class:`shiny.ui.Theme`. Validated but not
-            used yet (py-shiny themes component CSS from the page's own
-            theme); it keeps the call the same as R's ``page_deps()`` and
-            leaves room to use it later.
+            ``_brand.yml``, or a :class:`shiny.ui.Theme`. py-shiny themes
+            component CSS from the page's own theme, so when a theme is
+            given the result carries no theme stylesheet of its own and the
+            page's ``theme=`` is the only one on the page. With ``None`` the
+            stock theme the catalog sample renders under stays in.
         *extra: Additional tags to render alongside the catalog sample --
             typically the actual inputs and outputs your page uses, so their
             dependencies are included too even if the catalog doesn't happen
@@ -100,4 +106,11 @@ def page_deps(
     samples = catalog_eval(names)
     rendered = TagList(*samples, *extra).tagify()
     deps = rendered.get_dependencies()
-    return TagList(*(dep for dep in deps if dep.name not in _ALWAYS_EXCLUDED))
+    return TagList(
+        *(
+            dep
+            for dep in deps
+            if dep.name not in _ALWAYS_EXCLUDED
+            and not (theme is not None and dep.name.startswith(_THEME_PREFIX))
+        )
+    )
