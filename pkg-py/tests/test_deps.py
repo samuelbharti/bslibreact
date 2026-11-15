@@ -1,9 +1,9 @@
-"""``page_deps()``: the dependency list bslib-react's components need."""
+"""``page_deps()``: the dependency list bslibreact's components need."""
 
 from typing import Sequence
 
 import pytest
-from bslib_react._deps import page_deps
+from bslibreact._deps import page_deps
 from htmltools import HTMLDependency, TagChild, TagList
 from shiny import ui
 

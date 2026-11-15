@@ -143,6 +143,6 @@ page_deps <- function(theme = NULL, ..., components = NULL) {
 
   # bootstrap and jquery are the baseline any shiny page already attaches,
   # so a caller reading this output should see only the extra things
-  # bslib-react needs on top. Matches the Python sibling's _ALWAYS_EXCLUDED.
+  # bslibreact needs on top. Matches the Python sibling's _ALWAYS_EXCLUDED.
   deps[vapply(deps, function(d) !d$name %in% ALWAYS_EXCLUDED, logical(1))]
 }

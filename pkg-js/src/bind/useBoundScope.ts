@@ -61,7 +61,7 @@ export function useBoundScope(
     const fail = (error: unknown) => {
       done();
       // eslint-disable-next-line no-console
-      console.error("bslib-react: binding to Shiny failed", error);
+      console.error("bslibreact: binding to Shiny failed", error);
     };
     try {
       Shiny.initializeInputs(sc);

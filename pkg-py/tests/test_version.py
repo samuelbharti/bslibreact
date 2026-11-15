@@ -10,7 +10,7 @@ import importlib.metadata
 import re
 from pathlib import Path
 
-import bslib_react
+import bslibreact
 from packaging.version import Version
 
 
@@ -22,5 +22,5 @@ def test_installed_version_matches_pyproject(repo_root: Path) -> None:
     # Installed metadata is PEP 440 normalised ("0.2.0-rc.1" becomes
     # "0.2.0rc1"), so compare parsed versions, not strings.
     expected = Version(match.group(1))
-    assert Version(importlib.metadata.version("bslib-react")) == expected
-    assert Version(bslib_react.__version__) == expected
+    assert Version(importlib.metadata.version("bslibreact")) == expected
+    assert Version(bslibreact.__version__) == expected

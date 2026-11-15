@@ -47,7 +47,7 @@ leaves one stale.
 There are no HTML fixtures to update. Instead:
 
 1. Add a sample call with the same name to `pkg-r/R/catalog-samples.R` and
-   `pkg-py/src/bslib_react/_catalog.py`.
+   `pkg-py/src/bslibreact/_catalog.py`.
 2. Run `make markup`.
 3. Read the rendered shape in `.cache/markup/r.json` (and the Python file).
 4. Write the TSX component against that shape, and say in its doc comment
@@ -72,7 +72,7 @@ changes.
 
 `.claude/skills/bslib-react-port/` is this repo's own porting skill,
 committed for contributors working on a port; it is not vendored into
-either package, since bslib-react ships no browser automation or CLI
+either package, since bslibreact ships no browser automation or CLI
 tooling at runtime for it to sit on top of. Posit's own
 `shinyreact-build-app` and `shinyreact-convert-app` skills come from the
 `shinyreact` package itself, not from here.

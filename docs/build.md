@@ -11,9 +11,9 @@ The main tier is a Vite build whose client bundle externalizes React to
 bundle. `examples/01-hello` is set up this way, and it is the tier this
 kit's examples and tests use.
 
-A no-build tier exists too: `bslib_react_dep()` (R or Python) serves a
-prebuilt IIFE that registers `window.bslibReact`, so a page with no Node
-step at all can still use `React.createElement(window.bslibReact.Card,
+A no-build tier exists too: `bslibreact_dep()` (R or Python) serves a
+prebuilt IIFE that registers `window.bslibreact`, so a page with no Node
+step at all can still use `React.createElement(window.bslibreact.Card,
 ...)`. It is suitable for a small page; most apps should use the Vite
 tier.
 
@@ -85,7 +85,7 @@ bslibreact::host_input(output, "bins", sliderInput("bins", "Bins", 1, 50, 30))
 ```
 
 ```python
-bslib_react.host_input(output, "bins", lambda: ui.input_slider("bins", "Bins", 1, 50, 30))
+bslibreact.host_input(output, "bins", lambda: ui.input_slider("bins", "Bins", 1, 50, 30))
 ```
 
 Two rules that matter here:
@@ -119,19 +119,19 @@ ui <- page_react(page_deps(app_theme), title = "My app", theme = app_theme)
 
 ```python
 from shinyreact import page_react
-from bslib_react import page_deps
+from bslibreact import page_deps
 
 app_ui = page_react(page_deps(app_theme), title="My app", theme=app_theme)
 ```
 
-A client with no build step reads the kit from `window.bslibReact`
-instead, so its page also attaches `bslib_react_dep()`, the prebuilt
+A client with no build step reads the kit from `window.bslibreact`
+instead, so its page also attaches `bslibreact_dep()`, the prebuilt
 bundle. `page_react()` puts the app's own `ui.js` before that bundle, so
-such a client reads `window.bslibReact` inside a `window` `load` listener
+such a client reads `window.bslibreact` inside a `window` `load` listener
 (see `gallery/apps/*/rpkg/www/ui.js`).
 
 ```r
-ui <- page_react(page_deps(app_theme), bslib_react_dep(), title = "My app", theme = app_theme)
+ui <- page_react(page_deps(app_theme), bslibreact_dep(), title = "My app", theme = app_theme)
 ```
 
 Pass extra tags to `page_deps()` for any third party widget the app hosts

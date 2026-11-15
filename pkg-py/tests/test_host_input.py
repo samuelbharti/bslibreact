@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import Any
 
 import pytest
-from bslib_react._host import host_input
+from bslibreact._host import host_input
 from htmltools import TagList
 from shiny import ui
 

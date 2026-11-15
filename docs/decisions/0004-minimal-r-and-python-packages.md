@@ -14,7 +14,7 @@ briefly added on top, wrapping shinyreact's own `page_react()`, with
 `shinyreact` promoted from Suggests to a hard Imports dependency to
 support it.
 
-None of that matched what this package needs to be. bslib-react exists to
+None of that matched what this package needs to be. bslibreact exists to
 supplement shinyreact, not to compete with it or to become a second thing
 to maintain at the same scale: a component kit plus its own port-checking
 CLI, browser automation, and scaffolding is a much bigger maintenance
@@ -29,10 +29,10 @@ independently flaky under `R CMD check`'s isolated environment.
 ## Decision
 
 `pkg-r` and `pkg-py` each ship exactly three functions at runtime:
-`page_deps()`, `host_input()`, and `bslib_react_dep()`. `shinyreact` stays
+`page_deps()`, `host_input()`, and `bslibreact_dep()`. `shinyreact` stays
 a `Suggests`/documentation-only relationship, never a hard dependency: an
 app assembles its own page with `page_react(page_deps(theme), ...)`,
-adding `bslib_react_dep()` for a client with no build step, the same
+adding `bslibreact_dep()` for a client with no build step, the same
 pattern shinyreact's own docs already teach for attaching a dependency. There is no
 `bslib_react_page()` wrapper.
 
@@ -64,6 +64,6 @@ Porting and building a new app take one more manual step each
 (comparing two browser tabs by hand instead of calling a function that
 does it), in exchange for pkg-r's and pkg-py's own dependency trees
 staying close to what bslib and shiny already require. An app that
-depends on bslib-react never pulls in browser automation. Someone who
+depends on bslibreact never pulls in browser automation. Someone who
 wants the cut tools can still find their logic in this repository's git
 history (the commits before this decision).

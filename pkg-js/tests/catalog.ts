@@ -117,7 +117,7 @@ export function normaliseIds(html: string): string {
  *  this run. Ready, or one of the reasons it is not (see that file's own
  *  CatalogState doc comment). */
 export function catalogStatus(lang: Lang): CatalogLangStatus {
-  return inject("bslibReactCatalog")[lang];
+  return inject("bslibreactCatalog")[lang];
 }
 
 /** Every language whose catalog is ready to read this run. Check this (or

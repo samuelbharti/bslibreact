@@ -156,7 +156,7 @@ EXAMPLES <- list(
     "submit-button",
     "inputs",
     "Submit button",
-    "Classic only. shiny::submitButton() holds inputs back until clicked, which cannot work with a hosted button: Shiny looks for the button once, at page load, before any hosted widget exists. Use an actionButton() with bindEvent() in a bslib-react app."
+    "Classic only. shiny::submitButton() holds inputs back until clicked, which cannot work with a hosted button: Shiny looks for the button once, at page load, before any hosted widget exists. Use an actionButton() with bindEvent() in a bslibreact app."
   ),
 
   gallery_example(
@@ -236,7 +236,7 @@ EXAMPLES <- list(
     "notification",
     "messages",
     "Notification",
-    "No bslib-react display component: shiny::showNotification() renders through Shiny's own client JS, independent of the component tree."
+    "No bslibreact display component: shiny::showNotification() renders through Shiny's own client JS, independent of the component tree."
   ),
   gallery_example(
     "tooltip",
@@ -254,13 +254,13 @@ EXAMPLES <- list(
     "modal",
     "messages",
     "Modal",
-    "No bslib-react display component: shiny::showModal() renders through Shiny's own client JS, the same discovery as Notification."
+    "No bslibreact display component: shiny::showModal() renders through Shiny's own client JS, the same discovery as Notification."
   ),
   gallery_example(
     "progress-bar",
     "messages",
     "Progress bar",
-    "No bslib-react display component: shiny::withProgress()/incProgress() render through Shiny's own client JS, the same discovery as Notification and Modal."
+    "No bslibreact display component: shiny::withProgress()/incProgress() render through Shiny's own client JS, the same discovery as Notification and Modal."
   )
 )
 

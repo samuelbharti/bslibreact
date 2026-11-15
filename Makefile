@@ -77,12 +77,12 @@ r-check: r-check-format r-check-tests r-check-package  ## [r] All R checks
 
 .PHONY: r-update-dist
 r-update-dist:  ## [r] Vendor the built JS bundle into pkg-r
-	@echo "Updating vendored bundle in $(PATH_PKG_R)/inst/lib/bslib-react"
-	rm -rf $(PATH_PKG_R)/inst/lib/bslib-react
-	mkdir -p $(PATH_PKG_R)/inst/lib/bslib-react
-	cp $(PATH_PKG_JS)/dist/bslib-react.js $(PATH_PKG_R)/inst/lib/bslib-react/
-	@if [ -f $(PATH_PKG_JS)/dist/bslib-react.css ]; then \
-		cp $(PATH_PKG_JS)/dist/bslib-react.css $(PATH_PKG_R)/inst/lib/bslib-react/; \
+	@echo "Updating vendored bundle in $(PATH_PKG_R)/inst/lib/bslibreact"
+	rm -rf $(PATH_PKG_R)/inst/lib/bslibreact
+	mkdir -p $(PATH_PKG_R)/inst/lib/bslibreact
+	cp $(PATH_PKG_JS)/dist/bslibreact.js $(PATH_PKG_R)/inst/lib/bslibreact/
+	@if [ -f $(PATH_PKG_JS)/dist/bslibreact.css ]; then \
+		cp $(PATH_PKG_JS)/dist/bslibreact.css $(PATH_PKG_R)/inst/lib/bslibreact/; \
 	fi
 
 .PHONY: r-markup
@@ -123,12 +123,12 @@ py-check: py-check-format py-check-types py-check-tests  ## [py] All Python chec
 
 .PHONY: py-update-dist
 py-update-dist:  ## [py] Vendor the built JS bundle into pkg-py
-	@echo "Updating vendored bundle in $(PATH_PKG_PY)/src/bslib_react/www"
-	rm -rf $(PATH_PKG_PY)/src/bslib_react/www
-	mkdir -p $(PATH_PKG_PY)/src/bslib_react/www
-	cp $(PATH_PKG_JS)/dist/bslib-react.js $(PATH_PKG_PY)/src/bslib_react/www/
-	@if [ -f $(PATH_PKG_JS)/dist/bslib-react.css ]; then \
-		cp $(PATH_PKG_JS)/dist/bslib-react.css $(PATH_PKG_PY)/src/bslib_react/www/; \
+	@echo "Updating vendored bundle in $(PATH_PKG_PY)/src/bslibreact/www"
+	rm -rf $(PATH_PKG_PY)/src/bslibreact/www
+	mkdir -p $(PATH_PKG_PY)/src/bslibreact/www
+	cp $(PATH_PKG_JS)/dist/bslibreact.js $(PATH_PKG_PY)/src/bslibreact/www/
+	@if [ -f $(PATH_PKG_JS)/dist/bslibreact.css ]; then \
+		cp $(PATH_PKG_JS)/dist/bslibreact.css $(PATH_PKG_PY)/src/bslibreact/www/; \
 	fi
 
 .PHONY: py-markup

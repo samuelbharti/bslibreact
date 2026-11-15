@@ -1,4 +1,4 @@
-import { Card, CardHeader, CardBody, HostedInput, PageFillable } from "bslib-react";
+import { Card, CardHeader, CardBody, HostedInput, PageFillable } from "bslibreact";
 
 // shiny::downloadLink() has no dedicated component yet (DownloadButton is
 // the button-styled sibling); hosted through HostedInput.

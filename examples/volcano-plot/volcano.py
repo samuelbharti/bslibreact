@@ -93,7 +93,7 @@ def plot_volcano(
 
     Labels use a plain offset annotation rather than a label-repulsion
     algorithm (R's ggrepel::geom_text_repel()): a deliberate simplification
-    for this example, not a missing feature of bslib-react itself. Labels
+    for this example, not a missing feature of bslibreact itself. Labels
     can overlap at high label_top_n values as a result.
     """
     fig, ax = plt.subplots(figsize=(9, 5.5))

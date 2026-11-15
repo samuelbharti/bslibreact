@@ -1,5 +1,5 @@
 // Barrel export. Every app imports the kit as one package:
-//   import { Card, SliderInput, useShinyOutputValue } from "bslib-react";
+//   import { Card, SliderInput, useShinyOutputValue } from "bslibreact";
 
 // Re-exported so declaration output carries custom-elements.ts's JSX types
 // to a consuming app (see that file).

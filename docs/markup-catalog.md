@@ -7,10 +7,10 @@ file; changing the contract means updating all three.
 Neither renderer ships inside the installed R or Python package: rendering
 the catalog needs things (third party widget packages for the R side's
 "extra" samples) that no app using `page_deps()`/`host_input()`/
-`bslib_react_dep()` at runtime ever needs. Both live in `tools/markup/`:
+`bslibreact_dep()` at runtime ever needs. Both live in `tools/markup/`:
 `render-r.R` reaches into `pkg-r`'s unexported internals for the "tag" and
 "page" samples and defines the "extra" samples itself, and `render_py.py`
-reads `bslib_react._catalog`. The sample lists stay in the packages because
+reads `bslibreact._catalog`. The sample lists stay in the packages because
 `page_deps()` needs them.
 
 See [0001-no-fixtures-live-ground-truth](decisions/0001-no-fixtures-live-ground-truth.md)
@@ -68,7 +68,7 @@ it against the cached file, and only re-renders when it differs.
 ```
 
 Python's file differs only in `language` (`"py"`), `generator.package`
-(`"bslib-react"`), `versions` (Python adds `bslib_vendored`, the bslib
+(`"bslibreact"`), `versions` (Python adds `bslib_vendored`, the bslib
 version py-shiny bundles, read from `shiny._versions`), `call` in Python
 syntax, and a page sample's `html`, which is the whole `<html>` document
 py-shiny's page functions return, not just `<body>`.

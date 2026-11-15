@@ -1,4 +1,4 @@
-# Hello bslib-react, a shinyreact app built with bslib-react.
+# Hello bslibreact, a shinyreact app built with bslibreact.
 #
 # The client (src/, built to www/ui.js) owns the page. This file holds
 # only reactive computation: page_deps() gives the client the same CSS and
@@ -11,7 +11,7 @@ library(shinyreact)
 app_theme <- bs_theme(version = 5)
 
 ui <- page_react(
-  title = "Hello bslib-react",
+  title = "Hello bslibreact",
   theme = app_theme,
   bslibreact::page_deps(app_theme)
 )

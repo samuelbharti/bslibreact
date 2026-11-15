@@ -1,4 +1,4 @@
-# bslib-react component gallery
+# bslibreact component gallery
 
 A side by side gallery, matching [shiny.posit.co/r/components](https://shiny.posit.co/r/components/):
 a sidebar lists every example, grouped by category; selecting one shows
@@ -11,16 +11,16 @@ The three columns are the point of the thing:
 | Column | What it is | Needs Node? |
 | --- | --- | --- |
 | `classic` | plain bslib + Shiny, the usual R stack | no |
-| `vite` | bslib-react installed from npm, UI written in TSX, bundled by Vite | yes |
-| `rpkg` | bslib-react from the R package's own vendored bundle, UI hand written in plain JS | no |
+| `vite` | bslibreact installed from npm, UI written in TSX, bundled by Vite | yes |
+| `rpkg` | bslibreact from the R package's own vendored bundle, UI hand written in plain JS | no |
 
 `vite` and `rpkg` are the two tiers described in [docs/build.md](../docs/build.md).
 `bslibreact` is the server half of both; what differs is where the client
 comes from. The `vite` column builds it from TSX, bundling the kit into its
-`ui.js`. The `rpkg` column writes it by hand against `window.bslibReact`,
+`ui.js`. The `rpkg` column writes it by hand against `window.bslibreact`,
 the global the vendored bundle publishes, so it needs no npm and no build
 step at all. Their `app.R` files therefore differ in one line: the rpkg
-page also attaches `bslib_react_dep()`, that vendored bundle.
+page also attaches `bslibreact_dep()`, that vendored bundle.
 
 This is a real, single Shiny app (`app.R`), run with plain R. It replaced
 an earlier version built on `shinylive` (R compiled to WebAssembly, running
@@ -83,12 +83,12 @@ all the way down, once per example per variant, proxied through an
    `vite/www/ui.js`, and commit it: unlike a typical build artifact,
    this one ships, the same way `examples/*/www/ui.js` does elsewhere in
    this repo, since there is no build step at deploy time.
-4. Copy `vite/app.R` to `rpkg/app.R`, add `bslib_react_dep()` to its
+4. Copy `vite/app.R` to `rpkg/app.R`, add `bslibreact_dep()` to its
    `page_react()` call, and hand write
    `rpkg/www/ui.js` as the `React.createElement` form of `App.tsx`. Wrap
    it in a `window.addEventListener("load", ...)` and read the globals
    inside that listener: `page_react()` emits the app's own `ui.js`
-   script tag *before* `bslib_react_dep()`'s, so `window.bslibReact` is
+   script tag *before* `bslibreact_dep()`'s, so `window.bslibreact` is
    still undefined while the file is first evaluated, and a page that
    reads it at the top level renders blank with no console error.
 5. Add one entry to `examples.R`. The code panels and the live apps are

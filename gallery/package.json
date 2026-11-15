@@ -1,5 +1,5 @@
 {
-  "name": "bslib-react-gallery",
+  "name": "bslibreact-gallery",
   "private": true,
   "type": "module",
   "scripts": {
@@ -7,7 +7,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "bslib-react": "*",
+    "bslibreact": "*",
     "@posit-dev/shinyreact": "^0.1.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"

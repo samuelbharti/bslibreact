@@ -8,11 +8,11 @@ Description: R-side helpers for building Shiny apps in the shinyreact
     discovery so a client bundle can request the same CSS and JavaScript a
     'bslib' page would attach on its own, and a hosted-input helper for
     widgets rendered server-side and displayed by the client. The matching
-    React components live in the 'bslib-react' npm package.
+    React components live in the 'bslibreact' npm package.
 License: MIT + file LICENSE
-URL: https://github.com/samuelbharti/bslib-react,
-    https://samuelbharti.github.io/bslib-react
-BugReports: https://github.com/samuelbharti/bslib-react/issues
+URL: https://github.com/samuelbharti/bslibreact,
+    https://samuelbharti.github.io/bslibreact
+BugReports: https://github.com/samuelbharti/bslibreact/issues
 Imports:
     bslib (>= 0.9.0),
     cli,

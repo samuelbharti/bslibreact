@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Check that built Python artifacts carry the vendored bslib-react bundle.
+"""Check that built Python artifacts carry the vendored bslibreact bundle.
 
 The Python package is a thin server-side helper plus one vendored file:
-src/bslib_react/www/bslib-react.js, copied from pkg-js's build by
-`make update-dist`. Without it, bslib_react_dep() returns a dependency pointing
+src/bslibreact/www/bslibreact.js, copied from pkg-js's build by
+`make update-dist`. Without it, bslibreact_dep() returns a dependency pointing
 at nothing, so a wheel that loses the bundle installs and imports and then
 serves a page with no components on it, for everyone, with no way to replace
 the file: PyPI does not allow re-uploading a version.
@@ -24,7 +24,7 @@ from pathlib import Path
 # The vendored bundle, and the size below which it is certainly a stub or an
 # empty placeholder rather than a real build. A floor, not an exact size, so a
 # component added to pkg-js does not break the release.
-BUNDLE = "bslib_react/www/bslib-react.js"
+BUNDLE = "bslibreact/www/bslibreact.js"
 MIN_BUNDLE_BYTES = 5_000
 
 # Directories that exist in the repository but have no business in a release.

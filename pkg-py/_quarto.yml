@@ -6,21 +6,21 @@ project:
     - reference/
 
 website:
-  title: "bslib_react"
+  title: "bslibreact"
   navbar:
     left:
       - text: Reference
         href: reference/index.qmd
 
 quartodoc:
-  package: bslib_react
+  package: bslibreact
   dir: reference
   title: API Reference
   parser: google
   sections:
     - title: Public API
-      desc: The complete public interface of `bslib_react`.
+      desc: The complete public interface of `bslibreact`.
       contents:
         - page_deps
         - host_input
-        - bslib_react_dep
+        - bslibreact_dep

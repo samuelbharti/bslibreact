@@ -1,4 +1,4 @@
-import { Card, CardHeader, CardBody, CheckboxInput, PageFillable, UiOutput } from "bslib-react";
+import { Card, CardHeader, CardBody, CheckboxInput, PageFillable, UiOutput } from "bslibreact";
 
 export default function App() {
   return (

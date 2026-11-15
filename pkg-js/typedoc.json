@@ -3,6 +3,6 @@
   "entryPoints": ["src/index.ts"],
   "tsconfig": "./tsconfig.npm.json",
   "out": "docs",
-  "name": "bslib-react",
+  "name": "bslibreact",
   "intentionallyNotExported": ["Props", "CardProps", "ModuleProps"]
 }

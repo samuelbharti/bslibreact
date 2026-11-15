@@ -1,9 +1,9 @@
-"""``bslib_react_dep()``: the vendored JS/CSS bundle as an HTMLDependency.
+"""``bslibreact_dep()``: the vendored JS/CSS bundle as an HTMLDependency.
 
 Mirrors the same pattern ``posit-dev/shinyreact``'s own Python package uses
 for its vendored bundle (``pkg-py/src/shinyreact/_dep.py`` in that repo):
 the bundle in ``www/`` is vendored in by ``make update-dist`` from
-``pkg-js/dist/bslib-react.js``, and the version string gets an mtime suffix
+``pkg-js/dist/bslibreact.js``, and the version string gets an mtime suffix
 in a dev checkout so a rebuild still busts the browser cache even though the
 release version hasn't changed.
 """
@@ -35,39 +35,39 @@ def _file_mtime_int(path: Path) -> int | None:
 def _bundle_version() -> str:
     """The package version, suffixed with the bundle's mtime in a dev checkout.
 
-    An installed package serves ``/lib/bslib-react-<version>/``. In a repo
-    checkout it is ``/lib/bslib-react-<version>+<mtime>/`` instead, so
+    An installed package serves ``/lib/bslibreact-<version>/``. In a repo
+    checkout it is ``/lib/bslibreact-<version>+<mtime>/`` instead, so
     ``make update-dist`` still cache-busts the browser. The mtime goes in a
     PEP 440 local segment (``+``), which stays valid after any version,
     pre-releases included.
     """
     if _JS_PACKAGE_JSON.is_file():
-        mtime = _file_mtime_int(_WWW_DIR / "bslib-react.js")
+        mtime = _file_mtime_int(_WWW_DIR / "bslibreact.js")
         if mtime is not None:
             return f"{__version__}+{mtime}"
     return __version__
 
 
-def bslib_react_dep() -> HTMLDependency:
-    """The bslib-react JS (and CSS, if built) bundle as an HTMLDependency.
+def bslibreact_dep() -> HTMLDependency:
+    """The bslibreact JS (and CSS, if built) bundle as an HTMLDependency.
 
-    The bundle sets ``window.bslibReact``. Attach it only for a client with no
+    The bundle sets ``window.bslibreact``. Attach it only for a client with no
     build step that reads the kit from that global; a client built with Vite
     bundles the kit itself.
 
-    The stylesheet is attached only when ``www/bslib-react.css`` actually
+    The stylesheet is attached only when ``www/bslibreact.css`` actually
     exists -- the bundle may ship JS only -- so this never points a
     ``<link>`` at a file that isn't there. Likewise the JS file itself may be
     absent before the first ``make update-dist``; :func:`_bundle_version`
     handles that (falls back to the bare release string) instead of
-    erroring, since importing ``bslib_react`` must work before the bundle
+    erroring, since importing ``bslibreact`` must work before the bundle
     has ever been built.
     """
-    css = _WWW_DIR / "bslib-react.css"
+    css = _WWW_DIR / "bslibreact.css"
     return HTMLDependency(
-        name="bslib-react",
+        name="bslibreact",
         version=_bundle_version(),
         source={"subdir": str(_WWW_DIR)},
-        script={"src": "bslib-react.js", "defer": ""},
-        stylesheet={"href": "bslib-react.css"} if css.exists() else None,
+        script={"src": "bslibreact.js", "defer": ""},
+        stylesheet={"href": "bslibreact.css"} if css.exists() else None,
     )

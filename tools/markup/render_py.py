@@ -13,7 +13,7 @@ catalog to that path and exits 0, or exits non-zero with a message on stderr
 if rendering fails.
 
 A dev-only script, like tools/markup/render-r.R: the sample list itself
-(bslib_react._catalog) ships in the package because page_deps() needs it,
+(bslibreact._catalog) ships in the package because page_deps() needs it,
 but rendering it to JSON is only ever done here.
 """
 
@@ -29,8 +29,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from bslib_react import __version__
-from bslib_react._catalog import SAMPLES, Sample, catalog_eval, catalog_hash
+from bslibreact import __version__
+from bslibreact._catalog import SAMPLES, Sample, catalog_eval, catalog_hash
 from htmltools import TagList
 
 if TYPE_CHECKING:
@@ -105,7 +105,7 @@ def render_markup_catalog(path: Path) -> None:
         "language": "py",
         "key": markup_catalog_key(bslib_vendored),
         "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "generator": {"package": "bslib-react", "version": __version__},
+        "generator": {"package": "bslibreact", "version": __version__},
         "versions": {
             "shiny": _pkg_version("shiny"),
             "htmltools": _pkg_version("htmltools"),

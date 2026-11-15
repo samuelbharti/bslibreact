@@ -1,4 +1,4 @@
-# bslib-react
+# bslibreact
 
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 
@@ -16,7 +16,7 @@ bslib actually renders (see `../docs/markup-catalog.md` at the repo root).
 ## Install
 
 ```
-npm install bslib-react @posit-dev/shinyreact react react-dom
+npm install bslibreact @posit-dev/shinyreact react react-dom
 ```
 
 `react` and `react-dom` are peer dependencies (`19.x`).
@@ -27,7 +27,7 @@ served `shinyreact.js` on the page (see "Two ways to ship this" below).
 ## A small example
 
 ```tsx
-import { PageSidebar, Card, CardHeader, CardBody, SliderInput, PlotOutput } from "bslib-react";
+import { PageSidebar, Card, CardHeader, CardBody, SliderInput, PlotOutput } from "bslibreact";
 
 function App() {
   return (
@@ -52,16 +52,16 @@ Shiny bindings work exactly as they would on a server-rendered bslib page.
 ## Two ways to ship this
 
 The R and Python packages vendor a prebuilt IIFE bundle
-(`dist/bslib-react.js`). An app attaches it as a page dependency with
-`bslibreact::bslib_react_dep()` (R) or `bslib_react.bslib_react_dep()`
+(`dist/bslibreact.js`). An app attaches it as a page dependency with
+`bslibreact::bslibreact_dep()` (R) or `bslibreact.bslibreact_dep()`
 (Python), next to shinyreact's own `shinyreact.js`, and never installs the
-npm package at all: it reads this kit off `window.bslibReact` at runtime.
+npm package at all: it reads this kit off `window.bslibreact` at runtime.
 
 An app that bundles its own client with a JS bundler instead installs this
 package from npm and imports it directly:
 
 ```tsx
-import { Card } from "bslib-react";
+import { Card } from "bslibreact";
 ```
 
 The npm build (`dist-npm/`) is plain ESM with `react`/`react-dom`
@@ -75,6 +75,6 @@ app has actually needed so far. A bslib component with no dedicated
 component here yet is usually still reachable through `UiOutput`, the
 escape hatch that hosts an entire dynamic R UI fragment as Shiny's own
 `uiOutput()` binding renders it. See
-[docs/markup.md](https://github.com/samuelbharti/bslib-react/blob/main/docs/markup.md)
+[docs/markup.md](https://github.com/samuelbharti/bslibreact/blob/main/docs/markup.md)
 for the full map of what exists, what is hosted instead of reproduced,
 and what is not built yet.

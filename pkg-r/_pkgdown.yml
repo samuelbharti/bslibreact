@@ -1,4 +1,4 @@
-url: https://samuelbharti.github.io/bslib-react/
+url: https://samuelbharti.github.io/bslibreact/
 
 template:
   bootstrap: 5
@@ -10,5 +10,5 @@ reference:
     widget for a client to display.
   contents:
   - page_deps
-  - bslib_react_dep
+  - bslibreact_dep
   - host_input

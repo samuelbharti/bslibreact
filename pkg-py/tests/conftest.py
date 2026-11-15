@@ -1,4 +1,4 @@
-"""Shared fixtures for bslib-react's Python test suite."""
+"""Shared fixtures for bslibreact's Python test suite."""
 
 from __future__ import annotations
 

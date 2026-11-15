@@ -1,5 +1,5 @@
 # Tests the server's reactive logic directly, with shiny::testServer(),
-# rather than driving a real browser: the client's own markup is bslib-react's
+# rather than driving a real browser: the client's own markup is bslibreact's
 # responsibility (see pkg-js/tests/markup.test.tsx), and the bind mechanics
 # are pkg-js/tests/bind.test.tsx's job. This file only has to prove app.R's
 # own reactive code is correct.

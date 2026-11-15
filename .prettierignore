@@ -9,7 +9,7 @@ examples/*/www/
 pkg-js/dist/
 pkg-js/dist-npm/
 pkg-r/inst/lib/
-pkg-py/src/bslib_react/www/
+pkg-py/src/bslibreact/www/
 
 # Lockfiles and generated docs.
 package-lock.json

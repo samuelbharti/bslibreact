@@ -1,6 +1,6 @@
-"""``page_deps()``: the CSS/JS a bslib-react page needs, without a real page.
+"""``page_deps()``: the CSS/JS a bslibreact page needs, without a real page.
 
-bslib-react's React components reproduce bslib markup, but some of that
+bslibreact's React components reproduce bslib markup, but some of that
 markup depends on component CSS and JS that a normal bslib/shiny app only
 picks up because the *components themselves* are somewhere on the page (the
 ion.rangeSlider assets a slider needs, selectize's assets, bslib's own
@@ -28,7 +28,7 @@ if TYPE_CHECKING:
 # attaches these itself. Including them here too would be harmless (htmltools
 # de-duplicates dependencies by name when hoisting to <head>) but misleading:
 # a caller reading page_deps()'s output should see only the extra things
-# bslib-react needs, not the baseline every shiny page already has.
+# bslibreact needs, not the baseline every shiny page already has.
 _ALWAYS_EXCLUDED = frozenset({"bootstrap", "jquery"})
 
 
@@ -54,13 +54,13 @@ def page_deps(
     *extra: "TagChild",
     components: Sequence[str] | None = None,
 ) -> TagList:
-    """The HTML dependencies bslib-react's components need at runtime.
+    """The HTML dependencies bslibreact's components need at runtime.
 
     Attach the result to a shinyreact page, for example
     ``page_react(page_deps(app_theme), theme=app_theme)``. A client with no
-    build step also attaches :func:`bslib_react_dep`.
+    build step also attaches :func:`bslibreact_dep`.
     It works by rendering a representative sample of the markup catalog --
-    the same sample calls the catalog renderer uses for ``bslib-react
+    the same sample calls the catalog renderer uses for ``bslibreact
     markup`` -- and reading back whichever :class:`~htmltools.HTMLDependency`
     objects that markup pulled in, minus the ones every shiny page already
     attaches on its own (``bootstrap``, ``jquery``).

@@ -1,6 +1,6 @@
 """Tests that the app starts cleanly and serves the expected client bundles.
 
-The client's own markup is bslib-react's responsibility (see
+The client's own markup is bslibreact's responsibility (see
 pkg-js/tests/markup.test.tsx), and the bind mechanics are
 pkg-js/tests/bind.test.tsx's job. py-shiny has no in-process equivalent of
 R's shiny::testServer() for a plain function-based server, so this starts
@@ -30,5 +30,5 @@ def test_the_served_page_loads_the_expected_bundles(app_url):
     assert status == 200
     assert "ui.js" in html
     # A Vite client bundles the kit, so the prebuilt bundle is not attached.
-    assert "bslib-react.js" not in html
+    assert "bslibreact.js" not in html
     assert "shinyreact" in html

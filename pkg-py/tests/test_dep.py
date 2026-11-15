@@ -1,8 +1,8 @@
-"""``bslib_react_dep()``: the vendored bundle, with and without a dev checkout."""
+"""``bslibreact_dep()``: the vendored bundle, with and without a dev checkout."""
 
 from pathlib import Path
 
-from bslib_react import __version__, _dep
+from bslibreact import __version__, _dep
 
 
 def test_version_is_the_package_version_without_a_dev_checkout(
@@ -11,7 +11,7 @@ def test_version_is_the_package_version_without_a_dev_checkout(
     monkeypatch.setattr(
         _dep, "_JS_PACKAGE_JSON", tmp_path / "does-not-exist" / "package.json"
     )
-    dep = _dep.bslib_react_dep()
+    dep = _dep.bslibreact_dep()
     # HTMLDependency parses `version=` into a packaging.version.Version.
     assert str(dep.version) == __version__
 
@@ -25,7 +25,7 @@ def test_version_gets_an_mtime_suffix_in_a_dev_checkout(
 
     fake_www = tmp_path / "www"
     fake_www.mkdir()
-    bundle = fake_www / "bslib-react.js"
+    bundle = fake_www / "bslibreact.js"
     bundle.write_text("/* bundle */", encoding="utf-8")
     known_mtime = 1_700_000_000
     import os
@@ -40,7 +40,7 @@ def test_version_gets_an_mtime_suffix_in_a_dev_checkout(
 
 
 def test_script_tag_is_deferred_with_no_type_attribute() -> None:
-    dep = _dep.bslib_react_dep()
+    dep = _dep.bslibreact_dep()
     # HTMLDependency normalises a single script dict into a one-item list.
     script = dep.script[0]
     assert script.get("defer") == ""
@@ -53,13 +53,13 @@ def test_stylesheet_present_only_when_the_css_file_exists(
     www_without_css = tmp_path / "www_no_css"
     www_without_css.mkdir()
     monkeypatch.setattr(_dep, "_WWW_DIR", www_without_css)
-    dep_without_css = _dep.bslib_react_dep()
+    dep_without_css = _dep.bslibreact_dep()
     # HTMLDependency normalises a missing stylesheet to an empty list.
     assert dep_without_css.stylesheet == []
 
     www_with_css = tmp_path / "www_with_css"
     www_with_css.mkdir()
-    (www_with_css / "bslib-react.css").write_text("/* css */", encoding="utf-8")
+    (www_with_css / "bslibreact.css").write_text("/* css */", encoding="utf-8")
     monkeypatch.setattr(_dep, "_WWW_DIR", www_with_css)
-    dep_with_css = _dep.bslib_react_dep()
-    assert dep_with_css.stylesheet[0]["href"] == "bslib-react.css"
+    dep_with_css = _dep.bslibreact_dep()
+    assert dep_with_css.stylesheet[0]["href"] == "bslibreact.css"

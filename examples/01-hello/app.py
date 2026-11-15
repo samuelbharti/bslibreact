@@ -1,4 +1,4 @@
-"""Hello bslib-react, a shinyreact app built with bslib-react.
+"""Hello bslibreact, a shinyreact app built with bslibreact.
 
 The client (src/, built to www/ui.js) owns the page. This file holds only
 reactive computation: page_deps() gives the client the same CSS and
@@ -8,7 +8,7 @@ hosts one server-rendered widget for the client to display.
 
 import matplotlib.pyplot as plt
 import numpy as np
-from bslib_react import host_input, page_deps
+from bslibreact import host_input, page_deps
 from shiny import App, render, ui
 from shinyreact import page_react
 
@@ -19,7 +19,7 @@ app_theme = ui.Theme()
 
 app_ui = page_react(
     page_deps(app_theme),
-    title="Hello bslib-react",
+    title="Hello bslibreact",
     theme=app_theme,
 )
 
